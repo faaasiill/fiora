@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Cart</title>
+    <link rel="stylesheet" href="/public/css/cart.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@40,200,0,-25"
+    />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar">
+        <img src="/public/images/Fiora1/1.png" class="logo" alt="Logo" />
+        <ul class="nav-links">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact Us</a></li>
+        </ul>
+        <div class="nav-icons">
+          <span class="material-symbols-outlined icon">favorite</span>
+          <span class="material-symbols-outlined icon">person</span>
+          <span class="material-symbols-outlined">local_mall</span>
+        </div>
+        <div class="hamburger" id="hamburger">
+          <span class="material-symbols-outlined menu">menu</span>
+        </div>
+        <ul class="mobile-menu" id="mobile-menu">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact Us</a></li>
+          <li>
+            <a href="#wishlist"><i class="fa fa-heart"></i> Wishlist</a>
+          </li>
+          <li>
+            <a href="#profile"><i class="fa fa-user"></i> Profile</a>
+          </li>
+          <li>
+            <a href="#cart"><i class="fa fa-shopping-bag"></i> Cart</a>
+          </li>
+        </ul>
+      </nav>
+      <h1 class="cart-h1">cart</h1>
+    </div>
+
+    <!-- Cart -->
+    <div class="small-container cart-page">
+      <table id="cart-table">
+        <tr>
+          <th>PRODUCT</th>
+          <th>QUANTITY</th>
+          <th>SUBTOTAL</th>
+          <th>ACTION</th>
+          <!-- Changed to Action column -->
+        </tr>
+        <tr>
+          <td>
+            <div class="cart-info">
+              <img src="/public/images/pr1.jpg" alt="" />
+              <div class="pro-info">
+                <p>crist shoulder Bags</p>
+              </div>
+            </div>
+          </td>
+          <td><input type="number" value="1" class="quantity-input" /></td>
+          <td class="product-subtotal">₹4999</td>
+          <td>
+            <span class="material-symbols-outlined delete-icon">delete</span>
+          </td>
+          <!-- Delete icon -->
+        </tr>
+        <tr>
+          <td>
+            <div class="cart-info">
+              <img src="/public/images/pr2.jpg" alt="" />
+              <div class="pro-info">
+                <p>crist shoulder Bags</p>
+              </div>
+            </div>
+          </td>
+          <td><input type="number" value="1" class="quantity-input" /></td>
+          <td class="product-subtotal">₹4999</td>
+          <td>
+            <span class="material-symbols-outlined delete-icon">delete</span>
+          </td>
+          <!-- Delete icon -->
+        </tr>
+        <tr>
+          <td>
+            <div class="cart-info">
+              <img src="/public/images/pr3.jpg" alt="" />
+              <div class="pro-info">
+                <p>crist shoulder Bags</p>
+              </div>
+            </div>
+          </td>
+          <td><input type="number" value="1" class="quantity-input" /></td>
+          <td class="product-subtotal">₹4999</td>
+          <td>
+            <span class="material-symbols-outlined delete-icon">delete</span>
+          </td>
+          <!-- Delete icon -->
+        </tr>
+        <tr>
+          <td>
+            <div class="cart-info">
+              <img src="/public/images/pr4.jpg" alt="" />
+              <div class="pro-info">
+                <p>crist shoulder Bags</p>
+              </div>
+            </div>
+          </td>
+          <td><input type="number" value="1" class="quantity-input" /></td>
+          <td class="product-subtotal">₹4999</td>
+          <td>
+            <span class="material-symbols-outlined delete-icon">delete</span>
+          </td>
+          <!-- Delete icon -->
+        </tr>
+      </table>
+      <hr />
+      <div class="coupon-section">
+        <input
+          type="text"
+          placeholder="Enter Coupon Code"
+          class="coupon-input"
+          id="coupon-code"
+        />
+        <button class="btn-apply" id="apply-coupon">Apply</button>
+      </div>
+      <div class="total-price">
+        <table class="total-price-table">
+          <tr>
+            <td>subtotal</td>
+            <td id="subtotal-value">₹19996</td>
+          </tr>
+          <tr>
+            <td>offers</td>
+            <td id="offers-value">-₹0</td>
+          </tr>
+          <tr>
+            <td>total</td>
+            <td id="total-value">₹19996</td>
+          </tr>
+        </table>
+      </div>
+      <div class="coupon-section">
+        <button class="place-order">Place Order</button>
+      </div>
+    </div>
+    <!-- Popup Notification -->
+    <div id="popup-message" class="popup-message">
+      Quantity cannot be less than 1.
+    </div>
+
+    <!-- footer -->
+    <footer>
+      <div class="footer-container">
+        <div class="footer-column">
+          <img src="/public/images/Fiora1/2.png" class="logo" alt="Logo" />
+          <p>
+            Our timeless bag collections for daily & occasional use at
+            affordable prices.
+          </p>
+          <div class="divider"></div>
+          <p><strong>Email Us</strong></p>
+          <p>faazilrahmaan@gmail.com</p>
+          <div class="social-icons">
+            <a href="#" aria-label="Instagram"
+              ><img
+                class="socialmedialogo"
+                src="/public/images/logos/instagram.png"
+                alt="Instagram"
+            /></a>
+            <a href="#" aria-label="Facebook"
+              ><img
+                class="socialmedialogo"
+                src="/public/images/logos/facebook.png"
+                alt="Facebook"
+            /></a>
+            <a href="#" aria-label="LinkedIn"
+              ><img
+                class="socialmedialogo"
+                src="/public/images/logos/linkedin-logo.png"
+                alt="LinkedIn"
+            /></a>
+          </div>
+        </div>
+
+        <div class="footer-column">
+          <h3>Our Shop</h3>
+          <ul>
+            <li><a href="#">Terms & Policy</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Gift Cards</a></li>
+            <li><a href="#">Offers & Promotions</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h3>Store Locator</h3>
+          <p>312, Awesome Street,</p>
+          <p>Malappuram, Kerala.</p>
+        </div>
+      </div>
+      <hr style="border-top: 0.1px solid #a2a2a2; width: 80%; margin: auto" />
+      <div class="footer-bottom">designed by @faaasiill</div>
+    </footer>
+
+    <script>
+      const hamburger = document.getElementById("hamburger");
+      const mobileMenu = document.getElementById("mobile-menu");
+
+      hamburger.addEventListener("click", () => {
+        mobileMenu.classList.toggle("show");
+      });
+      // 
+
+      document.addEventListener("DOMContentLoaded", () => {
+  const cartTable = document.getElementById("cart-table");
+  const subtotalValue = document.getElementById("subtotal-value");
+  const offersValue = document.getElementById("offers-value");
+  const totalValue = document.getElementById("total-value");
+  const couponInput = document.getElementById("coupon-code");
+  const applyCouponBtn = document.getElementById("apply-coupon");
+  const popupMessage = document.getElementById("popup-message");
+  let discountPercentage = 0;
+
+  // Update totals based on cart changes
+  function calculateTotals() {
+    const rows = cartTable.querySelectorAll("tr");
+    let subtotal = 0;
+    let totalQuantity = 0;
+
+    rows.forEach((row, index) => {
+      if (index === 0 || row.querySelector(".cart-info") === null) return; // Skip header row
+
+      const price = 4999; // Hardcoded price for each product
+      const quantityInput = row.querySelector(".quantity-input");
+      let quantity = parseInt(quantityInput.value);
+
+      // Prevent quantity from being less than 1
+      if (quantity < 1 || isNaN(quantity)) {
+        showPopup("Quantity cannot be less than 1. Resetting to 1.");
+        quantity = 1; // Reset quantity to 1 if it's less than 1
+        quantityInput.value = 1;
+      }
+
+      const rowTotal = price * quantity;
+      subtotal += rowTotal;
+      totalQuantity += quantity;
+      row.querySelector(".product-subtotal").textContent = `₹${rowTotal}`;
+    });
+
+    const offerPercentage = getOfferPercentage(totalQuantity);
+    const offerAmount = Math.round((subtotal * offerPercentage) / 100);
+    const discountAmount = Math.round((subtotal * discountPercentage) / 100);
+    const totalAfterDiscount = Math.max(subtotal - offerAmount - discountAmount, 0);
+
+    offersValue.textContent = `-₹${offerAmount + discountAmount}`;
+    subtotalValue.textContent = `₹${subtotal}`;
+    totalValue.textContent = `₹${totalAfterDiscount}`;
+  }
+
+  // Get discount percentage based on quantity
+  function getOfferPercentage(quantity) {
+    if (quantity >= 10) return 50;
+    if (quantity >= 5) return 20;
+    if (quantity >= 3) return 10;
+    return 0;
+  }
+
+  // Show popup message
+  function showPopup(message) {
+    popupMessage.textContent = message;
+    popupMessage.style.display = "block";
+    setTimeout(() => {
+      popupMessage.style.display = "none";
+    }, 4000);
+  }
+
+  // Apply coupon logic
+  applyCouponBtn.addEventListener("click", () => {
+    const couponCode = couponInput.value.trim().toLowerCase();
+    if (couponCode === "save20") {
+      discountPercentage = 20;
+      showPopup("Coupon applied! 20% off.");
+    } else if (couponCode === "save10") {
+      discountPercentage = 10;
+      showPopup("Coupon applied! 10% off.");
+    } else {
+      discountPercentage = 0;
+      showPopup("Invalid coupon code.");
+    }
+    calculateTotals();
+  });
+
+  // Delete item from cart when delete icon is clicked
+  cartTable.addEventListener("click", (event) => {
+    if (event.target.classList.contains("delete-icon")) {
+      const row = event.target.closest("tr");
+      row.remove();
+      calculateTotals();
+    }
+  });
+
+  // Listen for quantity changes
+  cartTable.addEventListener("input", (event) => {
+    if (event.target.classList.contains("quantity-input")) {
+      calculateTotals();
+    }
+  });
+
+  calculateTotals(); // Initial calculation of totals
+});
+
+    </script>
+  </body>
+</html>

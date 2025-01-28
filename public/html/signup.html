@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SignUp</title>
+    <link rel="stylesheet" href="/public/css/signup.css" />
+    <script type="text/javascript" src="/public/js/validation.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  </head>
+
+  <body>
+    <!-- main container -->
+    <div class="main">
+      <!-- left side -->
+      <div class="left"></div>
+      <!-- right side -->
+      <div class="wrapper right">
+        <!-- header -->
+        <h1 class="get">Get</h1>
+        <h1 class="start">starts now</h1>
+        <!-- card -->
+        <div class="card">
+          <!-- error message -->
+            <p id="error-message"></p>
+
+          <!-- form -->
+          <form action="" id="form">
+            <!-- first name -->
+            <label for="name" class="text-label">name</label>
+            <div class="input-holder">
+              <input
+                type="text"
+                id="name-input"
+                name="name"
+                placeholder="Enter your name"
+                class="input-field"
+              />
+            </div>
+            <!-- email -->
+            <label for="email" class="text-label">email address</label>
+            <div class="input-holder">
+              <input
+                type="email"
+                id="email-input"
+                name="email"
+                placeholder="Enter your email"
+                class="input-field"
+              />
+            </div>
+            <!-- phone -->
+            <label for="phone" class="text-label">Phone</label>
+            <div class="input-holder">
+              <input
+                type="tel"
+                id="phone-input"
+                name="phone"
+                placeholder="Enter your phone number"
+                class="input-field"
+              />
+            </div>
+            <!-- password -->
+            <label for="password" class="text-label">Password</label>
+            <div class="input-holder">
+              <input
+                type="password"
+                id="password-input"
+                name="password"
+                placeholder="Enter a password"
+                class="input-field"
+              />
+            </div>
+            <!-- confirm password -->
+            <label for="confirm-password" class="text-label"
+              >Confirm Password</label
+            >
+            <div class="input-holder">
+              <input
+                type="password"
+                id="confirm-password"
+                name="confirm-password"
+                placeholder="Re-enter password"
+                class="input-field"
+              />
+            </div>
+            <!-- check box -->
+            <div class="checkbox-holder">
+              <input type="checkbox" name="check-box" />
+              <label for="check" class="checkbox">I agree to the </label
+              ><a href="./terms">terms & conditions</a>
+            </div>
+            <!-- submit button -->
+            <div class="btn-holder">
+              <button type="submit" class="signup">SignUp</button>
+            </div>
+          </form>
+          <!-- or -->
+          <div
+            style="
+              display: flex;
+              justify-content: center;
+              color: #500d1f;
+              padding: 0.5em;
+            "
+          >
+            <p>or</p>
+          </div>
+          <!-- google & facebook signup -->
+          <div class="social-signup">
+            <button type="button" class="login-with-google-btn">
+              Sign up with Google
+            </button>
+            <button type="button" class="login-with-Facebook-btn">
+              Sign up with Facebook
+            </button>
+          </div>
+          <!-- login link -->
+          <div class="tologin">
+            <p>
+              Have an account?
+              <a href="login.html" style="color: rgb(80, 109, 255)">Login</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
