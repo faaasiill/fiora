@@ -7,6 +7,7 @@ const confirmpassword_input = document.getElementById('confirm-password');
 const error_message = document.getElementById('error-message');
 
 form.addEventListener('submit', (e) => {
+    
 
     let errors = []
 
@@ -17,7 +18,9 @@ form.addEventListener('submit', (e) => {
      }
 
      if(errors.length > 0){
+        console.log(errors.length);
         e.preventDefault();
+        console.log("Errors detected, preventing form submission:", errors);
         error_message.innerText = errors.join('. ')
         
      }
@@ -45,9 +48,14 @@ function getLoginFormErrors(email, password) {
 
 function getSignupFormErrors(name, email, phone, password, confirmpassword) {
     let errors = []
+    const namepattern = /^[A-Za-Z\s]+$/;
+
 
     if(name === "" || name == null){
         errors.push('name is required');
+        name_input.parentElement.classList.add('incorrect');
+    }else if(!namepattern.test(name)){
+        errors.push('name must be letters only');
         name_input.parentElement.classList.add('incorrect');
     }
     if(email === "" || email == null){
