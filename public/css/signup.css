@@ -22,7 +22,7 @@ h1{
 }
 body{
     min-height: 100vh;
-    background-image: url(/images/italian_luxury_bag_04\ \(1\).jpg);
+    background-image: url(/images/italian_luxury_bag_04\ \(1\).jpg ) !important;
     background-size: cover;
     background-position: center;
 }
@@ -235,10 +235,27 @@ form .incorrect label {
     max-width: 60ch;
     text-align: center;
 }
+
+.error{
+    color: #c91948;
+    font-size: 0.7em;
+    text-align: center;
+    max-width: 60ch;
+    text-align: center;
+    margin: 10px;
+}
 .social-signup{
     display: flex;
     justify-content: space-evenly;
 }
 .login-with-google-btn{
     margin-right: 0.3em;
+    text-decoration: none;
+    font-weight: 300;
+}
+.login-with-Facebook-btn{
+    text-decoration: none;
+    font-family: "poppins";
+    font-weight: 300;
+    
 }

@@ -8,7 +8,6 @@
     <script type="text/javascript" src="/js/validation.js" defer></script>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   </head>
-
   <body>
     <!-- main container -->
     <div class="main">
@@ -83,11 +82,16 @@
                 class="input-field"
               />
             </div>
+            <%if(locals.message && message.length > 0){%>
+              <div class="error">
+                  <%=message%>
+              </div>
+          <%}%>
             <!-- check box -->
             <div class="checkbox-holder">
               <input type="checkbox" name="check-box" />
               <label for="check" class="checkbox">I agree to the </label
-              ><a href="/terms">terms & conditions</a>
+              ><a href="https://www.termsfeed.com/live/09cf94b8-ec78-4327-81a0-1cd4bc1c21bd">terms & conditions</a>
             </div>
             <!-- submit button -->
             <div class="btn-holder">
@@ -107,12 +111,12 @@
           </div>
           <!-- google & facebook signup -->
           <div class="social-signup">
-            <button type="button" class="login-with-google-btn">
+            <a href="/auth/google" class="login-with-google-btn">
               Sign up with Google
-            </button>
-            <button type="button" class="login-with-Facebook-btn">
+            </a>
+            <a href="/auth/Facebook" class="login-with-Facebook-btn">
               Sign up with Facebook
-            </button>
+            </a>
           </div>
           <!-- login link -->
           <div class="tologin">

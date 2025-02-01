@@ -47,15 +47,10 @@ function getLoginFormErrors(email, password) {
 
 
 function getSignupFormErrors(name, email, phone, password, confirmpassword) {
-    let errors = []
-    const namepattern = /^[A-Za-Z\s]+$/;
-
+    let errors = [];
 
     if(name === "" || name == null){
         errors.push('name is required');
-        name_input.parentElement.classList.add('incorrect');
-    }else if(!namepattern.test(name)){
-        errors.push('name must be letters only');
         name_input.parentElement.classList.add('incorrect');
     }
     if(email === "" || email == null){
@@ -94,3 +89,13 @@ allInputs.forEach(input => {
        }
     })
 })
+
+const checkbox = document.querySelector('input[name="check-box"]'); // Get the checkbox
+
+form.addEventListener("submit", (e) => {
+  if (!checkbox.checked) {
+    e.preventDefault(); // Prevent form submission
+    error_message.innerText = "You must agree to the terms and conditions.";
+    error_message.style.color = "red"; // Optional: Make error message red
+  }
+});

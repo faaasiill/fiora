@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/signup.css" />
+    <script type="text/javascript" src="/js/validation.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  </head>
+  <style>
+    body {
+      background-image: url(/images/italian_luxury_bag_02\ \(1\).jpg) !important;
+      overflow: hidden;
+    }
+  </style>
+  <body>
+    <!-- main container -->
+    <div class="main">
+      <!-- left container -->
+      <div class="left"></div>
+      <!-- right contaner -->
+      <div class="wrapper right">
+        <!-- header -->
+        <h1 class="get">Welcome</h1>
+        <h1 class="start">back!</h1>
+        <!-- card -->
+        <div class="card">
+          <!-- error message -->
+          <p id="error-message"></p>
+
+          <!-- form -->
+          <form action="/login" method="POST" id="form">
+            <!-- email -->
+            <label for="email" class="text-label">email address</label>
+            <div class="input-holder">
+              <input
+                type="email"
+                id="email-input"
+                name="email"
+                placeholder="Enter your email"
+                class="input-field"
+              />
+            </div>
+            <!-- password -->
+            <label for="password" class="text-label">Password</label>
+            <div class="input-holder">
+              <input
+                type="password"
+                id="password-input"
+                style="margin-bottom: 1em"
+                name="password"
+                placeholder="Enter a password"
+                class="input-field"
+              />
+              <!-- forgot password -->
+              <a href="/html/forgot.html" style="color: rgba(0, 110, 255, 0.792); font-size: 12px;">forgot password?</a>
+            </div>
+            <%if(locals.message && message.length > 0){%>
+                <div class="error">
+                    <%=message%>
+                </div>
+            <%}%>
+            <!-- submit button -->
+            <div class="btn-holder">
+              <button type="submit" class="signup">Login</button>
+            </div>
+          </form>
+          <!-- or -->
+          <div
+            style="
+              display: flex;
+              justify-content: center;
+              color: #500d1f;
+              padding: 0.5em;
+            "
+          >
+            <p>or</p>
+          </div>
+          <!-- google & facebook signup -->
+          <div class="social-signup">
+            <button type="button" class="login-with-google-btn">
+              Sign in with Google
+            </button>
+            <button type="button" class="login-with-Facebook-btn">
+              Sign in with Facebook
+            </button>
+          </div>
+          <!-- signup link -->
+          <div class="tologin">
+            <p>
+              Don't have an account?
+              <a href="signup.html" style="color: rgb(80, 109, 255)">Signup</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

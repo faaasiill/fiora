@@ -10,7 +10,7 @@ const userSchema = new Schema({
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
     },
     phone: {
         type: String,
@@ -22,7 +22,12 @@ const userSchema = new Schema({
     googleId: {
         type: String,
         unique: true,
-
+        sparse: true,
+    },
+    facebookId: {
+        type: String,
+        unique: true,
+        sparse: true,
     },
     password: {
         type: String,
