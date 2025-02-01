@@ -7,7 +7,7 @@
 
     <!-- Link to external CSS file -->
     <link rel="stylesheet" href="/css/home.css" />
-
+     
     <!-- Link to external JavaScript file -->
     <script defer src="/js/home.js"></script>
 
@@ -22,12 +22,28 @@
         <!-- Logo -->
         <img src="/images/Fiora1/1.png" class="logo" alt="Logo" />
 
-        <!-- Navigation links -->
-        <ul class="nav-links">
-          <li><a href="#home">Home</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#contact">Contact Us</a></li>
-        </ul>
+       <!-- Navigation links -->
+       <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        
+        <% if (locals.user) { %>
+          <li class="dropdown">
+            <a href="#" class="sign-in-link"><%= locals.user.name %></a>
+            <div class="dropdown-content">
+              <a href="/userProfile">Profile</a>
+              <a href="/logout">Logout</a>
+              <!-- Example for adding extra features like the current time -->
+              <div style="display: none;" id="current-time"></div> <!-- This is where you can add extra things like the current time or other dynamic content -->
+            </div>
+          </li>
+        <% } else { %>
+          <li><a href="/signup" class="sign-in-link">Sign Up</a></li>
+          <li><a href="/login" class="sign-in-link">Log in</a></li>
+        <% } %>
+        
+        
+      </ul>
 
         <!-- Search bar -->
         <input type="text" class="search-bar" placeholder="Search..." />
@@ -35,9 +51,9 @@
         <!-- Navigation icons -->
         <div class="nav-icons">
           <span class="material-symbols-outlined icon">favorite</span>
-          <a style="color: white;" href="/signup"><span class="material-symbols-outlined icon">person</span></a>
+          <a id="profile-link" style="color: white;" href="<%= locals.user ? '/user-profile' : '/signup' %>"><span class="material-symbols-outlined icon">person</span></a>
           <span class="material-symbols-outlined">local_mall</span>
-        </div>
+      </div>
 
         <!-- Hamburger menu for mobile view -->
         <div class="hamburger" id="hamburger">

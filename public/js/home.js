@@ -105,4 +105,38 @@ function autoScroll() {
 }
 
 // Set auto-scroll every 3 seconds
-setInterval(autoScroll, 3000);
+setInterval(autoScroll, 3000); 
+
+document.addEventListener('DOMContentLoaded', () => {
+  const dropdown = document.querySelector('.dropdown');
+  const dropdownLink = dropdown.querySelector('.sign-in-link');
+  const currentTimeElement = document.getElementById('current-time');
+
+  // Function to update the current time dynamically
+  function updateTime() {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const timeString = `${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
+    currentTimeElement.textContent = `Current time: ${timeString}`;
+  }
+
+  // Update time every minute
+  setInterval(updateTime, 60000); // 60,000 ms = 1 minute
+  updateTime(); // Set the initial time on page load
+
+  // Handle click event to toggle dropdown visibility
+  dropdownLink.addEventListener('click', (e) => {
+    e.preventDefault(); // Prevent default behavior of the <a> tag
+    dropdown.classList.toggle('active'); // Toggle the 'active' class to show/hide the dropdown
+  });
+
+  // Close the dropdown if clicked outside of it
+  document.addEventListener('click', (e) => {
+    if (!dropdown.contains(e.target)) {
+      dropdown.classList.remove('active'); // Hide the dropdown if clicked outside
+    }
+  });
+});
+
+

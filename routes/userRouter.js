@@ -24,5 +24,6 @@ router.get("/auth/facebook/callback", passport.authenticate('facebook', { failur
 
 router.get("/login", userController.loadLogin);
 router.post("/login", userController.login);
+router.get("/logout", userController.logout);
 
 module.exports = router;

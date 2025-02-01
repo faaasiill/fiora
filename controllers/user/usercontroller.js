@@ -2,7 +2,7 @@ const User = require("../../models/userSchema");
 const env = require("dotenv").config();
 const bcrypt = require("bcrypt")
 const nodemailer = require("nodemailer");
-
+const mongoose = require("mongoose");
 
 const loadSignup = async (req, res) => {
 
@@ -16,15 +16,31 @@ const loadSignup = async (req, res) => {
   }
 };
 
-const loadHomepage = async (req, res) => {
 
+const loadHomepage = async (req, res) => {
   try {
-    res.render("home");
+    console.log("Session User at Home Route:", req.session.user);
+
+    let userData = null;
+
+    if (req.session.user) {
+      const userId = new mongoose.Types.ObjectId(req.session.user);
+      userData = await User.findById(userId).lean();
+
+      if (!userData) {
+        console.log("User not found in database!");
+        req.session.user = null; // Clear session if user is not found
+      }
+    }
+
+    res.render("home", { user: userData }); // Always render home page
+
   } catch (error) {
     console.log("Error rendering home page:", error.message);
     res.status(500).send("Server Error");
   }
 };
+
 
 const pageNotFound = async (req, res) => {
   try {
@@ -225,6 +241,29 @@ const resendOtp = async(req, res) => {
       res.render("login", {message: "login failed. Please try again later"});
     }
   }
+
+
+const logout = async (req, res) => {
+  try {
+    
+    req.session.destroy((err) => {
+      if(err){
+        console.error("session distruction error", err);
+        return res.redirect("/pageNotFound");
+      }
+      return res.redirect("/login");
+    })
+
+
+  } catch (error) {
+
+    console.log("logout error", error);
+    res.redirect("/pageNotFound");
+  }
+}
+
+
+
 module.exports = {
   loadHomepage,
   loadSignup,
@@ -234,4 +273,5 @@ module.exports = {
   resendOtp,
   loadLogin,
   login,
+  logout,
 };

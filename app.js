@@ -5,6 +5,8 @@ const session = require("express-session");
 const db = require("./config/db");
 const userRoutes = require("./routes/userRouter");
 const passport = require("./config/passport");
+const adminRouter = require("./routes/adminRouter");
+
 // Connect to the database
 db();
 
@@ -18,13 +20,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false, // ✅ Prevents saving empty sessions
     cookie: {
-        secure: false,
+        secure: false, // Use `true` only with HTTPS
         httpOnly: true,
         maxAge: 72 * 60 * 60 * 1000
     }
 }));
+
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -44,7 +47,9 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // Use the router after setting up middleware
 app.use("/", userRoutes);
+app.use("/admin", adminRouter);
+
 
 app.listen(process.env.PORT || 3002, () => {
-    console.log(`Server running at http://localhost:${process.env.PORT || 3002}`);
+    console.log(`Server running at http://localhost:${process.env.PORT || 3002} \n http://localhost:${process.env.PORT || 3002}/admin/login`);
 });
