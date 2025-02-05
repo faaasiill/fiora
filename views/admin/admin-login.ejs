@@ -13,10 +13,9 @@
             <div class="form-container">
                 <img src="https://raw.githubusercontent.com/hicodersofficial/glassmorphism-login-form/master/assets/illustration.png" alt="illustration" class="illustration" />
                 <h1 class="opacity">LOGIN</h1>
-                <form>
-                    <input type="text" placeholder="USERNAME" />
-                    <input type="password" placeholder="PASSWORD" />
-                    <button class="opacity">SUBMIT</button>
+                <form action="/admin/login" method="post">
+                    <input type="email" name="email" placeholder="Email" required /><input type="password" name="password" placeholder="Password" required />
+                    <button type="submit" class="opacity">SUBMIT</button>
                 </form>
             </div>
             <div class="circle circle-two"></div>

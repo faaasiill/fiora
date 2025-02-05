@@ -29,11 +29,11 @@ const loadHomepage = async (req, res) => {
 
       if (!userData) {
         console.log("User not found in database!");
-        req.session.user = null; // Clear session if user is not found
+        req.session.user = null;
       }
     }
 
-    res.render("home", { user: userData }); // Always render home page
+    res.render("home", { user: userData }); 
 
   } catch (error) {
     console.log("Error rendering home page:", error.message);

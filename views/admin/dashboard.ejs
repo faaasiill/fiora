@@ -1,0 +1,275 @@
+<%- include("../../views/partials/admin/header") %>
+<head>
+  <style>
+    /* Main Container Styles */
+    .container-fluid {
+        padding: 20px;
+        background-color: #f8f9fa;
+    }
+
+    .dashboard-main {
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Headings */
+    h1 {
+      color: #6E0B21;
+      font-size: 2rem;
+      font-weight: 400;
+      border-bottom: 2px solid #6E0B21;
+      display: inline-block;
+      letter-spacing: -1px;
+    }
+
+    h2 {
+        color: #34495e;
+        font-size: 1.8rem;
+        font-weight: 500;
+        margin: 30px 0 20px;
+    }
+
+    h5 {
+        color: #6E0B21;
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+    }
+
+    /* Card Styles */
+    .card {
+        background-color: #ffffff;
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        margin-bottom: 25px;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .card-body {
+        padding: 25px;
+        text-align: center;
+    }
+
+    .card-body p {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #6E0B21;
+        margin: 10px 0 0;
+    }
+
+    /* Stats Box Styles */
+    .stat-box {
+        background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        padding: 25px 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        margin-bottom: 25px;
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+
+    .stat-box:hover {
+        transform: translateY(-5px);
+    }
+
+    .stat-box h5 {
+        color: #6E0B21;
+        margin-bottom: 15px;
+    }
+
+    .stat-box p {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin: 0;
+    }
+
+    /* Recent Activity Section */
+    .recent-activity {
+        background-color: #ffffff;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        margin: 30px 0;
+    }
+
+    .recent-activity ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .recent-activity li {
+        padding: 15px 20px;
+        border-left: 4px solid #6E0B21;
+        background-color: #f8f9fa;
+        margin-bottom: 10px;
+        border-radius: 0 8px 8px 0;
+        transition: transform 0.3s ease;
+    }
+
+    .recent-activity li:hover {
+        transform: translateX(10px);
+        background-color: #f0f2f5;
+    }
+
+    /* Sales Chart Section */
+    .sales-stats {
+        background-color: #ffffff;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        margin-top: 30px;
+    }
+
+    canvas#salesChart {
+        min-height: 300px;
+        width: 100% !important;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .container-fluid {
+            padding-top: 100px;
+        }
+
+        h1 {
+            font-size: 2rem;
+        }
+
+        .card-body p {
+            font-size: 1.5rem;
+        }
+
+        .stat-box p {
+            font-size: 1.3rem;
+        }
+    }
+</style>
+</head>
+<div class="container-fluid" style="padding-top: 150px; display: flex; justify-content: center;">
+    <div class="row" style="width: 100%; padding-left: 50px;">
+     
+      <div class="col-md-9">
+        <!-- Main Content -->
+        <div class="dashboard-main">
+          <h1 class="mb-4">Admin Dashboard</h1>
+          
+          <!-- Welcome/Overview Section -->
+          <div class="overview">
+            <h2>Overview</h2>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="card">
+                  <div class="card-body">
+                    <h5>Total Sales</h5>
+                    <p>$50,000</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card">
+                  <div class="card-body">
+                    <h5>New Users</h5>
+                    <p>150</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card">
+                  <div class="card-body">
+                    <h5>Total Orders</h5>
+                    <p>500</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          <!-- Recent Activity Section -->
+          <div class="recent-activity">
+            <h2>Recent Activity</h2>
+            <ul>
+              <li>User1 logged in</li>
+              <li>User2 placed an order</li>
+              <li>Product3 updated</li>
+            </ul>
+          </div>
+  
+          <!-- Quick Stats Section -->
+          <div class="quick-stats">
+            <h2>Quick Stats</h2>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="stat-box">
+                  <h5>Total Revenue</h5>
+                  <p>$100,000</p>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="stat-box">
+                  <h5>Active Users</h5>
+                  <p>1,000</p>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="stat-box">
+                  <h5>Open Tickets</h5>
+                  <p>10</p>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="stat-box">
+                  <h5>New Signups</h5>
+                  <p>50</p>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          <!-- Sales/Order Statistics Section -->
+          <div class="sales-stats">
+            <h2>Sales/Order Statistics</h2>
+            <canvas id="salesChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  var ctx = document.getElementById('salesChart').getContext('2d');
+  var salesChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+      datasets: [{
+        label: 'Sales',
+        data: [12000, 15000, 10000, 17000, 14000, 19000, 22000],
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)'
+      }]
+    },
+//     options: {
+//       responsive: true,
+//       maintainAspectRatio: false
+//     }
+  });
+</script>
+
+
+  
+
+
+   
+    <%- include("../../views/partials/admin/footer") %>
