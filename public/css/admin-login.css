@@ -1,9 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Julius+Sans+One&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 :root {
-    --background: #1a1a2e;
-    --color: #ffffff;
-    --primary-color: #0f3460;
+    --background: #ffffff;
+    --color: #000000;
+    --primary-color: #6E0B21;
 }
 
 * {
@@ -39,6 +39,10 @@ h1 {
     font-size: 2.5rem;
 }
 
+button {
+    color: #ffffff !important;
+}
+
 .container {
     display: flex;
     justify-content: center;
@@ -50,18 +54,7 @@ h1 {
     position: relative;
     width: 22.2rem;
 }
-.form-container {
-    border: 1px solid hsla(0, 0%, 65%, 0.158);
-    box-shadow: 0 0 36px 1px rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
-    backdrop-filter: blur(20px);
-    z-index: 99;
-    padding: 2rem;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    -ms-border-radius: 10px;
-    -o-border-radius: 10px;
-}
+
 
 .login-container form input {
     display: block;
@@ -84,7 +77,6 @@ h1 {
 }
 
 .login-container form input:focus {
-    box-shadow: 0 0 16px 1px rgba(0, 0, 0, 0.2);
     animation: wobble 0.3s ease-in;
     -webkit-animation: wobble 0.3s ease-in;
 }
@@ -117,10 +109,6 @@ h1 {
 .login-container form button:hover {
     box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.15);
     transform: scale(1.02);
-    -webkit-transform: scale(1.02);
-    -moz-transform: scale(1.02);
-    -ms-transform: scale(1.02);
-    -o-transform: scale(1.02);
 }
 
 .circle {
@@ -128,50 +116,16 @@ h1 {
     height: 8rem;
     background: var(--primary-color);
     border-radius: 50%;
-    -webkit-border-radius: 50%;
-    -moz-border-radius: 50%;
-    -ms-border-radius: 50%;
-    -o-border-radius: 50%;
     position: absolute;
 }
 
-.illustration {
-    position: absolute;
-    top: -14%;
-    right: -2px;
-    width: 90%;
-}
-
-.circle-one {
-    top: 0;
-    left: 0;
-    z-index: -1;
-    transform: translate(-45%, -45%);
-    -webkit-transform: translate(-45%, -45%);
-    -moz-transform: translate(-45%, -45%);
-    -ms-transform: translate(-45%, -45%);
-    -o-transform: translate(-45%, -45%);
-}
-
-.circle-two {
-    bottom: 0;
-    right: 0;
-    z-index: -1;
-    transform: translate(45%, 45%);
-    -webkit-transform: translate(45%, 45%);
-    -moz-transform: translate(45%, 45%);
-    -ms-transform: translate(45%, 45%);
-    -o-transform: translate(45%, 45%);
-}
 
 .register-forget {
     margin: 1rem 0;
     display: flex;
     justify-content: space-between;
 }
-.opacity {
-    opacity: 0.6;
-}
+
 
 .theme-btn-container {
     position: absolute;
@@ -188,33 +142,3 @@ h1 {
     width: 40px !important;
 }
 
-@keyframes wobble {
-    0% {
-        transform: scale(1.025);
-        -webkit-transform: scale(1.025);
-        -moz-transform: scale(1.025);
-        -ms-transform: scale(1.025);
-        -o-transform: scale(1.025);
-    }
-    25% {
-        transform: scale(1);
-        -webkit-transform: scale(1);
-        -moz-transform: scale(1);
-        -ms-transform: scale(1);
-        -o-transform: scale(1);
-    }
-    75% {
-        transform: scale(1.025);
-        -webkit-transform: scale(1.025);
-        -moz-transform: scale(1.025);
-        -ms-transform: scale(1.025);
-        -o-transform: scale(1.025);
-    }
-    100% {
-        transform: scale(1);
-        -webkit-transform: scale(1);
-        -moz-transform: scale(1);
-        -ms-transform: scale(1);
-        -o-transform: scale(1);
-    }
-}
