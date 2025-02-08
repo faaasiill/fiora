@@ -4,6 +4,7 @@ const adminController = require("../controllers/admin/adminController");
 const customerController = require("../controllers/admin/customerController");
 const categoryController = require("../controllers/admin/categoryController");
 const productController = require("../controllers/admin/productController");
+const uploads = require("../middlewares/multerConfig");
 const { adminAuth } = require("../middlewares/auth");
 
 
@@ -27,6 +28,12 @@ router.get("/unlistCategory", adminAuth, categoryController.getUnlistCategory);
 router.get("/editCategory/:id", adminAuth, categoryController.getEditCategory);
 router.post("/editCategory/:id", adminAuth, categoryController.editCategory);
 // product management
-router.get("/addProducts", adminAuth, productController.getProductAddPage);
-
+router.get("/addProducts",adminAuth,productController.getProductAddPage);
+router.post("/addProducts", adminAuth, uploads.fields([
+    { name: 'productImage1', maxCount: 1 },
+    { name: 'productImage2', maxCount: 1 },
+    { name: 'productImage3', maxCount: 1 },
+    { name: 'productImage4', maxCount: 1 }
+]), productController.addProducts);
+router.get("/products", adminAuth, productController.getAllProducts);
 module.exports = router;
