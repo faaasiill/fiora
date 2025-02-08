@@ -36,4 +36,9 @@ router.post("/addProducts", adminAuth, uploads.fields([
     { name: 'productImage4', maxCount: 1 }
 ]), productController.addProducts);
 router.get("/products", adminAuth, productController.getAllProducts);
+router.post("/addProductOffer", adminAuth, productController.addProductOffer);
+router.post("/removeProductOffer", adminAuth, productController.removeProductOffer);
+
+
+
 module.exports = router;
