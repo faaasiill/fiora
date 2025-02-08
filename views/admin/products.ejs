@@ -97,6 +97,9 @@
         .btn-info {
             background-color: var(--primary-color);
             border: none;
+            border-radius: 5px;
+            font-size: 12px;
+            padding: 7px 13px;
         }
         
         .btn-info:hover {
@@ -106,6 +109,7 @@
         
         .btn-danger, .btn-success {
             border: none;
+            font-size: 12px;
         }
         
         .btn a {
@@ -148,12 +152,11 @@
         .pagination-container .current-page {
             background-color: var(--primary-color);
             color: var(--white);
-            padding: 0.8rem 1.2rem;
-            border-radius: 25px;
+            padding:  10px 5px;
+            border-radius: 3px;
             min-width: 45px;
             text-align: center;
             font-weight: 600;
-            box-shadow: 0 4px 6px rgba(110, 11, 33, 0.2);
         }
         
         /* Previous/Next buttons */
@@ -249,13 +252,18 @@
                 </td>
                 <td><%= data[i].quantity %></td>
                 <td>
+
+
                     <div class="action-buttons">
+                        <% if (data[i].isBlocked === false) { %>
                         <button class="btn btn-danger">
-                            <a href="#" class="text-white">Block</a>
+                            <a href="/admin/blockProduct?id=<%= data[i]._id %>" class="text-white">Block</a>
                         </button>
+                        <% } else { %>
                         <button class="btn btn-success">
-                            <a href="#" class="text-white">Unblock</a>
+                            <a href="/admin/unblockProduct?id=<%= data[i]._id %>" class="text-white">Unblock</a>
                         </button>
+                        <% } %>
                     </div>
                 </td>
                 <td>

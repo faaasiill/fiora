@@ -50,6 +50,7 @@ const addProducts = async (req, res) => {
         salePrice: products.salePrice,
         createdOn: new Date(),
         color: products.color,
+        quantity: products.quantity,
         productImage: images,
         status: "Available",
       });
@@ -160,10 +161,42 @@ const removeProductOffer = async (req, res) => {
 }
 
 
+const blockProduct = async (req, res) => {
+    try {
+
+        let id = req.query.id;
+        console.log(id);
+        await Product.updateOne({_id: id}, {$set:{isBlocked:true}});
+        res.redirect("/admin/products");
+        
+    } catch (error) {
+        console.log("issue while blocking", error);
+        res.redirect("/pageerror");
+        
+    }
+}
+
+
+const unblockProduct = async (req, res) => {
+    try {
+
+        const id = req.query.id;
+        await Product.updateOne({_id: id}, {$set:{isBlocked:false}});
+        res.redirect("/admin/products");
+        
+    } catch (error) {
+        console.log("issue while unblocking");
+        res.redirect("/pageerror");
+        
+    }
+}
+
 module.exports = {
   getProductAddPage,
   addProducts,
   getAllProducts,
   addProductOffer,
-  removeProductOffer
+  removeProductOffer,
+  blockProduct,
+  unblockProduct
 };
