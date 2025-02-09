@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 
 const pageerror = async (req, res) => {
   try {
-    res.status(500).render("admin-error");
+    res.render("admin-error");
   } catch (error) {
     console.error("Error Page Error:", error);
     res.status(500).send("Internal Server Error");
