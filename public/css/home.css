@@ -750,3 +750,35 @@ footer {
 .socialmedialogo{
   height: 20px;
 }
+
+/* for wishlist */
+
+.product-card .wishlist-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(220, 19, 19, 0);
+  border: none;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.product-card .wishlist-btn:hover {
+  transform: scale(1.1);
+}
+
+.product-card .wishlist-btn .material-symbols-outlined {
+  color: #000000;
+  transition: all 0.3s ease;
+}
+
+.product-card .wishlist-btn.active .material-symbols-outlined {
+  color: red;
+  font-variation-settings: 'FILL' 1;
+}

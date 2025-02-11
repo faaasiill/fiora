@@ -1,4 +1,6 @@
 const User = require("../../models/userSchema");
+const Product = require("../../models/productSchema");
+const Category = require("../../models/categorySchema");
 const env = require("dotenv").config();
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
@@ -15,21 +17,33 @@ const loadSignup = async (req, res) => {
 
 const loadHomepage = async (req, res) => {
   try {
-    console.log("Session User at Home Route:", req.session.user);
-    console.log("google ", req.session);
     let userData = null;
+    const categories = await Category.find({isListed: true});
+    let productData = await Product.find({
+      isBlocked: false, 
+      category: {$in: categories.map(category => category._id)}, 
+      quantity: {$gt: 0}
+    });
+
+    // Sort and limit products
+    productData.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn));
+    productData = productData.slice(0, 4);
 
     if (req.session.user) {
       const userId = new mongoose.Types.ObjectId(req.session.user);
       userData = await User.findById(userId).lean();
 
-      if (!userData) {
+      if (userData) {
+        return res.render("home", { user: userData, products: productData });
+      } else {
         console.log("User not found in database!");
         req.session.user = null;
       }
     }
+    
+    // Add this default return
+    return res.render("home", { products: productData });
 
-    res.render("home", { user: userData });
   } catch (error) {
     console.log("Error rendering home page:", error.message);
     res.status(500).send("Server Error");

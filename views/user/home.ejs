@@ -7,10 +7,10 @@
       </div>
     </div>
 
-    <!-- Best Sellers Section -->
+    <!-- NEW PRODUCTS Section -->
     <div class="best-sellers-container">
-      <h1 class="best-sellers-title">BEST SELLERS</h1>
-      <a href="#" class="view-all-link">view all</a>
+      <h1 class="best-sellers-title">NEW PRODUCTS</h1>
+      <a href="/products " class="view-all-link">view all</a>
       <div class="best-sellers-slider">
         <!-- Navigation arrows for slider -->
         <button class="arrow left-arrow">
@@ -18,41 +18,25 @@
         </button>
         <div class="best-sellers-grid">
           <!-- Product cards -->
-          <div class="product-card">
-            <img src="/images/pr1.jpg" alt="Creamy Shoulder Bag" class="product-image">
-            <h3 class="product-name">CREAMY SHOULDER BAG</h3>
-            <p class="product-price">₹4999 <span class="original-price">₹5999</span></p>
-          </div>
-          <div class="product-card">
-            <img src="/images/pr2.jpg" alt="Elegant Sling Bag" class="product-image">
-            <h3 class="product-name">ELEGANT SLING BAG</h3>
-            <p class="product-price">₹4299 <span class="original-price">₹5299</span></p>
-          </div>
-          <!-- Additional product cards -->
-          <div class="product-card">
-            <img src="/images/pr3.jpg" alt="Stylish Backpack" class="product-image">
-            <h3 class="product-name">STYLISH BACKPACK</h3>
-            <p class="product-price">₹4599 <span class="original-price">₹5599</span></p>
-          </div>
-          <div class="product-card">
-            <img src="/images/pr4.jpg" alt="Classic Tote Bag" class="product-image">
-            <h3 class="product-name">CLASSIC TOTE BAG</h3>
-            <p class="product-price">₹4999 <span class="original-price">₹5999</span></p>
-          </div>
-          <div class="product-card">
-            <img src="/images/pr5.jpg" alt="Chic Clutch" class="product-image">
-            <h3 class="product-name">CHIC CLUTCH</h3>
-            <p class="product-price">₹2999 <span class="original-price">₹3999</span></p>
-          </div>
-          <div class="product-card">
-            <img src="/images/pr6.jpg" alt="Modern Hobo Bag" class="product-image">
-            <h3 class="product-name">MODERN HOBO BAG</h3>
-            <p class="product-price">₹3799 <span class="original-price">₹4799</span></p>
-          </div>
-          <div class="product-card">
-            <img src="/images/pr7.webp" alt="Trendy Crossbody Bag" class="product-image">
-            <h3 class="product-name">TRENDY CROSSBODY BAG</h3>
-            <p class="product-price">₹4199 <span class="original-price">₹5199</span></p>
+          <div class="best-sellers-grid">
+            <% for( let i = 0; i < products.length; i++ ) { %>
+              <div class="product-card">
+                <div style="position: relative;">
+                  <a href="/productDetails?id=<% products[i]._id %>">
+                    <img src="/uploads/product-images/<%=products[i].productImage[0]%>" alt="<%= products[i].productName %>" class="product-image">
+                  </a>
+                  <button class="wishlist-btn" onclick="toggleWishlist('<%= products[i]._id %>')">
+                    <a href="/addToWishlist?id=<% products[i]._id %>"><span class="material-symbols-outlined">favorite</span></a>
+                  </button>
+                </div>
+                <h3 class="product-name"><%= products[i].productName %></h3>
+                <p class="product-price">₹<%= products[i].salePrice %> 
+                  <% if (products[i].regularPrice) { %>
+                    <span class="original-price">₹<%= products[i].regularPrice %></span>
+                  <% } %>
+                </p>
+              </div>
+            <% } %>
           </div>
         </div>
         <button class="arrow right-arrow">
