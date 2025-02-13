@@ -1,9 +1,6 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-
-
-
 const productSchema = new Schema({
     productName: {
         type: String,
@@ -32,7 +29,7 @@ const productSchema = new Schema({
     },
     quantity: {
         type: Number,
-        default: true
+        default: 0
     },
     color: {
         type: String,
@@ -48,11 +45,11 @@ const productSchema = new Schema({
     },
     status: {
         type: String,
-        enum: ["Available", "out of stock", "Discountinued"],
+        enum: ["Available", "Out of Stock", "Discontinued"], 
         required: true,
         default: "Available"
     },
-},{timestamps: true});
+}, { timestamps: true });
 
 const Product = mongoose.model("Product", productSchema);
 

@@ -219,61 +219,54 @@
             </tr>
         </thead>
         <tbody>
-
-            <% for( let i = data.length-1; i >=0; i-- ) { %>
-
-            <tr>
+            <% for (let i = 0; i < data.length; i++) { %>
+              <tr>
                 <td><%= data[i].productName %></td>
                 <td><%= data[i].category.name %></td>
                 <td><%= data[i].salePrice %></td>
                 <td>
-
-                    <% if (locals.data[i].productOffer) { %>
-                        <%= data[i].productOffer %>
-                     
-                    <% }else{ %>
-                        0%
-                        <% } %>
-
+                  <% if (data[i].productOffer) { %>
+                    <%= data[i].productOffer %>
+                  <% } else { %>
+                    0%
+                  <% } %>
                 </td>
                 <td>
-
-                    <div class="action-buttons">
-                        <% if (locals.data[i].productOffer===0) { %>
-                        <button class="btn btn-info" onclick="addOffer('<%= data[i]._id%>')">
-                            <a href="#" class="text-white">Add Offer</a>
-                            <% }else{ %>
-                        </button>
-                        <button class="btn btn-info" onclick="removeOffer('<%=data[i]._id%>')">
-                            <a href="#" class="text-white">Remove</a>
-                        </button>
-                        <% } %>
-                    </div>
+                  <div class="action-buttons">
+                    <% if (data[i].productOffer === 0) { %>
+                      <button class="btn btn-info">
+                        <a href="#" class="text-white" onclick="addOffer('<%= data[i]._id %>')">Add Offer</a>
+                      </button>
+                    <% } else { %>
+                      <button class="btn btn-info">
+                        <a href="#" class="text-white" onclick="removeOffer('<%= data[i]._id %>')">Remove</a>
+                      </button>
+                    <% } %>
+                  </div>
                 </td>
                 <td><%= data[i].quantity %></td>
                 <td>
-
-
-                    <div class="action-buttons">
-                        <% if (data[i].isBlocked === false) { %>
-                        <button class="btn btn-danger">
-                            <a href="/admin/blockProduct?id=<%= data[i]._id %>" class="text-white">Block</a>
-                        </button>
-                        <% } else { %>
-                        <button class="btn btn-success">
-                            <a href="/admin/unblockProduct?id=<%= data[i]._id %>" class="text-white">Unblock</a>
-                        </button>
-                        <% } %>
-                    </div>
+                  <div class="action-buttons">
+                    <% if (!data[i].isBlocked) { %>
+                      <button class="btn btn-danger">
+                        <a href="/admin/blockProduct?id=<%= data[i]._id %>" class="text-white">Block</a>
+                      </button>
+                    <% } else { %>
+                      <button class="btn btn-success">
+                        <a href="/admin/unblockProduct?id=<%= data[i]._id %>" class="text-white">Unblock</a>
+                      </button>
+                    <% } %>
+                  </div>
                 </td>
                 <td>
-                    <button class="btn btn-info">
-                        <a href="/admin/editProduct?id=<%= data[i]._id %>" class="text-white">Edit</a>
-                    </button>
+                  <button class="btn btn-info">
+                    <a href="/admin/editProduct?id=<%= data[i]._id %>" class="text-white">Edit</a>
+                  </button>
                 </td>
-            </tr>
+              </tr>
             <% } %>
-        </tbody>
+          </tbody>
+          
     </table>
 </div>
 

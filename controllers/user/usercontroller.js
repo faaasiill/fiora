@@ -18,17 +18,19 @@ const loadSignup = async (req, res) => {
 const loadHomepage = async (req, res) => {
   try {
     let userData = null;
-    const categories = await Category.find({isListed: true});
+    const categories = await Category.find({ isListed: true });
+
+    // Fetch products directly sorted and limited
     let productData = await Product.find({
       isBlocked: false, 
-      category: {$in: categories.map(category => category._id)}, 
-      quantity: {$gt: 0}
-    });
+      category: { $in: categories.map(category => category._id) }, 
+      quantity: { $gt: 0 }
+    })
+    .sort({ createdAt: -1 }) // Ensure newest products appear first
+    .limit(4) // Fetch only 4 latest products
+    .lean(); // Convert to plain JavaScript objects
 
-    const isLogin = req.session.user
-    // Sort and limit products
-    productData.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn));
-    productData = productData.slice(0, 4);
+    const isLogin = req.session.user;
 
     if (req.session.user) {
       const userId = new mongoose.Types.ObjectId(req.session.user);
@@ -41,8 +43,8 @@ const loadHomepage = async (req, res) => {
         req.session.user = null;
       }
     }
-    
-    // Add this default return
+
+    // Default render
     return res.render("home", { products: productData, isLogin });
 
   } catch (error) {
@@ -50,6 +52,7 @@ const loadHomepage = async (req, res) => {
     res.status(500).send("Server Error");
   }
 };
+
 
 const pageNotFound = async (req, res) => {
   try {

@@ -1,6 +1,7 @@
 const Product = require("../../models/productSchema");
 const Category = require("../../models/categorySchema");
 const User = require("../../models/userSchema");
+const cloudinary = require("../../config/cloudinaryConfig");
 const fs = require("fs");
 const path = require("path");
 const sharp = require("sharp");
@@ -19,51 +20,49 @@ const getProductAddPage = async (req, res) => {
 const addProducts = async (req, res) => {
   try {
     const products = req.body;
-    const productExists = await Product.findOne({
+
+
+    const productExists = await Product.findOne({ productName: products.productName });
+
+    if (productExists) {
+      return res.status(400).json({
+        message: "Product already exists, please try with another name.",
+      });
+    }
+
+    const images = [];
+
+    
+    for (let i = 1; i <= 4; i++) {
+      const fieldName = `productImage${i}`;
+      if (req.files && req.files[fieldName] && req.files[fieldName][0]) {
+        const file = req.files[fieldName][0];
+        images.push(file.path); 
+      }
+    }
+
+    if (images.length === 0) {
+      return res.status(400).json({ message: "At least one image is required." });
+    }
+
+
+    const newProduct = new Product({
       productName: products.productName,
+      description: products.description,
+      category: products.category,
+      regularPrice: products.regularPrice,
+      salePrice: products.salePrice,
+      createdOn: new Date(),
+      color: products.color,
+      quantity: products.quantity,
+      productImage: images, 
+      status: "Available",
     });
 
-    if (!productExists) {
-      const images = [];
+    await newProduct.save();
 
-      for (let i = 1; i <= 4; i++) {
-        const fieldName = `productImage${i}`;
-        if (req.files && req.files[fieldName] && req.files[fieldName][0]) {
-          const file = req.files[fieldName][0];
-          images.push(file.filename);
-        }
-      }
-
-      if (images.length === 0) {
-        return res
-          .status(400)
-          .json({ message: "At least one image is required." });
-      }
-
-      const categoryId = products.category;
-
-      const newProduct = new Product({
-        productName: products.productName,
-        description: products.description,
-        category: categoryId,
-        regularPrice: products.regularPrice,
-        salePrice: products.salePrice,
-        createdOn: new Date(),
-        color: products.color,
-        quantity: products.quantity,
-        productImage: images,
-        status: "Available",
-      });
-
-      await newProduct.save();
-      res.redirect("/admin/addProducts");
-    } else {
-      res
-        .status(400)
-        .json({
-          message: "Product already exists, please try with another name.",
-        });
-    }
+    console.log("Product added successfully:", newProduct);
+    res.redirect("/admin/addProducts");
   } catch (error) {
     console.error("Error adding product:", error);
     res.redirect("/admin/pageerror");
@@ -71,47 +70,48 @@ const addProducts = async (req, res) => {
 };
 
 const getAllProducts = async (req, res) => {
+  try {
+      const search = req.query.search || "";
+      const page = Number(req.query.page) || 1;
+      const limit = 4;
 
-    try {
+      // Run all queries in parallel
+      const [productData, count, category] = await Promise.all([
+          Product.find({
+              productName: { $regex: new RegExp(".*" + search + ".*", "i") }
+          })
+          .sort({ _id: -1 }) // Sort by newest added first (Fix)
+          .limit(limit)
+          .skip((page - 1) * limit)
+          .populate("category")
+          .exec(),
 
-        const search = req.query.search || "";
-        const page = req.query.page || 1;
-        const limit = 4;
+          Product.countDocuments({
+              productName: { $regex: new RegExp(".*" + search + ".*", "i") }
+          }),
 
-        const productData = await Product.find({
-            $or: [
-                { productName: { $regex: new RegExp(".*"+search+".*","i")}},
-            ],
-        }).limit(limit*1).skip((page-1)*limit).populate('category').exec();
+          Category.find({ isListed: true })
+      ]);
 
-        const count = await Product.find({
-            $or: [
-                {productName:{$regex: new RegExp(".*"+search+".*","i")}}
-            ],
-        }).countDocuments();
-
-
-        const category = await Category.find({isListed: true});
-
-        if(category){
-            res.render('products', {
-                data:productData,
-                currentPage:page,
-                totalPages:Math.ceil(count/limit),
-                cat:category
-        })
-    } else {
-        res.render("page-404");
-    }
+      if (category.length > 0) {
+          res.render("products", {
+              data: productData,
+              currentPage: page,
+              totalPages: Math.ceil(count / limit),
+              cat: category
+          });
+      } else {
+          res.render("page-404");
+      }
+  } catch (error) {
+      console.error("Error fetching products:", error);
+      res.redirect("/pageerror");
+  }
+};
 
 
-    } catch (error) {
 
-        res.redirect("/pageerror");
-        
-    }
-    
-}
+
 
 
 const addProductOffer = async (req, res) => {
@@ -223,13 +223,11 @@ const editProduct = async (req, res) => {
   try {
     const id = req.params.id;
     const data = req.body;
-    const uploadDir = ensureUploadDirectory();
 
-    const category = await Category.findOne({ name: data.category }); // Assuming you have a Category model
+    const category = await Category.findOne({ name: data.category });
     if (!category) {
       return res.status(400).json({ error: "Invalid category" });
     }
-
 
     const product = await Product.findById(id);
     if (!product) {
@@ -238,12 +236,12 @@ const editProduct = async (req, res) => {
 
     const existingProduct = await Product.findOne({
       productName: data.productName,
-      _id: { $ne: id }
+      _id: { $ne: id },
     });
-    
+
     if (existingProduct) {
       return res.status(400).json({
-        error: "Product name already exists, please choose another name"
+        error: "Product name already exists, please choose another name",
       });
     }
 
@@ -251,19 +249,14 @@ const editProduct = async (req, res) => {
     const images = [];
     if (req.files && req.files.length > 0) {
       for (const file of req.files) {
-        // Since we're using disk storage, the file is already saved
-        // We just need to store the filename
-        images.push(file.filename);
+        images.push(file.path); // Save Cloudinary URL instead of filename
       }
     }
-
-
-        
 
     const updateFields = {
       productName: data.productName,
       description: data.descriptionData,
-      category: category._id,  // Use the category ID instead of name
+      category: category._id,
       regularPrice: data.regularPrice,
       salePrice: data.salePrice,
       quantity: data.quantity,
@@ -271,21 +264,24 @@ const editProduct = async (req, res) => {
     };
 
     if (images.length > 0) {
-      updateFields.$push = { productImage: { $each: images } };
+      updateFields.$push = { productImage: { $each: images } }; // Store URLs
     }
 
-    await Product.findByIdAndUpdate(
-      id,
-      updateFields,
-      { new: true, runValidators: true }
-    );
+    await Product.findByIdAndUpdate(id, updateFields, {
+      new: true,
+      runValidators: true,
+    });
 
     res.redirect("/admin/products");
   } catch (error) {
-    console.error('Error in editProduct:', error);
+    console.error("Error in editProduct:", error);
     res.status(500).json({ error: error.message });
   }
 };
+
+
+
+
 
 const deleteSingleImage = async (req, res) => {
   try {
@@ -294,7 +290,7 @@ const deleteSingleImage = async (req, res) => {
     if (!imageNameToServer || !productIdToServer) {
       return res.status(400).json({
         status: false,
-        message: 'Image name and product ID are required'
+        message: "Image URL and product ID are required",
       });
     }
 
@@ -307,32 +303,39 @@ const deleteSingleImage = async (req, res) => {
     if (!product) {
       return res.status(404).json({
         status: false,
-        message: 'Product not found'
+        message: "Product not found",
       });
     }
 
-    // Delete physical file from the correct directory
-    const imagePath = path.join(process.cwd(), 'public', 'uploads', 'product-images', imageNameToServer);
-    
-    try {
-      await fs.promises.access(imagePath);
-      await fs.promises.unlink(imagePath);
-      console.log(`Image ${imageNameToServer} deleted successfully`);
-    } catch (err) {
-      console.log(`Image file ${imageNameToServer} not found in filesystem`);
-    }
+    // Extract public_id from Cloudinary URL to delete the image
+    const publicId = imageNameToServer.split("/").pop().split(".")[0]; // Extract public_id
+    const folder = "product-images"; // Cloudinary folder name
+    const cloudinaryImageId = `${folder}/${publicId}`;
 
-    res.json({
-      status: true,
-      message: 'Image deleted successfully'
+    // Delete the image from Cloudinary
+    cloudinary.uploader.destroy(cloudinaryImageId, (error, result) => {
+      if (error) {
+        console.error("Error deleting image from Cloudinary:", error);
+        return res.status(500).json({
+          status: false,
+          message: "Failed to delete image from Cloudinary",
+          error: error.message,
+        });
+      }
+
+      console.log(`Image deleted from Cloudinary: ${cloudinaryImageId}`);
+
+      res.json({
+        status: true,
+        message: "Image deleted successfully",
+      });
     });
-
   } catch (error) {
-    console.error('Error in deleteSingleImage:', error);
+    console.error("Error in deleteSingleImage:", error);
     res.status(500).json({
       status: false,
-      message: 'Error deleting image',
-      error: error.message
+      message: "Error deleting image",
+      error: error.message,
     });
   }
 };

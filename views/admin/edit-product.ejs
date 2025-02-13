@@ -100,12 +100,13 @@
                                             <% product.productImage.forEach((image, index) => { %>
                                                 <div class="image-item" data-image="<%= image %>">
                                                     <input type="hidden" name="existingImages[]" value="<%= image %>">
-                                                    <img src="/uploads/product-images/<%= image %>" alt="Product image" onerror="this.src='/images/placeholder.jpg'">
+                                                    <img src="<%= image %>" alt="Product image" onerror="this.src='/images/placeholder.jpg'">
                                                     <button type="button" class="delete-btn" onclick="deleteImage('<%= image %>', '<%= product._id %>', this)">×</button>
                                                 </div>
                                             <% }); %>
                                         <% } %>
                                     </div>
+                                    
                             
                                     <!-- New Image Upload -->
                                     <div class="card-body">
