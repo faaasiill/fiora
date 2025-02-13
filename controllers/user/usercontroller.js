@@ -1,6 +1,7 @@
 const User = require("../../models/userSchema");
 const Product = require("../../models/productSchema");
 const Category = require("../../models/categorySchema");
+const Banner = require("../../models/BannerSchema");
 const env = require("dotenv").config();
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
@@ -17,18 +18,24 @@ const loadSignup = async (req, res) => {
 
 const loadHomepage = async (req, res) => {
   try {
+    const today = new Date().toISOString();
+    const findBanner = await Banner.find({
+      startDate: {$lt: new Date(today)},
+      endDate: {$gt: new Date(today)},
+      page: 'home'
+    });
     let userData = null;
     const categories = await Category.find({ isListed: true });
 
-    // Fetch products directly sorted and limited
+
     let productData = await Product.find({
       isBlocked: false, 
       category: { $in: categories.map(category => category._id) }, 
       quantity: { $gt: 0 }
     })
-    .sort({ createdAt: -1 }) // Ensure newest products appear first
-    .limit(4) // Fetch only 4 latest products
-    .lean(); // Convert to plain JavaScript objects
+    .sort({ createdAt: -1 }) 
+    .limit(4) 
+    .lean();
 
     const isLogin = req.session.user;
 
@@ -37,7 +44,7 @@ const loadHomepage = async (req, res) => {
       userData = await User.findById(userId).lean();
 
       if (userData) {
-        return res.render("home", { user: userData, products: productData });
+        return res.render("home", { user: userData, products: productData , banner:findBanner || ""});
       } else {
         console.log("User not found in database!");
         req.session.user = null;
@@ -45,7 +52,7 @@ const loadHomepage = async (req, res) => {
     }
 
     // Default render
-    return res.render("home", { products: productData, isLogin });
+    return res.render("home", { products: productData, isLogin , banner:findBanner || ""});
 
   } catch (error) {
     console.log("Error rendering home page:", error.message);

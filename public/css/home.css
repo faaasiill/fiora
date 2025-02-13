@@ -7,7 +7,7 @@
 }
 
 .container{
-    background-image: url(/images/pixelcut-export\ \(1\).jpeg);
+    /* background-image: url("<%= banner[0]?.image %>"); */
     background-size: cover;
     background-position: center;
     height: 100vh;

@@ -17,6 +17,11 @@ const bannerSchema = new Schema({
     link: {
         type: String,
     },
+    page: {
+        type: String,
+        required: true,
+        default: 'home'
+    },
     startDate: {
         type: Date,
         required: true

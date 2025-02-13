@@ -4,7 +4,9 @@ const adminController = require("../controllers/admin/adminController");
 const customerController = require("../controllers/admin/customerController");
 const categoryController = require("../controllers/admin/categoryController");
 const productController = require("../controllers/admin/productController");
+const bannerController = require("../controllers/admin/bannerController");
 const uploads = require("../middlewares/multerConfig");
+const upload = require("../middlewares/bannerMulter");
 const { adminAuth } = require("../middlewares/auth");
 
 
@@ -44,6 +46,12 @@ router.get("/unblockProduct", adminAuth, productController.unblockProduct);
 router.get("/editProduct", adminAuth, productController.getEditProduct);
 router.post("/editProduct/:id", adminAuth, uploads.array("images",4), productController.editProduct);
 router.post("/deleteImage", adminAuth, productController.deleteSingleImage);
+// Banner Management
+router.get("/banner", adminAuth, bannerController.getBannerPage);
+router.get("/addBanner", adminAuth, bannerController.getAddBannerPage);
+router.post("/banners/create", adminAuth, upload.single("bannerImage"), bannerController.postAddBanner);
+router.get("/deleteBanner", adminAuth, bannerController.deleteBanner);
+
 
 
 module.exports = router;
