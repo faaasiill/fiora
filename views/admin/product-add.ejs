@@ -232,7 +232,6 @@
     constructor(container, options = {}) {
         this.container = container;
         this.options = {
-            // Removed aspectRatio to allow free cropping
             viewMode: 2,
             guides: true,
             background: false,
@@ -241,10 +240,8 @@
             dragMode: 'move',
             responsive: true,
             restore: false,
-            // Set maximum dimensions for the cropper
             maxContainerWidth: 500,
             maxContainerHeight: 500,
-            // Remove fixed crop box dimensions to allow custom cropping
             cropBoxResizable: true,
             cropBoxMovable: true,
             toggleDragModeOnDblclick: true,
@@ -270,8 +267,8 @@
         const file = event.target.files[0];
         if (!file) return;
 
-        // Validate image size before processing
-        if (file.size > 5 * 1024 * 1024) { // 5MB limit
+
+        if (file.size > 5 * 1024 * 1024) { 
             alert('Image size should be less than 5MB');
             event.target.value = '';
             return;
@@ -289,13 +286,11 @@
 
         const reader = new FileReader();
         reader.onload = (e) => {
-            // Create new image element for cropper
             const img = document.createElement('img');
             img.src = e.target.result;
-            
-            // Pre-load image to get dimensions
+
+
             img.onload = () => {
-                // Calculate scaled dimensions while maintaining aspect ratio
                 const maxDim = 800;
                 let width = img.width;
                 let height = img.height;
@@ -312,8 +307,7 @@
                 
                 preview.innerHTML = '';
                 preview.appendChild(img);
-                
-                // Initialize cropper with calculated dimensions
+
                 this.cropper = new Cropper(img, {
                     ...this.options,
                     width: width,

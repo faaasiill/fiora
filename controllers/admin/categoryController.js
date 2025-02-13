@@ -36,23 +36,32 @@ const categoryInfo = async (req, res) => {
 };
 
 const addCategory = async (req, res) => {
-  const { name, description } = req.body;
+  const { name, description, offerPrice } = req.body;
 
   try {
-    const existingCategory = await Category.findOne({ name });
+    // Case-insensitive check using regex
+    const existingCategory = await Category.findOne({
+      name: { $regex: new RegExp(`^${name}$`, "i") }
+    });
+
     if (existingCategory) {
-      return res.status(400).json({ error: "Category already exists" });
+      return res.json({ success: false, message: "Category already exists" });
     }
+
     const newCategory = new Category({
       name,
       description,
+      categoryOffer: offerPrice,
     });
+
     await newCategory.save();
-    return res.json({ message: "Category added successfully" });
+    return res.json({ success: true, message: "Category added successfully" });
+
   } catch (error) {
-    return res.status(500).json({ error: "Failed to add category" });
+    return res.status(500).json({ success: false, message: "Failed to add category" });
   }
 };
+
 
 const addCategoryOffer = async (req, res) => {
   try {
@@ -127,6 +136,7 @@ const getListCategory = async (req, res) => {
   try {
     let id = req.query.id;
     await Category.updateOne({ _id: id }, { $set: { isListed: false } });
+    await Product.updateMany({ category: id}, { $set: { isBlocked: true } });
     res.redirect("/admin/category");
   } catch (error) {
     res.redirect("pageerror");
@@ -137,6 +147,7 @@ const getUnlistCategory = async (req, res) => {
   try {
     let id = req.query.id;
     await Category.updateOne({ _id: id }, { $set: { isListed: true } });
+    await Product.updateMany({ category: id}, { $set: { isBlocked: false }});
     res.redirect("/admin/category");
   } catch (error) {
     res.redirect("pageerror");

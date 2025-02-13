@@ -25,6 +25,7 @@ const loadHomepage = async (req, res) => {
       quantity: {$gt: 0}
     });
 
+    const isLogin = req.session.user
     // Sort and limit products
     productData.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn));
     productData = productData.slice(0, 4);
@@ -42,7 +43,7 @@ const loadHomepage = async (req, res) => {
     }
     
     // Add this default return
-    return res.render("home", { products: productData });
+    return res.render("home", { products: productData, isLogin });
 
   } catch (error) {
     console.log("Error rendering home page:", error.message);

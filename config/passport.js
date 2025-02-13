@@ -1,9 +1,10 @@
 const passport = require("passport");
-const FacebookStrategy = require("passport-facebook").Strategy;
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const FacebookStrategy = require("passport-facebook").Strategy;
 const User = require("../models/userSchema");
-const env = require("dotenv").config();
+require("dotenv").config();
 
+// Google Strategy
 passport.use(
   new GoogleStrategy(
     {
@@ -11,41 +12,27 @@ passport.use(
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: "/auth/google/callback",
     },
-
     async (accessToken, refreshToken, profile, done) => {
       try {
         let user = await User.findOne({ googleId: profile.id });
-        if (user) {
-          return done(null, user);
-        } else {
+
+        if (!user) {
           user = new User({
             name: profile.displayName,
             email: profile.emails[0].value,
             googleId: profile.id,
           });
+
           await user.save();
-          return done(null, user);
         }
+
+        return done(null, user);
       } catch (error) {
         return done(error, null);
       }
     }
   )
 );
-
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
-
-passport.deserializeUser((id, done) => {
-  User.findById(id)
-    .then((user) => {
-      done(null, user);
-    })
-    .catch((err) => {
-      done(err, null);
-    });
-});
 
 // Facebook Strategy
 passport.use(
@@ -59,17 +46,18 @@ passport.use(
     async (accessToken, refreshToken, profile, done) => {
       try {
         let user = await User.findOne({ facebookId: profile.id });
-        if (user) {
-          return done(null, user);
-        } else {
+
+        if (!user) {
           user = new User({
             name: profile.displayName,
             email: profile.emails ? profile.emails[0].value : "",
             facebookId: profile.id,
           });
+
           await user.save();
-          return done(null, user);
         }
+
+        return done(null, user);
       } catch (error) {
         return done(error, null);
       }
@@ -77,18 +65,31 @@ passport.use(
   )
 );
 
+// Serialize & Deserialize User
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
-passport.deserializeUser((id, done) => {
-  User.findById(id)
-    .then((user) => {
-      done(null, user);
-    })
-    .catch((err) => {
-      done(err, null);
-    });
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (error) {
+    done(error, null);
+  }
 });
 
-module.exports = passport;
+// Middleware to store user in req.session.user
+const sessionMiddleware = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    req.session.user = req.user; // Store user in session
+  }
+  next();
+};
+
+// ✅ Fix Export (Export `passport` Directly)
+// In your passport config file:
+module.exports = {
+  passport,
+  sessionMiddleware
+};

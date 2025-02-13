@@ -326,7 +326,7 @@ input{
                     <div class="row">
                         <!-- Create Category Form -->
                         <div class="col-md-4">
-                            <form method="post" action="/admin/addCategory" onsubmit="return handleFormSubmit(event)">
+                            <form id="addCatForm">
                                 <div class="mb-3">
                                     <label for="categoryName" class="form-label">Category Name</label>
                                     <input type="text" class="form-control" id="categoryName" name="name" required>
@@ -447,50 +447,45 @@ input{
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.js"></script>
 
     <script>
-        function handleFormSubmit(event) {
+        document.getElementById("addCatForm").addEventListener("submit", async function (event) {
             event.preventDefault();
 
             if (!validateForm()) {
                 return;
             }
 
-            const name = document.getElementsByName("name")[0].value;
+            const name = document.getElementById("categoryName").value;
             const description = document.getElementById("categoryDescription").value;
-
-            fetch('/admin/addCategory', {
-                method: 'POST',
-                headers: {
-                    'content-type': 'application/json'
-                },
-                body: JSON.stringify({ name, description })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(err => {
-                        throw new Error(err.error);
-                    });
-                }
-                return response.json();
-            })
-            .then(data => {
-                location.reload();
-            })
-            .catch(error => {
-                if (error.message == "Category alredy exist") {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops',
-                        text: "Category already exists"
-                    });
-                } else {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops",
-                        text: "An error occurred while adding the category"
-                    });
-                }
+            const offerPrice = document.getElementById("offerPrice").value;
+            console.log("details:",name);
+            try {
+            const response = await fetch("/admin/addCategory", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, description, offerPrice })
             });
+
+            const data = await response.json();
+            if (data.success) {
+                console.log("user data of cat:",data);
+                Swal.fire({ icon: "success", title: "Success", text: data.message })
+                    .then(() => {
+                        window.location.reload();
+                    });
+            } else {
+                console.log("user data of error:",data);
+                Swal.fire({ icon: "error", title: "Error", text: data.message });
+            }
+
+        } catch (error) {
+            Swal.fire({ icon: "error", title: "Error", text: "Something went wrong, try again." });
         }
+
+
+            
+        }
+        )
+            
 
         function validateForm() {
     clearErrorMessages();
