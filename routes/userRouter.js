@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/user/usercontroller");
 const profileController = require("../controllers/user/profileController");
+const productController = require("../controllers/user/productController");
 const passport = require("passport");
 
 router.get("/", userController.loadHomepage);
@@ -47,5 +48,7 @@ router.post("/verify-passForgot-otp", profileController.verifyForgotPassOtp);
 router.get("/reset-password", profileController.getResetPassPage);
 router.post("/resent-forgot-otp", profileController.resendOtp);
 router.post("/reset-password", profileController.postNewPassword);
+// product management
+router.get("/products", productController.loadProduct);
 
 module.exports = router;
