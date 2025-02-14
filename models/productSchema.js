@@ -43,6 +43,10 @@ const productSchema = new Schema({
         type: Boolean,
         default: false,
     },
+    viewCount: {
+        type: Number,
+        default: 0
+    },
     status: {
         type: String,
         enum: ["Available", "Out of Stock", "Discontinued"], 

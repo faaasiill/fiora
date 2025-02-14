@@ -50,5 +50,9 @@ router.post("/resent-forgot-otp", profileController.resendOtp);
 router.post("/reset-password", profileController.postNewPassword);
 // product management
 router.get("/products", productController.loadProduct);
+router.get("/api/products/load-more", productController.loadProduct);
+router.get('/api/products', productController.getProducts);
+router.get("/productDetails", productController.loadProductDetails);
+
 
 module.exports = router;

@@ -9,6 +9,10 @@ body {
     font-family: 'poppins',sans-serif;
     background-color: #f4f4f4;
   }
+  html {
+    scroll-behavior: smooth;
+  }
+  
 .container{
     background-image: url(/public/images/pixelcut-export\ \(5\).jpeg);
     background-size: cover;
@@ -573,4 +577,16 @@ h2 {
   font-size: 13px;
   cursor: pointer;
   margin-top: 20px;
+}
+
+.scroll-top-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 8px 15px;
+  background: #ffffffac;
+  border-radius: 50%;
+  color: rgb(0, 0, 0);
+  text-decoration: none;
+  display: none;
 }

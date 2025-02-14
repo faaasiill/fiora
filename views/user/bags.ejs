@@ -19,11 +19,12 @@
     <div class="container banner-slide" id="bannerContainer" style="background-image: url('<%= banner.length > 0 ? banner[0].image : [] %>');">
       <nav class="navbar">
         <!-- Logo -->
+         <a href="/">
         <img src="/images/Fiora1/1.png" class="logo" alt="Logo" />
-
+      </a>
         <!-- Navigation links -->
         <ul class="nav-links">
-          <li><a href="#home">Home</a></li>
+          <li><a href="/">Home</a></li>
           <li><a href="#about">About</a></li>
           <li><a href="#contact">Contact Us</a></li>
         </ul>
@@ -73,21 +74,37 @@
       </select>
       <select id="filter-category" onchange="filterProducts()">
         <option value="all">All Categories</option>
-        <option value="shoulder">Shoulder Bags</option>
-        <option value="hand">Hand Bags</option>
+        <% for (let i = 0; i < cat.length; i++) { %>
+          <option value="<%= cat[i]._id %>"><%= cat[i].name %></option>
+        <% } %>
       </select>
     </div>
 
     <!-- Product List -->
     <div class="product-card" onclick="openModal()">
       <!-- Product details here -->
-      <div class="product-container" id="product-container"></div>
-      <!-- Products will be loaded dynamically here -->
+      <div class="product-container" id="product-container">
+        <% products.forEach(product => { %>
+          <div class="product">
+            <a href="/productDetails?id=<%= product._id %>" style="text-decoration: none;">
+            <img src="<%= product.productImage[0] %>" alt="<%= product.productName %>">
+          </a>
+            <div class="wishlist-button"><span class="material-symbols-outlined">favorite</span></div>
+            <div class="product-name"><%= product.productName %></div>
+            <div class="product-price">
+              <span class="original-price">₹<%= product.regularPrice %></span> 
+              <span class="discount-price">₹<%= product.salePrice %></span>
+            </div>
+          </div>
+        <% }); %>
+      </div>
     </div>
 
     <!-- Load More Button -->
 
-    <button class="load-more" onclick="loadMore()">Load More</button>
+    <button class="load-more">Load More</button>
+
+
     <!-- Product Details Modal -->
     <div id="product-modal" class="product-modal">
       <div class="modal-content">
@@ -96,14 +113,14 @@
           <!-- Product Image Holder (on left side) -->
           <div class="product-image">
             <div class="image-slider">
-              <img src="/images/pr1.jpg" alt="Creamy Shoulder Bag 1" />
-              <img src="/images/pr2.jpg" alt="Creamy Shoulder Bag 2" />
-              <img src="/images/pr3.jpg" alt="Creamy Shoulder Bag 3" />
-            </div>
+              <button class="prev" onclick="changeImage(-1)">&#10094;</button>
+              <div class="slider-images"></div>
+              <button class="next" onclick="changeImage(1)">&#10095;</button>
+            </div>            
             <!-- Slider Navigation -->
             <button class="prev">&#10094;</button>
             <button class="next">&#10095;</button>
-          </div
+          </div>
           <!-- Product Info (on right side) -->
           <div class="product-info">
             <h2>CREAMY SHOULDER BAG</h2>
@@ -139,6 +156,7 @@
         </div>
       </div>
     </div>
+    <a href="#" id="scrollToTopBtn" class="scroll-top-btn">↑</a>
 
     <!-- footer -->
     <footer>
@@ -163,7 +181,7 @@
             <a href="#" aria-label="Facebook"
               ><img
                 class="socialmedialogo"
-                src="/images/logosg"
+                src="/images/logos/facebook.png"
                 alt="Facebook"
             /></a>
             <a href="#" aria-label="LinkedIn"
@@ -197,245 +215,211 @@
       <div class="footer-bottom">designed by @faaasiill</div>
     </footer>
     <script>
-      const allProducts = [
-        {
-          id: 1,
-          name: "Creamy Shoulder Bag",
-          price: "₹5999",
-          originalPrice: "₹7999",
-          category: "shoulder",
-          img: "/images/pr1.jpg",
-        },
-        {
-          id: 2,
-          name: "Slvgry Shoulder Bag",
-          price: "₹5999",
-          originalPrice: "₹7999",
-          category: "shoulder",
-          img: "/images/pr2.jpg",
-        },
-        {
-          id: 3,
-          name: "Blaky Hand Bag",
-          price: "₹3899",
-          originalPrice: "₹5999",
-          category: "hand",
-          img: "/images/pr3.jpg",
-        },
-        {
-          id: 4,
-          name: "Smoty Shoulder Bag",
-          price: "₹5999",
-          originalPrice: "₹7999",
-          category: "shoulder",
-          img: "/images/pr4.jpg",
-        },
-        {
-          id: 5,
-          name: "Creamy Shoulder Bag",
-          price: "₹5999",
-          originalPrice: "₹7999",
-          category: "shoulder",
-          img: "/images/pr5.jpg",
-        },
-        {
-          id: 6,
-          name: "Slvgry Shoulder Bag",
-          price: "₹5999",
-          originalPrice: "₹7999",
-          category: "shoulder",
-          img: "/images/pr6.jpg",
-        },
-        {
-          id: 7,
-          name: "Blaky Hand Bag",
-          price: "₹3899",
-          originalPrice: "₹5999",
-          category: "hand",
-          img: "/images/pr7.webp",
-        },
-        {
-          id: 8,
-          name: "Creamy Shoulder Bag",
-          price: "₹5999",
-          originalPrice: "₹7999",
-          category: "shoulder",
-          img: "/images/pr1.jpg",
-        },
-        {
-          id: 9,
-          name: "Slvgry Shoulder Bag",
-          price: "₹5999",
-          originalPrice: "₹7999",
-          category: "shoulder",
-          img: "/images/pr2.jpg",
-        },
-        {
-          id: 10,
-          name: "Blaky Hand Bag",
-          price: "₹3899",
-          originalPrice: "₹5999",
-          category: "hand",
-          img: "/images/pr3.jpg",
-        },
-        {
-          id: 11,
-          name: "Smoty Shoulder Bag",
-          price: "₹5999",
-          originalPrice: "₹7999",
-          category: "shoulder",
-          img: "/images/pr4.jpg",
-        },
-        {
-          id: 12,
-          name: "Creamy Shoulder Bag",
-          price: "₹5999",
-          originalPrice: "₹7999",
-          category: "shoulder",
-          img: "/images/pr5.jpg",
-        },
-        {
-          id: 13,
-          name: "Slvgry Shoulder Bag",
-          price: "₹5999",
-          originalPrice: "₹7999",
-          category: "shoulder",
-          img: "/images/pr6.jpg",
-        },
-        {
-          id: 14,
-          name: "Blaky Hand Bag",
-          price: "₹3899",
-          originalPrice: "₹5999",
-          category: "hand",
-          img: "/images/pr7.webp",
-        },
-        {
-          id: 15,
-          name: "Creamy Shoulder Bag",
-          price: "₹5999",
-          originalPrice: "₹7999",
-          category: "shoulder",
-          img: "/images/pr5.jpg",
-        },
-        {
-          id: 16,
-          name: "Slvgry Shoulder Bag",
-          price: "₹5999",
-          originalPrice: "₹7999",
-          category: "shoulder",
-          img: "/images/pr6.jpg",
-        },
-        {
-          id: 17,
-          name: "Blaky Hand Bag",
-          price: "₹3899",
-          originalPrice: "₹5999",
-          category: "hand",
-          img: "/images/pr7.webp",
-        },
-      ];
+      // Global variables to track state
+let currentSort = 'default';
+let currentCategory = 'all';
+let currentSearch = '';
+let currentPage = 1;
+const productsPerPage = 16;
 
-      let currentPage = 0;
-      const productsPerPage = 16;
+// Function to handle search
+function handleSearch() {
+  const searchInput = document.querySelector('.search-bar');
+  
+  // Debounce the search to avoid too many requests
+  let debounceTimer;
+  
+  searchInput.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(async () => {
+      currentSearch = searchInput.value.trim();
+      currentPage = 1; // Reset to first page on new search
+      await fetchProducts();
+    }, 300); // Wait 300ms after user stops typing
+  });
 
-      function loadMore() {
-        const start = currentPage * productsPerPage;
-        const end = start + productsPerPage;
-        const productsToLoad = allProducts.slice(start, end);
+  // Handle Enter key
+  searchInput.addEventListener('keypress', async (e) => {
+    if (e.key === 'Enter') {
+      currentSearch = searchInput.value.trim();
+      currentPage = 1;
+      await fetchProducts();
+    }
+  });
+}
 
-        const productContainer = document.getElementById("product-container");
-        productsToLoad.forEach((product) => {
-          const productElement = document.createElement("div");
-          productElement.classList.add("product");
+// Function to handle sorting
+async function sortProducts() {
+  const sortSelect = document.getElementById('sort-price');
+  currentSort = sortSelect.value;
+  currentPage = 1; // Reset to first page
+  await fetchProducts();
+}
 
-          productElement.innerHTML = `
-              <img src="${product.img}" alt="${product.name}">
-              <div class="wishlist-button"><span class="material-symbols-outlined">favorite</span></div>
-              <div class="product-name">${product.name}</div>
-              <div class="product-price">
-                <span class="original-price">${product.originalPrice}</span> 
-                <span class="discount-price">${product.price}</span>
-              </div>
-            `;
-          productContainer.appendChild(productElement);
-        });
+// Function to handle filtering
+async function filterProducts() {
+  const filterSelect = document.getElementById('filter-category');
+  currentCategory = filterSelect.value;
+  currentPage = 1; // Reset to first page
+  await fetchProducts();
+}
 
-        currentPage++;
-        if (currentPage * productsPerPage >= allProducts.length) {
-          document.querySelector(".load-more").style.display = "none"; // Hide button when all products are loaded
-        }
-      }
+// Unified function to fetch products with all parameters
+async function fetchProducts() {
+  try {
+    const queryParams = new URLSearchParams({
+      sort: currentSort,
+      category: currentCategory,
+      search: currentSearch,
+      page: currentPage,
+      limit: productsPerPage
+    });
 
-      // Initial load
-      loadMore();
+    const response = await fetch(`/api/products?${queryParams}`, {
+      headers: {
+        "Accept": "application/json",
+      },
+    });
 
-      // Placeholder functions for sorting and filtering (backend integration needed)
-      function sortProducts() {
-        console.log("Sorting...");
-      }
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
 
-      function filterProducts() {
-        console.log("Filtering...");
-      }
+    const data = await response.json();
+    
+    if (currentPage === 1) {
+      updateProductDisplay(data.products);
+    } else {
+      appendProducts(data.products);
+    }
+    
+    updateLoadMoreButton(data.hasMore);
+    
+    // Update URL with current filters (optional)
+    updateURL();
+    
+    // Show/hide no results message
+    toggleNoResultsMessage(data.products.length === 0);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    showErrorMessage("Failed to fetch products. Please try again.");
+  }
+}
 
-      //
+// Modified loadMore function
+async function loadMore() {
+  currentPage++;
+  await fetchProducts();
+}
 
-      // Get modal and close button
-      const modal = document.getElementById("product-modal");
-      const closeBtn = document.querySelector(".close-btn");
+// Helper function to update product display
+function updateProductDisplay(products) {
+  const productContainer = document.getElementById("product-container");
+  productContainer.innerHTML = ''; // Clear existing products
+  appendProducts(products);
+}
 
-      // Function to open the modal
-      function openModal() {
-        modal.style.display = "block";
-      }
+// Helper function to append products to container
+function appendProducts(products) {
+  const productContainer = document.getElementById("product-container");
+  
+  products.forEach(product => {
+    const productElement = document.createElement("div");
+    productElement.classList.add("product");
+    
+    productElement.innerHTML = `
+      <a href="/productDetails?id=${product._id}" style="text-decoration: none;">
+        <img src="${product.productImage[0]}" alt="${product.productName}">
+      </a>
+      <div class="wishlist-button"><span class="material-symbols-outlined">favorite</span></div>
+      <div class="product-name">${product.productName}</div>
+      <div class="product-price">
+        <span class="original-price">₹${product.regularPrice}</span> 
+        <span class="discount-price">₹${product.salePrice}</span>
+      </div>
+    `;
 
-      // Function to close the modal
-      function closeModal() {
-        modal.style.display = "none";
-      }
+    productContainer.appendChild(productElement);
+  });
+}
 
-      // Close the modal when clicking on the close button
-      closeBtn.onclick = closeModal;
+// Helper function to update Load More button visibility
+function updateLoadMoreButton(hasMore) {
+  const loadMoreButton = document.querySelector(".load-more");
+  if (loadMoreButton) {
+    loadMoreButton.style.display = hasMore ? "block" : "none";
+  }
+}
 
-      // Close the modal when clicking anywhere outside the modal content
-      window.onclick = function (event) {
-        if (event.target === modal) {
-          closeModal();
-        }
-      };
+// Helper function to toggle no results message
+function toggleNoResultsMessage(show) {
+  let messageElement = document.getElementById('no-results-message');
+  if (!messageElement) {
+    messageElement = document.createElement('div');
+    messageElement.id = 'no-results-message';
+    messageElement.className = 'no-results';
+    messageElement.textContent = 'No products found';
+    const productContainer = document.getElementById("product-container");
+    productContainer.parentNode.insertBefore(messageElement, productContainer);
+  }
+  messageElement.style.display = show ? 'block' : 'none';
+}
 
-      // Example: Trigger modal on product click
-      document.querySelector(".product-card").onclick = function () {
-        openModal();
-      };
-      const images = document.querySelectorAll(".image-slider img");
-      let currentIndex = 0;
+// Helper function to show error message
+function showErrorMessage(message) {
+  // You can implement this based on your UI needs
+  console.error(message);
+}
 
-      const showImage = (index) => {
-        images.forEach((img, i) => {
-          img.style.display = i === index ? "block" : "none";
-        });
-      };
+// Helper function to update URL with current filters (optional)
+function updateURL() {
+  const params = new URLSearchParams();
+  if (currentSort !== 'default') params.set('sort', currentSort);
+  if (currentCategory !== 'all') params.set('category', currentCategory);
+  if (currentSearch) params.set('search', currentSearch);
+  
+  const newURL = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
+  window.history.replaceState({}, '', newURL);
+}
 
-      document.querySelector(".next").addEventListener("click", () => {
-        currentIndex = (currentIndex + 1) % images.length;
-        showImage(currentIndex);
-      });
+// Event listeners
+document.addEventListener("DOMContentLoaded", () => {
+  const sortSelect = document.getElementById('sort-price');
+  const filterSelect = document.getElementById('filter-category');
+  const loadMoreButton = document.querySelector(".load-more");
 
-      document.querySelector(".prev").addEventListener("click", () => {
-        currentIndex = (currentIndex - 1 + images.length) % images.length;
-        showImage(currentIndex);
-      });
+  if (sortSelect) {
+    sortSelect.addEventListener("change", sortProducts);
+  }
 
-      // Initial image display
-      showImage(currentIndex);
-      const hamburger = document.getElementById("hamburger");
-      const mobileMenu = document.getElementById("mobile-menu");
+  if (filterSelect) {
+    filterSelect.addEventListener("change", filterProducts);
+  }
 
-      hamburger.addEventListener("click", () => {
-        mobileMenu.classList.toggle("show");
-      });
+  if (loadMoreButton) {
+    loadMoreButton.addEventListener("click", loadMore);
+  }
+
+  // Initialize search functionality
+  handleSearch();
+
+  // Load initial products
+  fetchProducts();
+
+
+
+
+
+  document.addEventListener("scroll", function () {
+  let scrollToTopBtn = document.getElementById("scrollToTopBtn");
+  if (window.scrollY > 300) {
+    scrollToTopBtn.style.display = "block";
+  } else {
+    scrollToTopBtn.style.display = "none";
+  }
+});
+
+});
     </script>
   </body>
 </html>

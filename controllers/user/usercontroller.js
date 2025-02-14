@@ -34,7 +34,7 @@ const loadHomepage = async (req, res) => {
       quantity: { $gt: 0 }
     })
     .sort({ createdAt: -1 }) 
-    .limit(10) 
+    .limit(7) 
     .lean();
 
     const isLogin = req.session.user;

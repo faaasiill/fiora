@@ -292,8 +292,8 @@
 }
 
 .product-image {
-  /* width: 100%; */
-  max-height: 300px;
+  width: 110%;
+  max-height: 400px;
   object-fit: cover;
   border-radius: 8px;
 }
@@ -461,6 +461,11 @@
     .arrow{
         height: 40px;
         width: 40px;
+    }
+    .product-image {
+      width: 100%;
+      max-height: 400px;
+      object-fit: cover;
     }
   }
   
@@ -756,7 +761,7 @@ footer {
 .product-card .wishlist-btn {
   position: absolute;
   top: 10px;
-  right: 10px;
+  right: -20px;
   background: rgba(220, 19, 19, 0);
   border: none;
   border-radius: 50%;
