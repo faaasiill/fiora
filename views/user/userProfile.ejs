@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,300,0,0" />    
+    <link rel="stylesheet" href="/css/profileDetails.css">      
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div class="menu-toggle">
+        <i class="fas fa-bars" style="color: white;"></i>
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+            <div class="profile-info">
+                <div class="profile-pic">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h3><%= user.name %></h3>
+                <p><%= user.email %></p>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item active" data-section="dashboard">
+                    <span class="material-symbols-outlined">home</span></i>Dashboard
+                </li>
+                <li class="nav-item" data-section="address">
+                    <span class="material-symbols-outlined">location_on</span>My Address
+                </li>
+                <li class="nav-item" data-section="orders">
+                    <span class="material-symbols-outlined">local_mall</span>Orders
+                </li>
+                <li class="nav-item" data-section="wallet">
+                    <span class="material-symbols-outlined">account_balance_wallet</span>Wallet Status
+                </li>
+                <li class="nav-item" data-section="history">
+                    <span class="material-symbols-outlined">history</span>Wallet History
+                </li>
+                <li class="nav-item" data-section="referrals">
+                    <span class="material-symbols-outlined">group_add</span>Referrals
+                </li>
+                <a style="text-decoration: none; cursor: pointer;" href="#" onclick="handleLogout(event)">
+                    <li class="nav-item" id="logout">
+                        <span class="material-symbols-outlined">logout</span> Logout
+                    </li>
+                </a>                
+            </ul>
+        </div>
+
+        <div class="main-content">
+            <div id="dashboard" class="content-section active">
+                <h2 class="section-title">Dashboard</h2>
+                <div class="dashboard-stats">
+                    <h3>Welcome back, <%= user.name %>!</h3>
+                    <p>Here's your account overview</p>
+                </div>
+                    
+                    <div class="dashboard-grid">
+                        <div class="profile-card">
+                            <h3 class="section-title">Profile Details</h3>
+                            <!-- form start -->
+                            <form method="post" action="/changeUserDetails" class="profile-form" id="profileForm">
+                                <div class="form-group">
+                                    <label for="username">Username</label>
+                                    <input type="text" id="username" name="name" value="<%= user.name %>" disabled>
+                                    <button type="button" class="edit-btn" data-field="username">
+                                        <span class="material-symbols-outlined">
+                                            edit
+                                            </span>
+                                    </button>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="email">Email Address</label>
+                                    <input type="email" id="email" name="email" value=<%= user.email %> disabled>
+                                    <button type="button" class="edit-btn" data-field="email">
+                                        <span class="material-symbols-outlined">
+                                            edit
+                                            </span>
+                                    </button>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="phone">Phone Number</label>
+                                    <input type="tel" id="phone" name="phone" value="<%= user.phone %>" disabled>
+                                    <button type="button" class="edit-btn" data-field="phone">
+                                        <span class="material-symbols-outlined">
+                                            edit
+                                            </span>
+                                    </button>
+                                </div>
+                                
+                                <div class="action-buttons">
+                                    <button type="submit" class="btn" id="saveProfileBtn" style="display: none;">
+                                        <span class="material-symbols-outlined">
+                                            save
+                                            </span> Save Changes
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" id="changePasswordBtn">
+                                        <i class="fas fa-lock"></i> Change Password
+                                    </button>
+                                </div>
+                            </form>
+<!-- form end  -->
+
+
+            
+                            <form class="password-change-form" id="passwordForm">
+                                <div class="form-group">
+                                    <label for="currentPassword">Current Password</label>
+                                    <input type="password" id="currentPassword" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="newPassword">New Password</label>
+                                    <input type="password" id="newPassword" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="confirmPassword">Confirm New Password</label>
+                                    <input type="password" id="confirmPassword" required>
+                                </div>
+                                
+                                <div class="action-buttons">
+                                    <button type="submit" class="btn">
+                                        <i class="fas fa-key"></i> Update Password
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" id="cancelPasswordBtn">
+                                        <i class="fas fa-times"></i> Cancel
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            
+
+                <div id="address" class="content-section">
+                    <h2 class="section-title">My Address</h2>
+                    
+                    <!-- Saved Addresses Section -->
+                    <div class="saved-addresses">
+                        <h3 class="sub-section-title">Saved Addresses</h3>
+                        <div class="address-cards">
+                            <% if(address && address.address) { %>
+                                <% address.address.forEach((addr, index) => { %>
+                                    <div class="address-card <%= addr.isDefault ? 'default-address' : '' %>" data-address-id="<%= addr._id %>">
+                                        <div class="address-type"><%= addr.addressType %></div>
+                                        <div class="address-details">
+                                            <p><%= addr.name %></p>
+                                            <p><%= addr.landMark %></p>
+                                            <p><%= addr.city %>, <%= addr.state %> <%= addr.pincode %></p>
+                                            <p>Phone: <%= addr.phone %></p>
+                                            <p>Alt Phone: <%= addr.altPhone %></p>
+                                        </div>
+                                        <div class="address-actions">
+                                            <button class="btn btn-delivery">
+                                                <span class="material-symbols-outlined">local_shipping</span> Use for Delivery
+                                            </button>
+                                            <button class="btn btn-edit-address">
+                                                <span class="material-symbols-outlined">edit</span> Edit
+                                            </button>
+                                            <button class="btn btn-delete">
+                                                <span class="material-symbols-outlined">delete</span> Delete
+                                            </button>
+                                        </div>
+                                    </div>
+                                <% }) %>
+                            <% } %>
+                        </div>
+                    </div>
+                
+                    <!-- Add/Edit Address Form -->
+                    <div class="address-form-container">
+                        <h3 class="sub-section-title" id="formTitle">Add New Address</h3>
+                        <form class="address-form" id="addressForm">
+                            <input type="hidden" id="addressId" name="addressId" value="">
+                            
+                            <div class="form-group">
+                                <label for="addressType">Address Type</label>
+                                <select id="addressType" name="addressType" class="form-input" required>
+                                    <option value="home">Home</option>
+                                    <option value="work">Work</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                
+                            <div class="form-group">
+                                <label for="name">Full Name</label>
+                                <input type="text" id="name" name="name" class="form-input" required>
+                            </div>
+                
+                            <div class="form-group">
+                                <label for="landMark">Landmark/Street Address</label>
+                                <input type="text" id="landMark" name="landMark" class="form-input" required>
+                            </div>
+                
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="city">City</label>
+                                    <input type="text" id="city" name="city" class="form-input" required>
+                                </div>
+                
+                                <div class="form-group">
+                                    <label for="state">State</label>
+                                    <input type="text" id="state" name="state" class="form-input" required>
+                                </div>
+                
+                                <div class="form-group">
+                                    <label for="pincode">PIN Code</label>
+                                    <input type="text" id="pincode" name="pincode" class="form-input" required>
+                                </div>
+                            </div>
+                
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="phone">Phone Number</label>
+                                    <input type="tel" id="phone" name="phone" class="form-input" required>
+                                </div>
+                
+                                <div class="form-group">
+                                    <label for="altPhone">Alternative Phone</label>
+                                    <input type="tel" id="altPhone" name="altPhone" class="form-input" required>
+                                </div>
+                            </div>
+                
+                            <div class="action-buttons">
+                                <button type="submit" class="btn" id="saveAddressBtn">
+                                    <span class="material-symbols-outlined">save</span> Save Address
+                                </button>
+                                <button type="button" class="btn btn-secondary" id="cancelEditBtn" style="display: none;">
+                                    <span class="material-symbols-outlined">close</span> Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                
+                
+
+            <div id="orders" class="content-section">
+                <h2 class="section-title">My Orders</h2>
+                <div class="order-card">
+                    <h3>Order #12345</h3>
+                    <p>Status: Delivered</p>
+                    <p>Date: 2024-02-14</p>
+                </div>
+            </div>
+
+            <div id="wallet" class="content-section">
+                <h2 class="section-title">Wallet Status</h2>
+                <div class="wallet-balance">
+                    <p>Current Balance</p>
+                    <div class="wallet-amount">$1,250.00</div>
+                </div>
+                <button class="btn">
+                    <i class="fas fa-plus"></i>Add Money
+                </button>
+            </div>
+
+            <div id="history" class="content-section">
+                <h2 class="section-title">Wallet History</h2>
+                <ul class="transaction-list">
+                    <li class="transaction-item">
+                        <span><i class="fas fa-plus-circle"></i> Added Money</span>
+                        <span style="color: #27ae60">+$500.00</span>
+                    </li>
+                    <li class="transaction-item">
+                        <span><i class="fas fa-minus-circle"></i> Purchase</span>
+                        <span style="color: #e74c3c">-$250.00</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div id="referrals" class="content-section">
+                <h2 class="section-title">Referrals</h2>
+                <div class="referral-code">
+                    <p>Your Referral Code:</p>
+                    <h3>USER123</h3>
+                </div>
+                <p>Total Referrals: 5</p>
+                <p>Earnings from Referrals: $50.00</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    const editButtons = document.querySelectorAll('.edit-btn');
+    const saveProfileBtn = document.getElementById('saveProfileBtn');
+    const profileForm = document.getElementById('profileForm');
+
+    let activeFields = new Set();
+
+    // Handle edit buttons
+    editButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const field = this.dataset.field;
+            const input = document.getElementById(field);
+            
+            if (input.disabled) {
+                input.disabled = false;
+                input.focus();
+                activeFields.add(field);
+                this.querySelector('.material-symbols-outlined').textContent = 'close';
+            } else {
+                input.disabled = true;
+                activeFields.delete(field);
+                this.querySelector('.material-symbols-outlined').textContent = 'edit';
+                input.value = input.defaultValue; // Reset value
+            }
+            
+            saveProfileBtn.style.display = activeFields.size > 0 ? 'block' : 'none';
+        });
+    });
+
+    // Handle profile form submission
+    profileForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Temporarily enable disabled fields for form submission
+        const inputs = profileForm.querySelectorAll('input[disabled]');
+        inputs.forEach(input => input.disabled = false);
+        
+        try {
+            const formData = new FormData(profileForm);
+            const response = await fetch('/changeUserDetails', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(Object.fromEntries(formData))
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                // Success: Disable inputs and reset edit buttons
+                editButtons.forEach(btn => {
+                    const field = btn.dataset.field;
+                    const input = document.getElementById(field);
+                    input.disabled = true;
+                    btn.querySelector('.material-symbols-outlined').textContent = 'edit';
+                    input.defaultValue = input.value; // Update default value
+                });
+
+                activeFields.clear();
+                saveProfileBtn.style.display = 'none';
+
+                // Show success alert
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Profile Updated!',
+                    text: result.success,
+                    confirmButtonColor: ''
+                }).then(() => {
+                    window.location.reload(); // Refresh page to show updated data
+                });
+
+            } else {
+                // Show specific error messages
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Update Failed',
+                    text: result.error,
+                    confirmButtonColor: ''
+                });
+            }
+        } catch (error) {
+            console.error('Error updating profile:', error);
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Update Failed',
+                text: 'Something went wrong. Please try again.',
+                confirmButtonColor: ''
+            });
+        } finally {
+            inputs.forEach(input => input.disabled = true);
+        }
+    });
+});
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const passwordForm = document.getElementById('passwordForm');
+    const changePasswordBtn = document.getElementById('changePasswordBtn');
+    const profileForm = document.querySelector('.profile-form');
+
+
+
+    const handlePasswordChange = async (currentPassword, newPassword) => {
+    try {
+        const response = await fetch('/changePassword', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                currentPassword,
+                newPassword
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Failed to change password');
+        }
+
+        return data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+    // Initially hide the password form
+    passwordForm.style.display = 'none';
+
+
+    passwordForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const currentPassword = document.getElementById('currentPassword').value;
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    // Client-side validation
+    if (!currentPassword || !newPassword || !confirmPassword) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Missing Fields',
+            text: 'Please fill in all password fields',
+            confirmButtonColor: '#6E0B21'
+        });
+        return;
+    }
+
+    if (newPassword !== confirmPassword) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Passwords Do Not Match',
+            text: 'New password and confirm password must match',
+            confirmButtonColor: '#6E0B21'
+        });
+        return;
+    }
+
+    if (newPassword.length < 8) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Password Too Short',
+            text: 'Password must be at least 8 characters long',
+            confirmButtonColor: '#6E0B21'
+        });
+        return;
+    }
+
+    try {
+        await handlePasswordChange(currentPassword, newPassword);
+        
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Password changed successfully',
+            confirmButtonColor: '#6E0B21'
+        }).then(() => {
+            // Reset form and return to profile view
+            passwordForm.reset();
+            passwordForm.style.display = 'none';
+            document.querySelector('.profile-form').style.display = 'block';
+        });
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error.message || 'Failed to change password',
+            confirmButtonColor: '#6E0B21'
+        });
+    }
+});
+
+
+    // Show OTP verification when clicking change password button
+    changePasswordBtn.addEventListener('click', async function() {
+        try {
+            // Get user's email from the profile form
+            const userEmail = document.getElementById('email').value;
+
+            // First request OTP
+            const response = await fetch('/changePassOtp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email: userEmail })
+            });
+
+            if (response.ok) {
+                // Show OTP verification dialog
+                Swal.fire({
+                    title: 'Enter OTP',
+                    text: 'Please enter the OTP sent to your email',
+                    input: 'text',
+                    inputAttributes: {
+                        autocapitalize: 'off',
+                        maxlength: 6
+                    },
+                    showCancelButton: true,
+                    confirmButtonText: 'Verify',
+                    confirmButtonColor: '#6E0B21',
+                    cancelButtonColor: '#6c757d',
+                    showLoaderOnConfirm: true,
+                    preConfirm: async (otp) => {
+                        try {
+                            const verifyResponse = await fetch('/verifyChangePassOtp', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ otp })
+                            });
+                            
+                            if (!verifyResponse.ok) {
+                                throw new Error('Invalid OTP');
+                            }
+                            
+                            return verifyResponse.json();
+                        } catch (error) {
+                            Swal.showValidationMessage(`Verification failed: ${error}`);
+                        }
+                    },
+                    allowOutsideClick: () => !Swal.isLoading()
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // If OTP is verified, show password change form
+                        profileForm.style.display = 'none';
+                        passwordForm.style.display = 'block';
+                        passwordForm.reset();
+                    }
+                });
+            } else {
+                throw new Error('Failed to send OTP');
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to initiate password change. Please try again.',
+                confirmButtonColor: '#6E0B21'
+            });
+        }
+    });
+
+    // Handle password form submission
+    passwordForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const currentPassword = document.getElementById('currentPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        // Validation
+        if (newPassword !== confirmPassword) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Passwords Do Not Match',
+                text: 'New password and confirm password must match.',
+                confirmButtonColor: '#6E0B21'
+            });
+            return;
+        }
+
+        if (newPassword.length < 8) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Password Too Short',
+                text: 'New password must be at least 8 characters long.',
+                confirmButtonColor: '#6E0B21'
+            });
+            return;
+        }
+
+        try {
+            const response = await fetch('/changePassword', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    currentPassword,
+                    newPassword,
+                    confirmPassword
+                })
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Password Updated!',
+                    text: 'Your password has been changed successfully.',
+                    confirmButtonColor: '#6E0B21'
+                }).then(() => {
+                    passwordForm.reset();
+                    passwordForm.style.display = 'none';
+                    profileForm.style.display = 'block';
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Update Failed',
+                    text: result.error || 'Failed to update password. Please try again.',
+                    confirmButtonColor: '#6E0B21'
+                });
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Update Failed',
+                text: 'Something went wrong. Please try again.',
+                confirmButtonColor: '#6E0B21'
+            });
+        }
+    });
+
+    // Add cancel button handler
+    document.getElementById('cancelPasswordBtn').addEventListener('click', function() {
+        passwordForm.style.display = 'none';
+        profileForm.style.display = 'block';
+        passwordForm.reset();
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const addressForm = document.getElementById('addressForm');
+    const formTitle = document.getElementById('formTitle');
+    const cancelEditBtn = document.getElementById('cancelEditBtn');
+    const addressIdInput = document.getElementById('addressId');
+
+    // Handle edit button clicks
+    document.querySelectorAll('.btn-edit-address').forEach(button => {
+        button.addEventListener('click', function() {
+            const addressCard = this.closest('.address-card');
+            const addressId = addressCard.dataset.addressId;
+            addressIdInput.value = addressId;
+
+            const addressDetails = {
+                type: addressCard.querySelector('.address-type').textContent,
+                name: addressCard.querySelector('.address-details p:nth-child(1)').textContent,
+                landmark: addressCard.querySelector('.address-details p:nth-child(2)').textContent,
+                cityStateZip: addressCard.querySelector('.address-details p:nth-child(3)').textContent,
+                phone: addressCard.querySelector('.address-details p:nth-child(4)').textContent.replace('Phone: ', ''),
+                altPhone: addressCard.querySelector('.address-details p:nth-child(5)').textContent.replace('Alt Phone: ', '')
+            };
+
+            // Populate form
+            document.getElementById('addressType').value = addressDetails.type.toLowerCase();
+            document.getElementById('name').value = addressDetails.name;
+            document.getElementById('landMark').value = addressDetails.landmark;
+            const [city, stateZip] = addressDetails.cityStateZip.split(', ');
+            const [state, pincode] = stateZip.split(' ');
+            document.getElementById('city').value = city;
+            document.getElementById('state').value = state;
+            document.getElementById('pincode').value = pincode;
+            document.getElementById('phone').value = addressDetails.phone;
+            document.getElementById('altPhone').value = addressDetails.altPhone;
+
+            formTitle.textContent = 'Edit Address';
+            cancelEditBtn.style.display = 'block';
+            addressForm.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+
+    // Handle cancel edit
+    cancelEditBtn.addEventListener('click', function() {
+        addressForm.reset();
+        addressIdInput.value = '';
+        formTitle.textContent = 'Add New Address';
+        this.style.display = 'none';
+    });
+
+    // Handle form submission
+    addressForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const formData = {
+            addressType: document.getElementById('addressType').value,
+            name: document.getElementById('name').value,
+            city: document.getElementById('city').value,
+            landMark: document.getElementById('landMark').value,
+            state: document.getElementById('state').value,
+            pincode: document.getElementById('pincode').value,
+            phone: document.getElementById('phone').value,
+            altPhone: document.getElementById('altPhone').value,
+            addressId: addressIdInput.value || null
+        };
+
+        try {
+            const response = await fetch('/addOrEditAddress', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Address Saved!',
+                    text: result.message,
+                    confirmButtonColor: '#6E0B21'
+                }).then(() => {
+                    window.location.reload();
+                });
+            } else {
+                throw new Error('Failed to save address');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Failed to save address. Please try again.',
+                confirmButtonColor: '#6E0B21'
+            });
+        }
+    });
+
+    // Handle delete address
+    document.querySelectorAll('.btn-delete').forEach(button => {
+        button.addEventListener('click', async function() {
+            const addressId = this.closest('.address-card').dataset.addressId;
+            const result = await Swal.fire({
+                title: 'Delete Address?',
+                text: 'Are you sure you want to delete this address?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#6E0B21',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    const response = await fetch(`/deleteAddress/${addressId}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (response.ok) {
+                        this.closest('.address-card').remove();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Deleted!',
+                            text: 'Address has been deleted.',
+                            confirmButtonColor: '#6E0B21'
+                        });
+                    } else {
+                        throw new Error('Failed to delete address');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'Failed to delete address. Please try again.',
+                        confirmButtonColor: '#6E0B21'
+                    });
+                }
+            }
+        });
+    });
+
+    // Handle "Use for Delivery" button
+    document.querySelectorAll('.btn-delivery').forEach(button => {
+        button.addEventListener('click', async function() {
+            const addressId = this.closest('.address-card').dataset.addressId;
+            
+            try {
+                const response = await fetch('/setDefaultAddress', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ addressId })
+                });
+
+                if (response.ok) {
+                    // Remove default-address class from all cards
+                    document.querySelectorAll('.address-card').forEach(card => {
+                        card.classList.remove('default-address');
+                    });
+                    
+                    // Add default-address class to selected card
+                    this.closest('.address-card').classList.add('default-address');
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Default Address Set!',
+                        text: 'This address will be used for delivery',
+                        confirmButtonColor: '#6E0B21'
+                    });
+                } else {
+                    throw new Error('Failed to set default address');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Failed to set default address. Please try again.',
+                    confirmButtonColor: '#6E0B21'
+                });
+            }
+        });
+    });
+
+    // Form validation
+    const validateForm = () => {
+        const phone = document.getElementById('phone').value;
+        const altPhone = document.getElementById('altPhone').value;
+        const pincode = document.getElementById('pincode').value;
+
+        // Phone number validation (10 digits)
+        const phoneRegex = /^\d{10}$/;
+        if (!phoneRegex.test(phone) || !phoneRegex.test(altPhone)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Phone Number',
+                text: 'Please enter valid 10-digit phone numbers',
+                confirmButtonColor: '#6E0B21'
+            });
+            return false;
+        }
+
+        // Pincode validation (6 digits)
+        const pincodeRegex = /^\d{6}$/;
+        if (!pincodeRegex.test(pincode)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid PIN Code',
+                text: 'Please enter a valid 6-digit PIN code',
+                confirmButtonColor: '#6E0B21'
+            });
+            return false;
+        }
+
+        return true;
+    };
+
+    // Add form validation before submission
+    addressForm.addEventListener('submit', function(e) {
+        if (!validateForm()) {
+            e.preventDefault();
+        }
+    });
+});
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const navItems = document.querySelectorAll('.nav-item');
+            const contentSections = document.querySelectorAll('.content-section');
+            const menuToggle = document.querySelector('.menu-toggle');
+            const sidebar = document.querySelector('.sidebar');
+
+            // Mobile menu toggle
+            menuToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+            });
+
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', function(e) {
+                if (window.innerWidth <= 768) {
+                    if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+                        sidebar.classList.remove('active');
+                    }
+                }
+            });
+
+            // Navigation handling
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    if (this.id === 'logout') {
+                        handleLogout();
+                        return;
+                    }
+
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    contentSections.forEach(section => section.classList.remove('active'));
+
+                    this.classList.add('active');
+
+                    const sectionId = this.dataset.section;
+                    document.getElementById(sectionId).classList.add('active');
+
+                    // Close sidebar on mobile after navigation
+                    if (window.innerWidth <= 768) {
+                        sidebar.classList.remove('active');
+                    }
+                });
+            });
+
+
+            function handleLogout(event) {
+
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You will be logged out of your account.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#6E0B21",
+        cancelButtonColor: "#6c757d",
+        confirmButtonText: "Yes, logout"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                icon: "success",
+                title: "Logged Out!",
+                text: "You have been logged out successfully.",
+                confirmButtonColor: "#6E0B21"
+            }).then(() => {
+                window.location.href = "/logout"; 
+            });
+        }
+    });
+}
+
+
+            const addressForm = document.querySelector('.address-form');
+            addressForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Address saved successfully!');
+            });
+        });
+
+
+        
+    </script>
+</body>
+</html>

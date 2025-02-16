@@ -232,6 +232,8 @@ const loadProductDetails = async (req, res) => {
 
 
 
+
+
 module.exports = {
   loadProduct,
   getProducts,

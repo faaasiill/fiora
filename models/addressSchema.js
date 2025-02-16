@@ -2,14 +2,14 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 
-const addressSchema = new Schema({
+const addressSchema = new mongoose.Schema({
     userId: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
     address: [{
-        addressType : {
+        addressType: {
             type: String,
             required: true,
         },
@@ -40,14 +40,12 @@ const addressSchema = new Schema({
         altPhone: {
             type: String,
             required: true,
+        },
+        isDefault: {
+            type: Boolean,
+            default: false
         }
     }]
-})
+});
 
-
-
-
-const Address = mongoose.model("Address", addressSchema);
-
-
-module.exports = Address;
+module.exports = mongoose.model('Address', addressSchema);

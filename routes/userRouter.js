@@ -3,6 +3,7 @@ const router = express.Router();
 const userController = require("../controllers/user/usercontroller");
 const profileController = require("../controllers/user/profileController");
 const productController = require("../controllers/user/productController");
+const {userAuth} = require("../middlewares/auth");
 const passport = require("passport");
 
 router.get("/", userController.loadHomepage);
@@ -53,6 +54,15 @@ router.get("/products", productController.loadProduct);
 router.get("/api/products/load-more", productController.loadProduct);
 router.get('/api/products', productController.getProducts);
 router.get("/productDetails", productController.loadProductDetails);
+// user management
+router.get("/userProfile", userAuth, profileController.userProfile);
+router.post("/changeUserDetails", userAuth, profileController.changeUserDetails);
+router.post("/changePassOtp", userAuth, profileController.changePassOtp);
+router.post("/verifyChangePassOtp", userAuth, profileController.verifyChangePassOtp);
+router.post("/changePassword", userAuth, profileController.changePassword);
+router.post("/addOrEditAddress", userAuth, profileController.addOrEditAddress);
+router.delete("/deleteAddress/:addressId", userAuth, profileController.deleteAddress);
+router.post("/setDefaultAddress", userAuth, profileController.setDefaultAddress);
 
 
 module.exports = router;

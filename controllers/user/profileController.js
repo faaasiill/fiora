@@ -1,4 +1,5 @@
 const User = require("../../models/userSchema");
+const Address = require("../../models/addressSchema");
 const nodeMailer = require("nodemailer");
 const bcrypt = require("bcrypt");
 const env = require("dotenv").config();
@@ -205,6 +206,274 @@ const postNewPassword = async (req, res) => {
 }
 
 
+const userProfile = async (req, res) => {
+    try {
+
+        const userId = req.session.user;
+        const userData = await User.findById(userId);
+        const addressData = await Address.findOne({userId:userId});
+        res.render("userProfile", {
+            user: userData,
+            address: addressData
+        })
+        
+    } catch (error) {
+
+        console.error("Error for retrive profile data", error);
+        res.redirect("/pageNotFound");  
+        
+    }
+    
+}
+
+
+const changeUserDetails = async (req, res) => {
+    try {
+        console.log(req.body); // Debugging step
+
+        const { name, email, phone } = req.body;
+        const userId = req.session.user;
+
+        const userExist = await User.findById(userId);
+        if (!userExist) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        // Check if name, email, or phone is already taken by another user
+        const existingUser = await User.findOne({
+            $or: [{ name }, { email }, { phone }],
+            _id: { $ne: userId } 
+        });
+
+        if (existingUser) {
+            if (existingUser.name === name) {
+                return res.status(400).json({ error: "User name already exists" });
+            }
+            if (existingUser.email === email) {
+                return res.status(400).json({ error: "Email already exists" });
+            }
+            if (existingUser.phone === phone) {
+                return res.status(400).json({ error: "Phone number already exists" });
+            }
+        }
+
+        // Update user details
+        await User.updateOne(
+            { _id: userId },
+            { $set: { name, email, phone } }
+        );
+
+        res.status(200).json({ success: "Profile updated successfully!" });
+
+    } catch (error) {
+        console.error("Error updating user data:", error);
+        res.status(500).json({ error: "Something went wrong. Please try again." });
+    }
+};
+
+
+const changePassOtp = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const userExist = await User.findOne({ email });
+        
+        if (userExist) {
+            const otp = generateOtp();
+            console.log(otp);
+            const emailSent = await sendVerificationEmail(email, otp);
+            
+            if (emailSent) {
+                req.session.userOtp = otp;
+                req.session.userData = req.body;
+                req.session.email = email;
+                return res.status(200).json({ message: 'OTP sent successfully' });
+            } else {
+                return res.status(500).json({ error: 'Failed to send OTP' });
+            }
+        } else {
+            return res.status(404).json({ error: 'User not found' });
+        }
+    } catch (error) {
+        console.error('Error in changePassOtp:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+// Add this new route to verify the OTP
+const verifyChangePassOtp = async (req, res) => {
+    try {
+        const { otp } = req.body;
+        
+        if (otp === req.session.userOtp) {
+            // Clear the OTP from session after successful verification
+            req.session.userOtp = null;
+            return res.status(200).json({ message: 'OTP verified successfully' });
+        } else {
+            return res.status(400).json({ error: 'Invalid OTP' });
+        }
+    } catch (error) {
+        console.error('Error in verifyChangePassOtp:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+const changePassword = async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+        const userId = req.session.user; // Remove ._id since user ID is stored directly
+
+        console.log('Session user ID:', userId); // Debug log
+
+        // Find user
+        const user = await User.findById(userId);
+        console.log('Found user:', user); // Debug log
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Verify current password
+        const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+        if (!isPasswordValid) {
+            return res.status(400).json({ error: 'Current password is incorrect' });
+        }
+
+        // Hash new password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        // Update password
+        await User.findByIdAndUpdate(userId, { password: hashedPassword });
+
+        res.status(200).json({ message: 'Password updated successfully' });
+    } catch (error) {
+        console.error('Error in changePassword:', error);
+        if (error.name === 'CastError') {
+            return res.status(400).json({ error: 'Invalid user ID format' });
+        }
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+// for editing address 
+const addOrEditAddress = async (req, res) => {
+    try {
+        const userId = req.session.user;
+        if (!userId) {
+            return res.status(401).json({ error: 'Unauthorized access' });
+        }
+
+        const {
+            addressType, name, city, landMark,
+            state, pincode, phone, altPhone, addressId
+        } = req.body;
+
+        console.log('Received Data:', req.body);
+
+        let userAddress = await Address.findOne({ userId });
+        console.log('Existing User Address:', userAddress);
+
+        if (addressId) {
+            // Edit existing address
+            const updateResult = await Address.findOneAndUpdate(
+                { 
+                    userId, 
+                    "address._id": addressId 
+                },
+                {
+                    $set: {
+                        "address.$.addressType": addressType,
+                        "address.$.name": name,
+                        "address.$.city": city,
+                        "address.$.landMark": landMark,
+                        "address.$.state": state,
+                        "address.$.pincode": pincode,
+                        "address.$.phone": phone,
+                        "address.$.altPhone": altPhone
+                    }
+                },
+                { new: true }
+            );
+
+            if (!updateResult) {
+                return res.status(404).json({ error: 'Address not found' });
+            }
+        } else {
+            // Add new address
+            if (!userAddress) {
+                userAddress = new Address({ userId, address: [] }); // Initialize if null
+            }
+
+            userAddress.address.push({
+                addressType, name, city, landMark,
+                state, pincode, phone, altPhone
+            });
+
+            const pushResult = await userAddress.save();
+            console.log('Push New Address Result:', pushResult);
+        }
+
+        res.status(200).json({ message: 'Address saved successfully' });
+
+    } catch (error) {
+        console.error("Error adding/editing address:", error);
+        res.status(500).json({
+            error: 'Internal server error',
+            details: error.message
+        });
+    }
+};
+
+
+
+const deleteAddress = async (req, res) => {
+    try {
+        const userId = req.session.user;
+        const addressId = req.params.addressId;
+
+        await Address.updateOne(
+            { userId },
+            { $pull: { address: { _id: addressId } } }
+        );
+
+        res.status(200).json({ message: 'Address deleted successfully' });
+    } catch (error) {
+        console.error("Error deleting address:", error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+//  for delivery - setDefaultAddress
+const setDefaultAddress = async (req, res) => {
+    try {
+      const userId = req.session.user;
+      const { addressId } = req.body;
+  
+
+      await Address.updateOne(
+        { userId },
+        { $set: { "address.$[].isDefault": false } }
+      );
+  
+
+      await Address.updateOne(
+        { userId, "address._id": addressId },
+        { $set: { "address.$.isDefault": true } }
+      );
+  
+      res.status(200).json({ message: 'Default address set successfully' });
+    } catch (error) {
+      console.error("Error setting default address:", error);
+      res.status(500).json({
+        error: 'Internal server error',
+        details: error.message
+      });
+    }
+  };
+  
+
+  
+
 
 module.exports = {
     getForgotPassPage,
@@ -212,5 +481,13 @@ module.exports = {
     verifyForgotPassOtp,
     getResetPassPage,
     resendOtp,
-    postNewPassword 
+    postNewPassword,
+    userProfile,
+    changeUserDetails,
+    changePassOtp,
+    verifyChangePassOtp,
+    changePassword,
+    addOrEditAddress,
+    deleteAddress,
+    setDefaultAddress
 }

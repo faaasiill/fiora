@@ -164,7 +164,10 @@
     .nav-icons {
       display: none;
     }
-  
+    .product-card .wishlist-btn {
+      top: 10px !important;
+      right: 10px !important;
+    }
     .hamburger {
       display: block;
     }
@@ -743,7 +746,6 @@ footer {
       align-items: center;
       text-align: center;
   }
-
   .footer-column {
       margin: 20px 0;
   }
