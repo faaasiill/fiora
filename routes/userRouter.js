@@ -3,6 +3,7 @@ const router = express.Router();
 const userController = require("../controllers/user/usercontroller");
 const profileController = require("../controllers/user/profileController");
 const productController = require("../controllers/user/productController");
+const wishlistController = require("../controllers/user/wishlistController");
 const {userAuth} = require("../middlewares/auth");
 const passport = require("passport");
 
@@ -63,6 +64,11 @@ router.post("/changePassword", userAuth, profileController.changePassword);
 router.post("/addOrEditAddress", userAuth, profileController.addOrEditAddress);
 router.delete("/deleteAddress/:addressId", userAuth, profileController.deleteAddress);
 router.post("/setDefaultAddress", userAuth, profileController.setDefaultAddress);
+// wishlist management
+router.get("/wishlist", userAuth, wishlistController.loadWishlist);
+router.post("/addToWishlist", userAuth, wishlistController.addToWishlist);
+router.get("/getWishlistedProducts", userAuth, wishlistController.getWishlistedProducts);
+router.get("/removeFromWishlist", userAuth, wishlistController.removeFromWishlist);
 
 
 module.exports = router;

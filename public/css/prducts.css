@@ -258,7 +258,36 @@ body {
     right: 25px;
     cursor: pointer;
     color: #000000;
+    transition: all 0.3s ease;
   }
+  .wishlist-button span.wishlisted {
+    color: red !important;
+  }
+  
+  
+  .wishlist-button.active {
+    color: red;
+  }
+  
+  .wishlist-button:hover {
+    transform: scale(1.1);
+  }
+  
+  .wishlist-button .filled-heart {
+        display: none;
+        color: red;
+    }
+    
+    .wishlist-button.active .filled-heart {
+        display: block;
+    }
+    
+    .wishlist-button.active .unfilled-heart {
+        display: none;
+    }
+    
+  
+  
 
   /* Load More button */
   .load-more {

@@ -1,130 +1,156 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Verify</title>
-    <link rel="stylesheet" href="/public/css/signup.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wishlist</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-      body {
-        background-image: url(/public/images/best_sellers_Mobile.jpg);
-        overflow: hidden;
-      }
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4; /* Softer background */
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #2c3e50; /* Darker heading */
+            font-weight: 600;
+        }
+
+        .wishlist-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* Larger minmax */
+            gap: 30px;
+        }
+
+        .wishlist-item {
+            background-color: #fff;
+            border-radius: 8px; /* Subtle rounded corners */
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* More defined shadow */
+            transition: transform 0.2s, box-shadow 0.2s; /* Smooth transitions */
+            position: relative; /* For positioning overlay */
+        }
+
+        .wishlist-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .wishlist-item img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .item-details {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1; /* Allow details to fill space */
+        }
+
+        .item-name {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #34495e; /* Darker name */
+        }
+
+        .item-price {
+            color: #7f8c8d; /* Lighter price */
+            margin-bottom: 20px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: flex-end; /* Align to right */
+            margin-top: auto;
+            gap: 10px;
+        }
+
+        .remove-button, .add-to-cart-button {
+            padding: 10px 18px; /* Slightly smaller padding */
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 500; /* Medium font weight */
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .remove-button {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .remove-button:hover {
+            background-color: #c0392b;
+        }
+
+        .add-to-cart-button {
+            background-color: #2ecc71;  /* More vibrant green */
+            color: white;
+        }
+
+        .add-to-cart-button:hover {
+            background-color: #27ae60;
+        }
+
+        @media (max-width: 768px) {
+            .wishlist-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+            .wishlist-item img{
+                height: 200px;
+            }
+        }
     </style>
-  </head>
-  <body>
-    <!-- main container -->
-    <div class="main">
-      <!-- left side -->
-      <div class="left"></div>
-      <!-- right side -->
-      <div class="wrapper right">
-        <!-- header -->
-        <h1 class="get">Verify</h1>
-        <h1 class="start">your account</h1>
-        <!-- card -->
-        <div class="card">
-          <!-- form -->
-          <form action="" id="otpForm">
-            <div class="verify-mess">
-              <p class="otp">
-                Your one-time password have send to your email, please enter
-                your <strong>OTP</strong>
-              </p>
-            </div>
-            <!-- OTP input -->
-              <div id="inputs" class="inputs otp">
-                <input
-                  class="input"
-                  type="text"
-                  inputmode="numeric"
-                  maxlength="1"
-                  required
-                />
-                <input
-                  class="input"
-                  type="text"
-                  inputmode="numeric"
-                  maxlength="1"
-                  required
-                />
-                <input
-                  class="input"
-                  type="text"
-                  inputmode="numeric"
-                  maxlength="1"
-                  required
-                />
-                <input
-                  class="input"
-                  type="text"
-                  inputmode="numeric"
-                  maxlength="1"
-                  required
-                />
-              </div>            
-            <!-- submit button -->
-            <div class="btn-holder">
-              <button type="submit" class="signup">Verify</button>
-            </div>
-          </form>
-        </div>
-      </div>
+</head>
+<body>
+
+    <h1>My Wishlist</h1>
+
+    <div class="wishlist-container">
     </div>
     <script>
-      const inputs = document.getElementById("inputs");
-const form = document.getElementById("otpForm");
+        const wishlistContainer = document.querySelector('.wishlist-container');
+        const products = [
+            { image: "https://source.unsplash.com/random/300x400/?handbag", name: "Elegant Evening Bag", price: "$149.99" },
+            { image: "https://source.unsplash.com/random/300x400/?tote", name: "Everyday Tote", price: "$79.50" },
+            { image: "https://source.unsplash.com/random/300x400/?crossbody", name: "Casual Crossbody", price: "$59.95" },
+            { image: "https://source.unsplash.com/random/300x400/?clutch", name: "Party Clutch", price: "$45.00" },
+            { image: "https://source.unsplash.com/random/300x400/?backpack", name: "Stylish Backpack", price: "$89.99" },
+            { image: "https://source.unsplash.com/random/300x400/?shoulderbag", name: "Classic Shoulder Bag", price: "$119.50" },
+            { image: "https://source.unsplash.com/random/300x400/?wallet", name: "Leather Wallet", price: "$39.99" },
+            { image: "https://source.unsplash.com/random/300x400/?belt", name: "Stylish Belt", price: "$29.50" },
+            { image: "https://source.unsplash.com/random/300x400/?scarf", name: "Silk Scarf", price: "$49.00" },
+            { image: "https://source.unsplash.com/random/300x400/?gloves", name: "Winter Gloves", price: "$35.00" }
+        ];
 
-// Handle input focus movement
-inputs.addEventListener("input", function (e) {
-  const target = e.target;
-  const val = target.value;
+        products.forEach(product => {
+            const wishlistitem = document.createElement('div');
+            wishlistitem.classList.add('wishlist-item');
+            wishlistitem.innerHTML = `
+            <img src="${product.image}" alt="${product.name}">
+            <div class="item-details">
+                <div class="item-name">${product.name}</div>
+                <div class="item-price">${product.price}</div>
+                <div class="buttons">
+                    <button class="remove-button">Remove</button>
+                    <button class="add-to-cart-button">Add to Cart</button>
+                </div>
+            </div>
+            `;
+            wishlistContainer.appendChild(wishlistitem);
+        })
+       </script>
 
-  if (isNaN(val)) {
-    target.value = "";
-    return;
-  }
-
-  if (val != "") {
-    const next = target.nextElementSibling;
-    if (next) {
-      next.focus();
-    }
-  }
-});
-
-// Handle backspace or delete key
-inputs.addEventListener("keyup", function (e) {
-  const target = e.target;
-  const key = e.key.toLowerCase();
-
-  if (key === "backspace" || key === "delete") {
-    target.value = "";
-    const prev = target.previousElementSibling;
-    if (prev) {
-      prev.focus();
-    }
-  }
-});
-
-// Validate OTP on form submission
-form.addEventListener("submit", function (e) {
-  const inputFields = inputs.querySelectorAll(".input");
-  let allFilled = true;
-
-  inputFields.forEach((input) => {
-    if (!input.value.trim()) {
-      allFilled = false;
-    }
-  });
-
-  if (!allFilled) {
-    e.preventDefault();
-    alert("Please fill all OTP fields before submitting.");
-  }
-});
-
-    </script>
-  </body>
+</body>
 </html>

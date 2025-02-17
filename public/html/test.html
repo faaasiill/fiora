@@ -1,0 +1,101 @@
+<!-- views/wishlist.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wishlist - Bags Collection</title>
+    <!-- Same font imports as your main site -->
+    <link href="https://fonts.googleapis.com/css2?family=Julius+Sans+One&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Icon library (assuming you're using Font Awesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/wishlist.css">
+</head>
+<body>
+    <%- include('partials/navbar') %>
+
+    <div class="wishlist-container">
+        <h1 class="title">My Wishlist</h1>
+        
+        <% if (wishlistItems && wishlistItems.length > 0) { %>
+            <div class="product-container">
+                <% wishlistItems.forEach(item => { %>
+                    <div class="product">
+                        <img src="<%= item.image %>" alt="<%= item.name %>">
+                        <button class="remove-wishlist" data-id="<%= item._id %>">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                        <h3 class="product-name"><%= item.name %></h3>
+                        <div class="product-price">
+                            <% if (item.discountPrice) { %>
+                                <span class="discount-price">₹<%= item.discountPrice %></span>
+                                <span class="original-price">₹<%= item.originalPrice %></span>
+                            <% } else { %>
+                                <span class="original-price">₹<%= item.originalPrice %></span>
+                            <% } %>
+                        </div>
+                        <button class="add-to-cart" data-id="<%= item._id %>">Add to Cart</button>
+                    </div>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <div class="empty-wishlist">
+                <i class="far fa-heart"></i>
+                <h2>Your wishlist is empty</h2>
+                <p>Save your favorite items to your wishlist and they'll appear here</p>
+                <a href="/products" class="continue-shopping">Continue Shopping</a>
+            </div>
+        <% } %>
+    </div>
+
+    <%- include('partials/footer') %>
+
+    <script src="/js/wishlist.js"></script>
+    <script>
+        // routes/wishlist.js
+const express = require('express');
+const router = express.Router();
+const auth = require('../middleware/auth');
+
+// Get wishlist page
+router.get('/', auth, async (req, res) => {
+    try {
+        const wishlistItems = await Wishlist.find({ user: req.user._id })
+            .populate('product');
+        res.render('wishlist', { wishlistItems });
+    } catch (error) {
+        res.status(500).send('Server Error');
+    }
+});
+
+// Add to wishlist
+router.post('/add/:productId', auth, async (req, res) => {
+    try {
+        const newWishlistItem = new Wishlist({
+            user: req.user._id,
+            product: req.params.productId
+        });
+        await newWishlistItem.save();
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ success: false });
+    }
+});
+
+// Remove from wishlist
+router.delete('/remove/:productId', auth, async (req, res) => {
+    try {
+        await Wishlist.findOneAndDelete({
+            user: req.user._id,
+            product: req.params.productId
+        });
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ success: false });
+    }
+});
+
+module.exports = router;
+    </script>
+</body>
+</html>

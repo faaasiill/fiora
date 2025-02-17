@@ -44,19 +44,34 @@
         
 
         <div class="product-info">
-            <h1><%= product.productName %></h1>
+            <div class="product-header">
+                <h1><%= product.productName %></h1>
+                <button class="wishlist-btn" onclick="toggleWishlist(this)">
+                    <i class="far fa-heart"></i>
+                </button>
+            </div>
+            
             <div class="price">
-                ₹<%= product.salePrice %> <span class="ogPrice"><%= product.regularPrice %> </span><span style="color: #5a5a5a">Tax included.</span> <% if (product.status === 'Available') { %>
-                 <span style="color: rgba(0, 128, 0, 0.632); font-size: 13px; padding-left:10px ;"><%= product.status %></span>
-                <% } else {%>
-                    <span style="color: rgba(128, 0, 0, 0.632); font-size: 13px; padding-left:10px ;"><%= product.status %></span>
-                    <% } %>
+                ₹<%= product.salePrice %> 
+                <span class="ogPrice">₹<%= product.regularPrice %></span>
+                <span class="tax-info">Tax included.</span>
+                <% if (product.status === 'Available') { %>
+                    <span class="status-available"><%= product.status %></span>
+                <% } else { %>
+                    <span class="status-unavailable"><%= product.status %></span>
+                <% } %>
             </div>
 
             
-            <p class="description">
-                <%= product.description %>
-            </p>
+            <div class="description-section">
+                <div class="description-header" onclick="toggleDescription()">
+                    <h3>Description</h3>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="description-content">
+                    <p><%= product.description %></p>
+                </div>
+            </div>
 
             <p class="offerDis">Offers: <br>
                 • Shop for ₹4999 or more & get a freebie worth ₹1999 <br>
@@ -69,9 +84,38 @@
                 </div>
             </div>
 
-            
+            <!-- Product Status & Category -->
+            <div class="product-meta">
+                <div class="category-tag">
+                    Category: <span><%= product.category.name %></span>
+                </div>
+                <div class="availability-tag <%= product.quantity > 0 ? 'in-stock' : 'out-of-stock' %>">
+                    <%= product.quantity > 0 ? 'In Stock' : 'Out of Stock' %>
+                    (<%= product.quantity %> items left)
+                </div>
+            </div>
 
-            
+            <!-- Quantity Selector -->
+            <div class="quantity-selector">
+                <label for="quantity">Quantity:</label>
+                <div class="quantity-controls">
+                    <button type="button" class="qty-btn" onclick="decrementQuantity()">-</button>
+                    <input type="number" id="quantity" name="quantity" value="1" min="1" max="<%= product.quantity %>" readonly>
+                    <button type="button" class="qty-btn" onclick="incrementQuantity()">+</button>
+                </div>
+            </div>
+
+            <!-- Product Features -->
+            <div class="product-features">
+                <div class="feature-item">
+                    <i class="fas fa-undo"></i>
+                    <span>30 Days Return Policy</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span>Cash on Delivery Available</span>
+                </div>
+            </div>
 
             <div class="buttons">
                 <button class="add-to-cart">ADD TO CART</button>
@@ -195,6 +239,58 @@
                 colorCircles.forEach(c => c.classList.remove('active'));
                 circle.classList.add('active');
             });
+        });
+
+        // Quantity Control Functions
+        function incrementQuantity() {
+            const input = document.getElementById('quantity');
+            const maxQuantity = parseInt(input.getAttribute('max'));
+            const currentValue = parseInt(input.value);
+            
+            if (currentValue < maxQuantity) {
+                input.value = currentValue + 1;
+            }
+        }
+
+        function decrementQuantity() {
+            const input = document.getElementById('quantity');
+            const currentValue = parseInt(input.value);
+            
+            if (currentValue > 1) {
+                input.value = currentValue - 1;
+            }
+        }
+
+        // Description Toggle Function
+        function toggleDescription() {
+            const header = document.querySelector('.description-header');
+            const content = document.querySelector('.description-content');
+            
+            header.classList.toggle('active');
+            content.classList.toggle('active');
+        }
+
+        // Wishlist Toggle Function
+        function toggleWishlist(button) {
+            button.classList.toggle('active');
+            const icon = button.querySelector('i');
+            if (button.classList.contains('active')) {
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+            } else {
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+            }
+        }
+
+        // Initialize description in collapsed state
+        document.addEventListener('DOMContentLoaded', function() {
+            const header = document.querySelector('.description-header');
+            const content = document.querySelector('.description-content');
+            
+            // Optional: If you want description expanded by default, uncomment these lines
+            // header.classList.add('active');
+            // content.classList.add('active');
         });
     </script>
 </body>
