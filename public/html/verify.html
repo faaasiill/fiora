@@ -3,154 +3,579 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wishlist</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            margin: 20px;
-            background-color: #f4f4f4; /* Softer background */
-            color: #333;
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 40px;
-            color: #2c3e50; /* Darker heading */
-            font-weight: 600;
-        }
-
-        .wishlist-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* Larger minmax */
-            gap: 30px;
-        }
-
-        .wishlist-item {
-            background-color: #fff;
-            border-radius: 8px; /* Subtle rounded corners */
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* More defined shadow */
-            transition: transform 0.2s, box-shadow 0.2s; /* Smooth transitions */
-            position: relative; /* For positioning overlay */
-        }
-
-        .wishlist-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-        }
-
-        .wishlist-item img {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-            display: block;
-        }
-
-        .item-details {
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1; /* Allow details to fill space */
-        }
-
-        .item-name {
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: #34495e; /* Darker name */
-        }
-
-        .item-price {
-            color: #7f8c8d; /* Lighter price */
-            margin-bottom: 20px;
-        }
-
-        .buttons {
-            display: flex;
-            justify-content: flex-end; /* Align to right */
-            margin-top: auto;
-            gap: 10px;
-        }
-
-        .remove-button, .add-to-cart-button {
-            padding: 10px 18px; /* Slightly smaller padding */
-            border: none;
-            border-radius: 5px;
-            font-size: 14px;
-            font-weight: 500; /* Medium font weight */
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .remove-button {
-            background-color: #e74c3c;
-            color: white;
-        }
-
-        .remove-button:hover {
-            background-color: #c0392b;
-        }
-
-        .add-to-cart-button {
-            background-color: #2ecc71;  /* More vibrant green */
-            color: white;
-        }
-
-        .add-to-cart-button:hover {
-            background-color: #27ae60;
-        }
-
-        @media (max-width: 768px) {
-            .wishlist-container {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 20px;
-            }
-            .wishlist-item img{
-                height: 200px;
-            }
-        }
-    </style>
+    <title>Checkout</title>
 </head>
+<style>
+    /* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+/* Layout */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+}
+
+/* Header */
+.header {
+    padding: 20px;
+    border-bottom: 1px solid #e5e5e5;
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 100;
+}
+
+.logo {
+    width: 60px;
+}
+
+/* Checkout Sections */
+.checkout-section {
+    background: #fff;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.section-header {
+    padding: 20px;
+    background: #f8f8f8;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.section-content {
+    padding: 20px;
+    display: none;
+}
+
+.section-content.active {
+    display: block;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* Address Styles */
+.address-list {
+    display: grid;
+    gap: 15px;
+}
+
+.address-card {
+    border: 1px solid #e5e5e5;
+    padding: 15px;
+    border-radius: 4px;
+    display: grid;
+    gap: 5px;
+}
+
+.address-card.selected {
+    border-color: #fa5400;
+    background-color: #fff9f7;
+}
+
+.address-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.address-actions button {
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+}
+
+.address-actions button:hover {
+    background: #f5f5f5;
+}
+
+.add-address-btn {
+    background: #fff;
+    color: #000;
+    border: 1px solid #000;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Payment Methods */
+.payment-method {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #e5e5e5;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.payment-method:hover {
+    border-color: #000;
+}
+
+.payment-method input {
+    margin-right: 10px;
+}
+
+/* Cart Summary */
+.cart-summary {
+    background: #f8f8f8;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.close-cart {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px 10px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.total {
+    font-size: 18px;
+    font-weight: 600;
+    padding-top: 15px;
+    border-top: 1px solid #e5e5e5;
+}
+
+.product-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.product-img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    margin-right: 15px;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+}
+
+.modal.active {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+}
+
+/* Form Styles */
+.address-form {
+    display: grid;
+    gap: 15px;
+}
+
+.address-form input, 
+.address-form select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Buttons */
+.continue-btn {
+    background: #fa5400;
+    color: white;
+    border: none;
+    padding: 15px;
+    width: 100%;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.continue-btn:hover {
+    background: #e64d00;
+}
+
+.mobile-cart-toggle {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #fa5400;
+    color: white;
+    padding: 15px;
+    border-radius: 50%;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    z-index: 100;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
+
+    .mobile-cart-toggle {
+        display: block;
+    }
+
+    .close-cart {
+        display: block;
+    }
+
+    aside {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: white;
+        z-index: 1000;
+        overflow-y: auto;
+    }
+
+    aside.active {
+        display: block;
+    }
+
+    .cart-summary {
+        height: 100%;
+        border-radius: 0;
+    }
+}
+</style>
 <body>
+    <header class="header">
+        <img src="/api/placeholder/60/30" alt="Logo" class="logo">
+    </header>
 
-    <h1>My Wishlist</h1>
-
-    <div class="wishlist-container">
-    </div>
-    <script>
-        const wishlistContainer = document.querySelector('.wishlist-container');
-        const products = [
-            { image: "https://source.unsplash.com/random/300x400/?handbag", name: "Elegant Evening Bag", price: "$149.99" },
-            { image: "https://source.unsplash.com/random/300x400/?tote", name: "Everyday Tote", price: "$79.50" },
-            { image: "https://source.unsplash.com/random/300x400/?crossbody", name: "Casual Crossbody", price: "$59.95" },
-            { image: "https://source.unsplash.com/random/300x400/?clutch", name: "Party Clutch", price: "$45.00" },
-            { image: "https://source.unsplash.com/random/300x400/?backpack", name: "Stylish Backpack", price: "$89.99" },
-            { image: "https://source.unsplash.com/random/300x400/?shoulderbag", name: "Classic Shoulder Bag", price: "$119.50" },
-            { image: "https://source.unsplash.com/random/300x400/?wallet", name: "Leather Wallet", price: "$39.99" },
-            { image: "https://source.unsplash.com/random/300x400/?belt", name: "Stylish Belt", price: "$29.50" },
-            { image: "https://source.unsplash.com/random/300x400/?scarf", name: "Silk Scarf", price: "$49.00" },
-            { image: "https://source.unsplash.com/random/300x400/?gloves", name: "Winter Gloves", price: "$35.00" }
-        ];
-
-        products.forEach(product => {
-            const wishlistitem = document.createElement('div');
-            wishlistitem.classList.add('wishlist-item');
-            wishlistitem.innerHTML = `
-            <img src="${product.image}" alt="${product.name}">
-            <div class="item-details">
-                <div class="item-name">${product.name}</div>
-                <div class="item-price">${product.price}</div>
-                <div class="buttons">
-                    <button class="remove-button">Remove</button>
-                    <button class="add-to-cart-button">Add to Cart</button>
+    <div class="container">
+        <main>
+            <div class="checkout-section">
+                <div class="section-header">
+                    <h2 class="section-title">1. DELIVERY ADDRESS</h2>
+                    <span class="toggle">▼</span>
+                </div>
+                <div class="section-content">
+                    <div id="addressContainer">
+                        <!-- Address will be dynamically loaded -->
+                    </div>
                 </div>
             </div>
-            `;
-            wishlistContainer.appendChild(wishlistitem);
-        })
-       </script>
 
+            <div class="checkout-section">
+                <div class="section-header">
+                    <h2 class="section-title">2. PAYMENT METHOD</h2>
+                    <span class="toggle">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="payment-method">
+                        <input type="radio" name="payment" id="cod">
+                        <label for="cod">Cash on Delivery</label>
+                    </div>
+                    <div class="payment-method">
+                        <input type="radio" name="payment" id="razorpay">
+                        <label for="razorpay">Razorpay</label>
+                    </div>
+                    <div class="payment-method">
+                        <input type="radio" name="payment" id="paypal">
+                        <label for="paypal">PayPal</label>
+                    </div>
+                    <div class="payment-method">
+                        <input type="radio" name="payment" id="upi">
+                        <label for="upi">UPI Payment</label>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside>
+            <div class="cart-summary">
+                <div class="cart-header">
+                    <h2 class="section-title">IN YOUR BAG</h2>
+                    <button class="close-cart">×</button>
+                </div>
+                <div class="product-info">
+                    <img src="/api/placeholder/100/100" alt="Product" class="product-img">
+                    <div>
+                        <h3>Nike Air Zoom Pegasus 38</h3>
+                        <p>Size: 8</p>
+                        <p>Qty: 1 × ₹9,995.00</p>
+                    </div>
+                </div>
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span>₹9,995.00</span>
+                </div>
+                <div class="summary-row">
+                    <span>Estimated Shipping</span>
+                    <span>₹99.00</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total</span>
+                    <span>₹10,094.00</span>
+                </div>
+                <button class="continue-btn">SAVE & CONTINUE</button>
+            </div>
+        </aside>
+    </div>
+
+    <button class="mobile-cart-toggle">Bag</button>
+
+    <div class="modal" id="addressModal">
+        <div class="modal-content">
+            <h2 class="section-title">Add New Address</h2>
+            <form class="address-form">
+                <input type="text" name="fullName" placeholder="Full Name" required>
+                <input type="tel" name="mobile" placeholder="Mobile Number" required>
+                <input type="text" name="line1" placeholder="House No., Building Name" required>
+                <input type="text" name="line2" placeholder="Road Name, Area, Colony" required>
+                <input type="text" name="city" placeholder="City" required>
+                <select name="state" required>
+                    <option value="">Select State</option>
+                    <option value="MH">Maharashtra</option>
+                    <option value="DL">Delhi</option>
+                    <option value="KA">Karnataka</option>
+                </select>
+                <input type="text" name="pincode" placeholder="PIN Code" required>
+                <button type="submit" class="continue-btn">Save Address</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Sample addresses data (this would come from your backend)
+const addresses = [
+    {
+        id: 1,
+        name: "John Doe",
+        mobile: "+91 9876543210",
+        line1: "123, Sunshine Apartments",
+        line2: "MG Road, Bangalore",
+        city: "Bangalore",
+        state: "Karnataka",
+        pincode: "560001",
+        isDefault: true
+    },
+    {
+        id: 2,
+        name: "John Doe",
+        mobile: "+91 9876543211",
+        line1: "456, Moon Valley",
+        line2: "Church Street",
+        city: "Bangalore",
+        state: "Karnataka",
+        pincode: "560002",
+        isDefault: false
+    }
+];
+
+// DOM Elements
+const aside = document.querySelector('aside');
+const addressContainer = document.getElementById('addressContainer');
+const addressModal = document.getElementById('addressModal');
+const mobileCartToggle = document.querySelector('.mobile-cart-toggle');
+const closeCart = document.querySelector('.close-cart');
+const addressForm = document.querySelector('.address-form');
+
+// Toggle sections
+document.querySelectorAll('.section-header').forEach(header => {
+    header.addEventListener('click', () => {
+        const content = header.nextElementSibling;
+        const toggle = header.querySelector('.toggle');
+        content.classList.toggle('active');
+        toggle.textContent = content.classList.contains('active') ? '▲' : '▼';
+    });
+});
+
+// Mobile cart toggle
+mobileCartToggle.addEventListener('click', () => {
+    aside.classList.add('active');
+});
+
+closeCart.addEventListener('click', () => {
+    aside.classList.remove('active');
+});
+
+// Render addresses
+function renderAddresses(addresses) {
+    if (addresses && addresses.length > 0) {
+        const addressHTML = `
+            <div class="address-list">
+                ${addresses.map(addr => `
+                    <div class="address-card ${addr.isDefault ? 'selected' : ''}" data-id="${addr.id}">
+                        <h3>${addr.name}</h3>
+                        <p>${addr.line1}</p>
+                        <p>${addr.line2}</p>
+                        <p>${addr.city}, ${addr.state} - ${addr.pincode}</p>
+                        <p>Mobile: ${addr.mobile}</p>
+                        <div class="address-actions">
+                            <button onclick="setDefaultAddress(${addr.id})" ${addr.isDefault ? 'disabled' : ''}>
+                                ${addr.isDefault ? 'Default Address' : 'Set as Default'}
+                            </button>
+                            <button onclick="editAddress(${addr.id})">Edit</button>
+                            <button onclick="deleteAddress(${addr.id})">Delete</button>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+            <div class="add-address-container">
+                <button class="add-address-btn">+ Add New Address</button>
+            </div>
+        `;
+        addressContainer.innerHTML = addressHTML;
+    } else {
+        addressContainer.innerHTML = `
+            <button class="add-address-btn">+ Add New Address</button>
+        `;
+    }
+
+    // Add event listener to new address button
+    document.querySelector('.add-address-btn')?.addEventListener('click', () => {
+        addressModal.classList.add('active');
+    });
+}
+
+// Address management functions
+function setDefaultAddress(id) {
+    addresses.forEach(addr => addr.isDefault = addr.id === id);
+    renderAddresses(addresses);
+}
+
+function editAddress(id) {
+    const address = addresses.find(addr => addr.id === id);
+    if (address) {
+        // Populate form with address details
+        const form = addressModal.querySelector('form');
+        Object.keys(address).forEach(key => {
+            const input = form.elements[key];
+            if (input) {
+                input.value = address[key];
+            }
+        });
+        addressModal.classList.add('active');
+    }
+}
+
+function deleteAddress(id) {
+    if (confirm('Are you sure you want to delete this address?')) {
+        const index = addresses.findIndex(addr => addr.id === id);
+        if (index !== -1) {
+            addresses.splice(index, 1);
+            renderAddresses(addresses);
+        }
+    }
+}
+
+// Form submission handling
+addressForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const newAddress = {
+        id: Date.now(), // Generate temporary ID
+        isDefault: addresses.length === 0, // Make default if first address
+    };
+
+    // Convert form data to object
+    for (let [key, value] of formData.entries()) {
+        newAddress[key] = value;
+    }
+
+    addresses.push(newAddress);
+    renderAddresses(addresses);
+    addressModal.classList.remove('active');
+    e.target.reset();
+});
+
+// Close modal when clicking outside
+addressModal.addEventListener('click', (e) => {
+    if (e.target === addressModal) {
+        addressModal.classList.remove('active');
+    }
+});
+
+// Payment method selection
+document.querySelectorAll('.payment-method').forEach(method => {
+    method.addEventListener('click', () => {
+        const radio = method.querySelector('input[type="radio"]');
+        radio.checked = true;
+    });
+});
+
+// Continue button handling
+document.querySelector('.continue-btn').addEventListener('click', () => {
+    const selectedAddress = addresses.find(addr => addr.isDefault);
+    const selectedPayment = document.querySelector('input[name="payment"]:checked');
+
+    if (!selectedAddress) {
+        alert('Please select a delivery address');
+        return;
+    }
+
+    if (!selectedPayment) {
+        alert('Please select a payment method');
+        return;
+    }
+
+    // Proceed with checkout
+    console.log('Proceeding with checkout:', {
+        address: selectedAddress,
+        paymentMethod: selectedPayment.id
+    });
+});
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', () => {
+    renderAddresses(addresses);
+    // Open first section by default
+    document.querySelector('.section-content').classList.add('active');
+    document.querySelector('.toggle').textContent = '▲';
+});
+    </script>
 </body>
 </html>

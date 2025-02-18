@@ -1,101 +1,742 @@
-<!-- views/wishlist.ejs -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Wishlist - Bags Collection</title>
-    <!-- Same font imports as your main site -->
-    <link href="https://fonts.googleapis.com/css2?family=Julius+Sans+One&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- Icon library (assuming you're using Font Awesome) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="/css/wishlist.css">
-</head>
-<body>
-    <%- include('partials/navbar') %>
+    <title>Shopping Cart - Luxury Bags</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
 
-    <div class="wishlist-container">
-        <h1 class="title">My Wishlist</h1>
-        
-        <% if (wishlistItems && wishlistItems.length > 0) { %>
-            <div class="product-container">
-                <% wishlistItems.forEach(item => { %>
-                    <div class="product">
-                        <img src="<%= item.image %>" alt="<%= item.name %>">
-                        <button class="remove-wishlist" data-id="<%= item._id %>">
-                            <i class="fas fa-heart"></i>
-                        </button>
-                        <h3 class="product-name"><%= item.name %></h3>
-                        <div class="product-price">
-                            <% if (item.discountPrice) { %>
-                                <span class="discount-price">₹<%= item.discountPrice %></span>
-                                <span class="original-price">₹<%= item.originalPrice %></span>
-                            <% } else { %>
-                                <span class="original-price">₹<%= item.originalPrice %></span>
-                            <% } %>
-                        </div>
-                        <button class="add-to-cart" data-id="<%= item._id %>">Add to Cart</button>
-                    </div>
-                <% }) %>
+        body {
+            background-color: #fff;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+        }
+
+        .cart-section h2 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .cart-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .cart-item {
+            display: grid;
+            grid-template-columns: 100px 1fr 1fr 1fr 1fr auto;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+            gap: 20px;
+        }
+
+        .cart-item img {
+            width: 80px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .item-details h3 {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .item-details .brand {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .quantity-input {
+            width: 60px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .cart-totals {
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            position: sticky;
+            top: 20px;
+        }
+
+        .cart-totals h2 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            color: #333;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .total-row.final {
+            border-top: 2px solid #333;
+            margin-top: 12px;
+            padding-top: 20px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border-bottom: none;
+        }
+
+        .shipping-note {
+            margin: 15px 0;
+            padding: 10px;
+            background: #f8f8f8;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 15px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 20px;
+        }
+
+        .checkout-btn:hover {
+            background: #444;
+        }
+
+        .coupon-section {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .coupon-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .apply-coupon {
+            padding: 12px 24px;
+            background: none;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .update-cart {
+            padding: 12px 24px;
+            background: none;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .savings {
+            color: #22c55e;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 968px) {
+            .container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 20px;
+            }
+
+            .cart-header {
+                display: none;
+            }
+
+            .cart-item {
+                grid-template-columns: 80px 1fr;
+                gap: 15px;
+                position: relative;
+                padding: 20px 0;
+            }
+
+            .cart-item>* {
+                grid-column: 2;
+            }
+
+            .cart-item img {
+                grid-column: 1;
+                grid-row: 1 / span 3;
+            }
+
+            .item-details {
+                grid-column: 2;
+                padding-right: 30px;
+            }
+
+            .price {
+                margin-top: 10px;
+            }
+
+            .quantity-input {
+                margin: 10px 0;
+            }
+
+            .remove-btn {
+                position: absolute;
+                top: 20px;
+                right: 0;
+            }
+
+            .coupon-section {
+                flex-direction: column;
+            }
+
+            .apply-coupon,
+            .update-cart {
+                width: 100%;
+            }
+
+            .cart-totals {
+                position: static;
+                margin-top: 20px;
+            }
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* Navigation Styles */
+        .main-nav {
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 1000;
+            border-bottom: 0.5px solid #dddddd;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            height: 70px;
+            width: auto;
+            margin: -20px;
+            margin-left: -10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #333;
+            font-size: 14px;
+            font-weight: 400;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #000;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-icons .material-symbols-outlined {
+            color: #333;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            font-weight: 300 !important;
+        }
+
+        .nav-icons .material-symbols-outlined:hover {
+            color: #000;
+
+        }
+
+        /* Hamburger Menu */
+        .hamburger-menu {
+            display: none;
+            cursor: pointer;
+        }
+
+        .hamburger-menu .material-symbols-outlined {
+            color: #333;
+            font-size: 24px;
+
+        }
+
+        /* Mobile Menu - Fixed visibility */
+        .mobile-menu {
+            display: none;
+            /* Initially hidden for all screen sizes */
+            position: fixed;
+            top: 60px;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transform: translateY(-150%);
+            /* Move it completely off screen */
+            transition: transform 0.3s ease-in-out;
+            z-index: 999;
+        }
+
+        .mobile-menu.active {
+            display: block;
+            /* Show when active */
+            transform: translateY(0);
+        }
+
+        .mobile-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 0;
+            text-decoration: none;
+            color: #333;
+            font-size: 14px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .mobile-link:last-child {
+            border-bottom: none;
+        }
+
+        .mobile-link .material-symbols-outlined {
+            font-size: 20px;
+            font-weight: 200;
+
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+
+            .nav-links,
+            .nav-icons {
+                display: none;
+            }
+
+            .hamburger-menu {
+                display: block;
+            }
+
+            /* Only set display: block for mobile screens */
+            .mobile-menu {
+                display: block;
+                visibility: hidden;
+                /* Hide by default on mobile */
+                opacity: 0;
+            }
+
+            .mobile-menu.active {
+                visibility: visible;
+                /* Show when active */
+                opacity: 1;
+            }
+
+            .empty-state {
+                margin: 60px !important;
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            margin: 20px 0;
+        }
+
+        .empty-state h3 {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .shop-now-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #333;
+            color: white;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+
+        .shop-now-btn:hover {
+            background: #444;
+        }
+
+        .coupon-message {
+            margin-top: 10px;
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .coupon-message.success {
+            display: block;
+            background-color: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #dcfce7;
+        }
+
+        .coupon-message.error {
+            display: block;
+            background-color: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fee2e2;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="main-nav">
+        <div class="nav-container">
+            <div class="logo-container">
+                <img src="/public/images/Fiora1/2.png" class="logo" alt="Logo" />
             </div>
-        <% } else { %>
-            <div class="empty-wishlist">
-                <i class="far fa-heart"></i>
-                <h2>Your wishlist is empty</h2>
-                <p>Save your favorite items to your wishlist and they'll appear here</p>
-                <a href="/products" class="continue-shopping">Continue Shopping</a>
+
+            <!-- Desktop Menu -->
+            <div class="nav-links">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/products" class="nav-link">Shop</a>
+                <a href="/contact" class="nav-link">Contact</a>
             </div>
-        <% } %>
+
+            <!-- Icons for desktop -->
+            <div class="nav-icons">
+                <a href="<%= locals.user ? '/userProfile' : '/wishlist' %>"><span
+                        class="material-symbols-outlined">favorite</span></a>
+                <a href="<%= locals.user ? '/userProfile' : '/signup' %>"><span
+                        class="material-symbols-outlined">account_circle</span></a>
+            </div>
+
+            <!-- Hamburger Menu Button -->
+            <div class="hamburger-menu">
+                <span class="material-symbols-outlined">menu</span>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="mobile-menu">
+            <a href="/" class="mobile-link">
+                <span class="material-symbols-outlined">home</span>
+                Home
+            </a>
+            <a href="/profile" class="mobile-link">
+                <span class="material-symbols-outlined">person</span>
+                Profile
+            </a>
+            <a href="/wishlist" class="mobile-link">
+                <span class="material-symbols-outlined">favorite</span>
+                Wishlist
+            </a>
+            <a href="/logout" class="mobile-link">
+                <span class="material-symbols-outlined">logout</span>
+                Logout
+            </a>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="cart-section">
+            <h2>Shopping Cart</h2>
+            <div class="cart-header">
+                <span>Product</span>
+                <span>Price</span>
+                <span>Quantity</span>
+                <span>Subtotal</span>
+            </div>
+            <div id="cartItems"></div>
+            <div class="coupon-section">
+                <input type="text" id="couponInput" class="coupon-input" placeholder="Coupon code">
+                <button class="apply-coupon" onclick="applyCoupon()">Apply coupon</button>
+                <button class="update-cart" onclick="updateCart()">↻ Update cart</button>
+            </div>
+            <p id="couponMessage"></p>
+        </div>
+
+        <div class="cart-totals">
+            <h2>Cart totals</h2>
+            <div class="total-row">
+                <span>Subtotal</span>
+                <span id="subtotal">₹0.00</span>
+            </div>
+            <div class="total-row">
+                <span>GST (18%)</span>
+                <span id="tax">₹0.00</span>
+            </div>
+            <div class="total-row">
+                <span>Shipping</span>
+                <span id="shipping">₹0.00</span>
+            </div>
+            <div class="total-row">
+                <span>Discount</span>
+                <span id="discount">₹0.00</span>
+            </div>
+            <div class="total-row final">
+                <span>Total</span>
+                <span id="total">₹0.00</span>
+            </div>
+            <button class="checkout-btn" onclick="checkout()">Proceed to checkout</button>
+        </div>
     </div>
 
-    <%- include('partials/footer') %>
-
-    <script src="/js/wishlist.js"></script>
     <script>
-        // routes/wishlist.js
-const express = require('express');
-const router = express.Router();
-const auth = require('../middleware/auth');
+        // for humberger menu in mobile view
+        document.addEventListener('DOMContentLoaded', function () {
+            const hamburgerMenu = document.querySelector('.hamburger-menu');
+            const mobileMenu = document.querySelector('.mobile-menu');
 
-// Get wishlist page
-router.get('/', auth, async (req, res) => {
-    try {
-        const wishlistItems = await Wishlist.find({ user: req.user._id })
-            .populate('product');
-        res.render('wishlist', { wishlistItems });
-    } catch (error) {
-        res.status(500).send('Server Error');
-    }
-});
+            hamburgerMenu.addEventListener('click', function () {
+                mobileMenu.classList.toggle('active');
 
-// Add to wishlist
-router.post('/add/:productId', auth, async (req, res) => {
-    try {
-        const newWishlistItem = new Wishlist({
-            user: req.user._id,
-            product: req.params.productId
+                // Toggle hamburger icon between menu and close
+                const icon = this.querySelector('.material-symbols-outlined');
+                if (mobileMenu.classList.contains('active')) {
+                    icon.textContent = 'close';
+                } else {
+                    icon.textContent = 'menu';
+                }
+            });
+
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function (event) {
+                const isClickInsideNav = event.target.closest('.main-nav');
+                if (!isClickInsideNav && mobileMenu.classList.contains('active')) {
+                    mobileMenu.classList.remove('active');
+                    hamburgerMenu.querySelector('.material-symbols-outlined').textContent = 'menu';
+                }
+            });
+
+            // Close mobile menu when window is resized above mobile breakpoint
+            window.addEventListener('resize', function () {
+                if (window.innerWidth > 768 && mobileMenu.classList.contains('active')) {
+                    mobileMenu.classList.remove('active');
+                    hamburgerMenu.querySelector('.material-symbols-outlined').textContent = 'menu';
+                }
+            });
         });
-        await newWishlistItem.save();
-        res.json({ success: true });
-    } catch (error) {
-        res.status(500).json({ success: false });
-    }
-});
 
-// Remove from wishlist
-router.delete('/remove/:productId', auth, async (req, res) => {
-    try {
-        await Wishlist.findOneAndDelete({
-            user: req.user._id,
-            product: req.params.productId
-        });
-        res.json({ success: true });
-    } catch (error) {
-        res.status(500).json({ success: false });
-    }
-});
 
-module.exports = router;
+        // Cart data
+        let cartItems = [
+            { id: 1, image: '/public/images/2024-L7-CK2-50782376-A-09-2.webp', name: 'Classic Tote Bag', brand: 'Luxury Brand', price: 2499.00, quantity: 1 },
+            { id: 2, image: '/public/images/2025-L2-CK2-60782562-01-2.jpg', name: 'Crossbody Sling Bag', brand: 'Fashion Collection', price: 1899.00, quantity: 1 },
+            { id: 3, image: '/public/images/2024-L7-CK2-50782376-A-09-2.webp', name: 'Classic Tote Bag', brand: 'Luxury Brand', price: 2499.00, quantity: 1 },
+            { id: 4, image: '/public/images/2025-L2-CK2-60782562-01-2.jpg', name: 'Crossbody Sling Bag', brand: 'Fashion Collection', price: 1899.00, quantity: 1 },
+            { id: 5, image: '/public/images/2024-L7-CK2-50782376-A-09-2.webp', name: 'Classic Tote Bag', brand: 'Luxury Brand', price: 2499.00, quantity: 1 },
+            { id: 6, image: '/public/images/2025-L2-CK2-60782562-01-2.jpg', name: 'Crossbody Sling Bag', brand: 'Fashion Collection', price: 1899.00, quantity: 1 },
+            { id: 7, image: '/public/images/2024-L7-CK2-50782376-A-09-2.webp', name: 'Classic Tote Bag', brand: 'Luxury Brand', price: 2499.00, quantity: 1 },
+            { id: 8, image: '/public/images/2025-L2-CK2-60782562-01-2.jpg', name: 'Crossbody Sling Bag', brand: 'Fashion Collection', price: 1899.00, quantity: 1 }
+        ];
+
+        // Available coupons
+        const availableCoupons = [
+            { name: 'SAVE10', discount: 10, startDate: '2025-02-01', endDate: '2025-03-01', minimumPrice: 3000 }
+        ];
+
+        let appliedCoupon = null;
+
+        // Reset all totals to zero
+        function resetTotals() {
+            document.getElementById('subtotal').textContent = '₹0.00';
+            document.getElementById('tax').textContent = '₹0.00';
+            document.getElementById('shipping').textContent = '₹0.00';
+            document.getElementById('discount').textContent = '₹0.00';
+            document.getElementById('total').textContent = '₹0.00';
+        }
+
+        // Update cart display
+        function updateCartDisplay() {
+            const cartContainer = document.getElementById('cartItems');
+            const couponSection = document.querySelector('.coupon-section');
+
+            if (cartItems.length === 0) {
+                cartContainer.innerHTML = `
+                    <div class="empty-state">
+                        <h3>Your cart is empty</h3>
+                        <a href="/products" class="shop-now-btn">Shop Now</a>
+                    </div>
+                `;
+                couponSection.style.display = 'none';
+                resetTotals();
+                return;
+            }
+
+            couponSection.style.display = 'flex';
+            cartContainer.innerHTML = cartItems.map(item => `
+                <div class="cart-item" data-id="${item.id}">
+                    <img src="${item.image}" alt="${item.name}">
+                    <div class="item-details">
+                        <h3>${item.name}</h3>
+                        <div class="brand">${item.brand}</div>
+                    </div>
+                    <div class="price">₹${item.price.toFixed(2)}</div>
+                    <input type="number" class="quantity-input" value="${item.quantity}" min="1" onchange="updateItemQuantity(${item.id}, this.value)">
+                    <div class="subtotal">₹${(item.price * item.quantity).toFixed(2)}</div>
+                    <button class="remove-btn" onclick="removeItem(${item.id})">×</button>
+                </div>
+            `).join('');
+
+            updateTotals();
+        }
+
+        // Update totals
+        function updateTotals() {
+            const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+            if (subtotal === 0) {
+                resetTotals();
+                return;
+            }
+
+            const tax = subtotal * 0.18;
+            const shipping = subtotal < 1000 ? 49 : 0;
+            const discount = appliedCoupon ? (subtotal * appliedCoupon.discount) / 100 : 0;
+            const total = subtotal + tax + shipping - discount;
+
+            document.getElementById('subtotal').textContent = `₹${subtotal.toFixed(2)}`;
+            document.getElementById('tax').textContent = `₹${tax.toFixed(2)}`;
+            document.getElementById('shipping').textContent = `₹${shipping.toFixed(2)}`;
+            document.getElementById('discount').textContent = `-₹${discount.toFixed(2)}`;
+            document.getElementById('total').textContent = `₹${total.toFixed(2)}`;
+        }
+
+        // Update item quantity
+        function updateItemQuantity(itemId, newQuantity) {
+            const item = cartItems.find(item => item.id === itemId);
+            if (item) {
+                item.quantity = Math.max(1, parseInt(newQuantity));
+                updateCartDisplay();
+            }
+        }
+
+        // Remove item from cart
+        function removeItem(itemId) {
+            cartItems = cartItems.filter(item => item.id !== itemId);
+            if (cartItems.length === 0) {
+                appliedCoupon = null;
+                document.getElementById('couponInput').value = '';
+                document.getElementById('couponMessage').textContent = '';
+                document.getElementById('couponMessage').className = 'coupon-message';
+            }
+            updateCartDisplay();
+        }
+
+        // Apply coupon
+        function applyCoupon() {
+            const messageEl = document.getElementById('couponMessage');
+            const couponCode = document.getElementById('couponInput').value.trim().toUpperCase();
+            const currentDate = new Date().toISOString().split('T')[0];
+            const coupon = availableCoupons.find(c => c.name === couponCode);
+
+            messageEl.className = 'coupon-message';
+
+            if (!coupon) {
+                messageEl.textContent = 'Invalid coupon code!';
+                messageEl.classList.add('error');
+                return;
+            }
+
+            if (currentDate < coupon.startDate || currentDate > coupon.endDate) {
+                messageEl.textContent = 'Coupon has expired or is not yet active!';
+                messageEl.classList.add('error');
+                return;
+            }
+
+            const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            if (subtotal < coupon.minimumPrice) {
+                messageEl.textContent = `Minimum order value should be ₹${coupon.minimumPrice}`;
+                messageEl.classList.add('error');
+                return;
+            }
+
+            appliedCoupon = coupon;
+            messageEl.textContent = `Coupon applied! You saved ${coupon.discount}%`;
+            messageEl.classList.add('success');
+            updateTotals();
+        }
+
+        // Update cart
+        function updateCart() {
+            updateCartDisplay();
+            alert('Cart updated successfully!');
+        }
+
+        // Checkout
+        function checkout() {
+            if (cartItems.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+            alert('Proceeding to checkout...');
+        }
+
+        // Initialize cart on page load
+        document.addEventListener('DOMContentLoaded', updateCartDisplay);
     </script>
 </body>
+
 </html>

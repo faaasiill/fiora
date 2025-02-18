@@ -246,7 +246,7 @@
             } else {
               Swal.fire({
                 title: "Error!",
-                text: xhr.responseJSON?.message || "Could not add to wishlist",
+                text: xhr.responseJSON?.message || "User not found, please Login First!", 
                 icon: "error",
                 timer: 2000
               });

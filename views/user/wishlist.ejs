@@ -73,11 +73,13 @@
                 </div>
                 <select class="category-select">
                     <option value="all">All Categories</option>
-                    <option value="tote">Tote Bags</option>
-                    <option value="shoulder">Shoulder Bags</option>
-                    <option value="crossbody">Crossbody Bags</option>
-                    <option value="clutch">Clutch Bags</option>
-                    <option value="backpack">Backpacks</option>
+                    <% 
+                    // Assuming you have access to categories from backend
+                    const uniqueCategories = [...new Set(wishlist.map(product => product.category.name))];
+                    uniqueCategories.forEach(category => { 
+                    %>
+                        <option value="<%= category.toLowerCase() %>"><%= category %></option>
+                    <% }); %>
                 </select>
                 <select class="filter-select">
                     <option value="all">All Prices</option>
@@ -135,7 +137,7 @@
 
 
     <script>
-        // Navigation JavaScript
+
 document.addEventListener('DOMContentLoaded', function() {
     const hamburgerMenu = document.querySelector('.hamburger-menu');
     const mobileMenu = document.querySelector('.mobile-menu');
@@ -181,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Helper functions
         function getCurrentPrice(product) {
-            return parseInt(product.querySelector('.current-price').textContent.replace('₹', '').replace(',', ''));
+            return parseInt(product.querySelector('.current-price').textContent.replace(/[^\d]/g, ''));
         }
 
         function getProductName(product) {
@@ -189,51 +191,52 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         function getProductCategory(product) {
-            return product.dataset.category;
+   
+            return product.querySelector('.category-tag').textContent.toLowerCase().trim();
         }
 
         // Main filter function that combines all filtering logic
         function filterProducts() {
-            const searchTerm = searchInput.value.toLowerCase();
-            const filterValue = filterSelect.value;
-            const categoryValue = categorySelect.value;
+    const searchTerm = searchInput.value.toLowerCase();
+    const filterValue = filterSelect.value;
+    const categoryValue = categorySelect.value;
 
-            products.forEach(product => {
-                const productName = getProductName(product).toLowerCase();
-                const price = getCurrentPrice(product);
-                const category = getProductCategory(product);
+    products.forEach(product => {
+        const productName = getProductName(product).toLowerCase();
+        const price = getCurrentPrice(product);
+        const category = getProductCategory(product);
 
-                // Check if product matches all filter criteria
-                let matchesSearch = productName.includes(searchTerm);
-                let matchesFilter = true;
-                let matchesCategory = true;
+        // Check if product matches all filter criteria
+        let matchesSearch = productName.includes(searchTerm);
+        let matchesPrice = true;
+        let matchesCategory = true;
 
-                // Price filter
-                switch (filterValue) {
-                    case 'under1500':
-                        matchesFilter = price < 1500;
-                        break;
-                    case '1500to2000':
-                        matchesFilter = price >= 1500 && price <= 2000;
-                        break;
-                    case 'above2000':
-                        matchesFilter = price > 2000;
-                        break;
-                }
-
-                // Category filter
-                if (categoryValue !== 'all') {
-                    matchesCategory = category === categoryValue;
-                }
-
-                // Show/hide product based on all criteria
-                product.style.display = matchesSearch && matchesFilter && matchesCategory ? '' : 'none';
-            });
-
-            // Check if any products are visible
-            checkEmptyState();
+        // Price filter
+        switch (filterValue) {
+            case 'under1500':
+                matchesPrice = price < 1500;
+                break;
+            case '1500to2000':
+                matchesPrice = price >= 1500 && price <= 2000;
+                break;
+            case 'above2000':
+                matchesPrice = price > 2000;
+                break;
         }
 
+        // Category filter
+        if (categoryValue !== 'all') {
+            // Convert both to lowercase for case-insensitive comparison
+            matchesCategory = category.toLowerCase() === categoryValue.toLowerCase();
+        }
+
+        // Show/hide product based on all criteria
+        product.style.display = (matchesSearch && matchesPrice && matchesCategory) ? '' : 'none';
+    });
+
+    // Check if any products are visible
+    checkEmptyState();
+}
         // Sort function
         function sortProducts() {
             const sortValue = sortSelect.value;
