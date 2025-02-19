@@ -173,6 +173,7 @@
       <hr style="border-top: 0.1px solid #a2a2a2; width: 80%; margin: auto" />
       <div class="footer-bottom">designed by @faaasiill</div>
     </footer>
+    
     <script>
       // Global variables
       let currentSort = 'default';
@@ -254,6 +255,73 @@
           }
         });
       }
+
+      function removeFromWishlist(productId, button) {
+  if (!productId) {
+    console.error('No product ID provided');
+    return;
+  }
+
+  $.ajax({
+    type: "POST",
+    url: "/removeFromWishlist",
+    data: JSON.stringify({ productId: productId }),
+    contentType: "application/json",
+    dataType: 'json',
+    success: (response) => {
+      if (response.status) {
+        Swal.fire({
+          title: "Removed!",
+          text: "Product removed from wishlist",
+          icon: "success",
+          timer: 2000
+        });
+        button.classList.remove('active');
+      } else {
+        if (response.notLoggedIn) {
+          Swal.fire({
+            title: "Please Login",
+            text: "You need to login first to modify your wishlist",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonText: "Login",
+            cancelButtonText: "Cancel"
+          }).then((result) => {
+            if (result.isConfirmed) window.location.href = "/login";
+          });
+        } else {
+          Swal.fire({
+            title: "Oops!",
+            text: response.message || "Something went wrong",
+            icon: "info",
+            timer: 2000
+          });
+        }
+      }
+    },
+    error: (xhr, status, error) => {
+      if (xhr.status === 401) {
+        Swal.fire({
+          title: "Please Login",
+          text: xhr.responseJSON?.message || "You need to login first to modify your wishlist",
+          icon: "info",
+          showCancelButton: true,
+          confirmButtonText: "Login",
+          cancelButtonText: "Cancel"
+        }).then((result) => {
+          if (result.isConfirmed) window.location.href = "/login";
+        });
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: xhr.responseJSON?.message || "Failed to remove from wishlist", 
+          icon: "error",
+          timer: 2000
+        });
+      }
+    }
+  });
+}
       
       // Initialize wishlist states
       async function initializeWishlistStates() {
@@ -307,10 +375,15 @@
           // Add click event listener to the wishlist button
           const wishlistBtn = productElement.querySelector('.wishlist-button');
           wishlistBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            const prodId = this.dataset.productId;
-            addToWishlist(prodId);
+    e.preventDefault();
+    e.stopPropagation();
+    const prodId = this.dataset.productId;
+    const isActive = this.classList.contains('active');
+    if (isActive) {
+      removeFromWishlist(prodId, this);
+    } else {
+      addToWishlist(prodId, this);
+    }
           });
         });
       

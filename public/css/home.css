@@ -789,3 +789,19 @@ footer {
   color: red;
   font-variation-settings: 'FILL' 1;
 }
+
+
+
+.wishlist-btn:hover {
+  transform: scale(1.1);
+}
+
+.wishlist-btn .wishlist-icon {
+  font-size: 27px;
+  color: #333;
+  transition: color 0.3s ease;
+}
+
+.wishlist-btn.active .wishlist-icon {
+  color: #ff4444;
+}

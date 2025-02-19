@@ -299,20 +299,41 @@ document.addEventListener('DOMContentLoaded', function() {
 
         
         function confirmRemove(productId) {
-            Swal.fire({
-                title: 'Are you sure you want to remove',
-                text: 'you want able to revert this product',
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: 'Yes, remove it!',
-            }).then((result) =>  {
-                if(result.isConfirmed) {
-                    window.location.href = `/removeFromWishlist?productId=${productId}`;
+    Swal.fire({
+        title: 'Are you sure you want to remove this?',
+        text: 'You will not be able to revert this action.',
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: 'Yes, remove it!',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch('/removeFromWishlist', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ productId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status) {
+                    Swal.fire('Removed!', data.message, 'success').then(() => {
+                        location.reload(); // Refresh to update UI
+                    });
+                } else {
+                    Swal.fire('Error', data.message, 'error');
                 }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire('Error', 'Something went wrong', 'error');
             });
-
         }
+    });
+}
+
+
     </script>
 </body>
 

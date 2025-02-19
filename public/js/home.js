@@ -140,3 +140,145 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+const WishlistState = {
+    isProcessing: false
+};
+
+const UIUtil = {
+    showLoginPrompt: () => {
+        Swal.fire({
+            title: "Please Login",
+            text: "You need to login first to add items to wishlist",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonText: "Login",
+            cancelButtonText: "Cancel"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "/login";
+            }
+        });
+    },
+
+    showNotification: (title, message, icon) => {
+        Swal.fire({
+            title: title,
+            text: message,
+            icon: icon,
+            timer: 2000,
+            showConfirmButton: false
+        });
+    }
+};
+
+const WishlistManager = {
+    initialize: function() {
+        this.checkInitialState();
+        // Add event delegation for wishlist buttons
+        document.addEventListener('DOMContentLoaded', () => {
+            const productGrid = document.querySelector('.best-sellers-grid');
+            if (productGrid) {
+                productGrid.addEventListener('click', (e) => {
+                    const wishlistBtn = e.target.closest('.wishlist-btn');
+                    if (wishlistBtn) {
+                        e.preventDefault();
+                        const productId = wishlistBtn.dataset.productId;
+                        this.toggleWishlist(e, productId, wishlistBtn);
+                    }
+                });
+            }
+        });
+    },
+
+    toggleWishlistButton: (button) => {
+        const icon = button.querySelector('.wishlist-icon');
+        button.classList.toggle('active');
+        icon.style.color = button.classList.contains('active') ? '#ff4444' : '#333';
+    },
+
+    checkInitialState: async function() {
+        try {
+            const response = await fetch('/getWishlistedProducts', {
+                method: 'GET',
+                headers: { 'Accept': 'application/json' },
+                credentials: 'include'
+            });
+
+            if (!response.ok) throw new Error('Failed to check wishlist state');
+            const wishlistedProducts = await response.json();
+            
+            document.querySelectorAll('.wishlist-btn').forEach(btn => {
+                const productId = btn.dataset.productId;
+                if (wishlistedProducts.includes(productId)) {
+                    this.toggleWishlistButton(btn);
+                }
+            });
+        } catch (error) {
+            console.error('Wishlist check error:', error);
+        }
+    },
+
+    toggleWishlist: async function(event, productId, button) {
+        event.preventDefault();
+        if (WishlistState.isProcessing || !productId) return;
+        WishlistState.isProcessing = true;
+
+        try {
+            const isRemoving = button.classList.contains('active');
+            
+            if (isRemoving) {
+                const confirmation = await Swal.fire({
+                    title: 'Remove from Wishlist?',
+                    text: 'Are you sure you want to remove this item?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, remove it!'
+                });
+
+                if (!confirmation.isConfirmed) {
+                    WishlistState.isProcessing = false;
+                    return;
+                }
+            }
+
+            const endpoint = isRemoving ? '/removeFromWishlist' : '/addToWishlist';
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({ productId })
+            });
+
+            if (response.status === 401) {
+                UIUtil.showLoginPrompt();
+                return;
+            }
+
+            if (!response.ok) throw new Error('Server error');
+            const data = await response.json();
+
+            if (data.status) {
+                this.toggleWishlistButton(button);
+                UIUtil.showNotification(
+                    'Success', 
+                    isRemoving ? 'Removed from wishlist' : 'Added to wishlist', 
+                    'success'
+                );
+            }
+        } catch (error) {
+            console.error('Wishlist operation error:', error);
+            UIUtil.showNotification('Error', 'Operation failed', 'error');
+        } finally {
+            WishlistState.isProcessing = false;
+        }
+    }
+};
+
+// Initialize wishlist functionality
+WishlistManager.initialize();
+

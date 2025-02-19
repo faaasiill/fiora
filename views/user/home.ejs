@@ -28,11 +28,11 @@
                        class="product-image">
                 </a>                  
                 
-                <button class="wishlist-btn" onclick="toggleWishlist('<%= products[i]._id %>')">
-                  <a href="/addToWishlist?id=<%= products[i]._id %>">
-                    <span class="material-symbols-outlined">favorite</span>
-                  </a>
-                </button>
+                <button class="wishlist-btn" 
+            data-product-id="<%= products[i]._id %>" 
+            onclick="WishlistManager.toggleWishlist(event, '<%= products[i]._id %>', this)">
+          <span class="material-symbols-outlined wishlist-icon">favorite</span>
+          </button>                               
               </div>
               
               <h3 class="product-name"><%= products[i].productName %></h3>
