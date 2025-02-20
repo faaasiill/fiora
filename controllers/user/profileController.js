@@ -412,8 +412,9 @@ const addOrEditAddress = async (req, res) => {
             const pushResult = await userAddress.save();
             console.log('Push New Address Result:', pushResult);
         }
+        
+        res.status(200).json({ status: true, message: 'Address saved successfully' });
 
-        res.status(200).json({ message: 'Address saved successfully' });
 
     } catch (error) {
         console.error("Error adding/editing address:", error);
@@ -436,7 +437,8 @@ const deleteAddress = async (req, res) => {
             { $pull: { address: { _id: addressId } } }
         );
 
-        res.status(200).json({ message: 'Address deleted successfully' });
+        res.status(200).json({ status: true, message: 'Address deleted successfully' });
+
     } catch (error) {
         console.error("Error deleting address:", error);
         res.status(500).json({ error: 'Internal server error' });
@@ -461,7 +463,8 @@ const setDefaultAddress = async (req, res) => {
         { $set: { "address.$.isDefault": true } }
       );
   
-      res.status(200).json({ message: 'Default address set successfully' });
+      res.status(200).json({ status: true, message: 'Default address set successfully' });
+
     } catch (error) {
       console.error("Error setting default address:", error);
       res.status(500).json({

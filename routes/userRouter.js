@@ -5,6 +5,7 @@ const profileController = require("../controllers/user/profileController");
 const productController = require("../controllers/user/productController");
 const wishlistController = require("../controllers/user/wishlistController");
 const cartController = require("../controllers/user/cartController");
+const checkOutController = require("../controllers/user/checkOutController");
 const {userAuth} = require("../middlewares/auth");
 const passport = require("passport");
 
@@ -70,11 +71,14 @@ router.get("/wishlist", userAuth, wishlistController.loadWishlist);
 router.post("/addToWishlist", userAuth, wishlistController.addToWishlist);
 router.get("/getWishlistedProducts", userAuth, wishlistController.getWishlistedProducts);
 router.post("/removeFromWishlist", userAuth, wishlistController.removeFromWishlist);  
-
 // cart management
 router.get("/cart", userAuth, cartController.loadCart);
 router.post("/addToCart", userAuth, cartController.addToCart);
 router.put("/updateCartQuantity", userAuth, cartController.updateCartQuantity);
 router.delete("/removeFromCart", userAuth, cartController.removeFromCart);
+// checkOut management
+router.get('/checkout', userAuth, checkOutController.loadCheckOut);
+
+
 
 module.exports = router;

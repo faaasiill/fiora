@@ -6,7 +6,6 @@ const loadCart = async (req, res) => {
     try {
         const userId = req.session.user;
         
-        // Find cart and populate product details
         const cart = await Cart.findOne({ userId })
             .populate({
                 path: 'items.productId',
@@ -16,21 +15,25 @@ const loadCart = async (req, res) => {
         if (!cart) {
             return res.render("cart", {
                 cartItems: [],
-                totalAmount: 0
+                totalAmount: 0,
+                cartTotal: {
+                    subtotal: 0,
+                    tax: 0,
+                    shipping: 0,
+                    discount: 0,
+                    final: 0
+                }
             });
         }
 
-        // Filter only placed items
         const cartItems = cart.items.filter(item => item.status === 'placed');
-        
-        // Calculate total amount
-        const totalAmount = cartItems.reduce((total, item) => {
-            return total + item.totalPrice;
-        }, 0);
+        cart.calculateTotals();
+        await cart.save();
 
         res.render("cart", {
             cartItems,
-            totalAmount
+            totalAmount: cart.cartTotal.subtotal,
+            cartTotal: cart.cartTotal
         });
 
     } catch (error) {
@@ -201,16 +204,17 @@ const updateCartQuantity = async (req, res) => {
         cartItem.quantity = quantity;
         cartItem.totalPrice = cartItem.price * quantity;
 
+        // Calculate new totals
+        const cartTotal = cart.calculateTotals();
         await cart.save();
 
-        // Calculate new totals
-        const cartItems = cart.items.filter(item => item.status === 'placed');
-        const totalAmount = cartItems.reduce((total, item) => total + item.totalPrice, 0);
-        const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+        const cartCount = cart.items.reduce((total, item) => 
+            item.status === 'placed' ? total + item.quantity : total, 0
+        );
 
         return res.json({
             status: true,
-            totalAmount,
+            cartTotal,
             cartCount,
             itemTotal: cartItem.totalPrice,
             message: "Cart updated successfully"
@@ -227,17 +231,14 @@ const updateCartQuantity = async (req, res) => {
 
 const removeFromCart = async (req, res) => {
     try {
-        console.log("Request body:", req.body); // Debug log
-        console.log("Session user:", req.session?.user); // Debug log
         const { productId } = req.body;
         const userId = req.session.user;
-
 
         if (!req.session?.user) {
             return res.status(401).json({
                 status: false,
                 notLoggedIn: true,
-                message: "Please login to add items to cart"
+                message: "Please login to modify cart"
             });
         }
 
@@ -247,9 +248,6 @@ const removeFromCart = async (req, res) => {
                 message: "Product ID is required"
             });
         }
-
-        console.log("Extracted productId:", productId); // Debug log
-
 
         const cart = await Cart.findOne({ userId });
         if (!cart) {
@@ -274,16 +272,18 @@ const removeFromCart = async (req, res) => {
 
         // Remove item
         cart.items.splice(itemIndex, 1);
+        
+        // Calculate new totals
+        const cartTotal = cart.calculateTotals();
         await cart.save();
 
-        // Calculate new totals
-        const cartItems = cart.items.filter(item => item.status === 'placed');
-        const totalAmount = cartItems.reduce((total, item) => total + item.totalPrice, 0);
-        const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+        const cartCount = cart.items.reduce((total, item) => 
+            item.status === 'placed' ? total + item.quantity : total, 0
+        );
 
         return res.json({
             status: true,
-            totalAmount,
+            cartTotal,
             cartCount,
             message: "Product removed from cart"
         });
@@ -296,6 +296,7 @@ const removeFromCart = async (req, res) => {
         });
     }
 };
+
 
 module.exports = {
     loadCart,
