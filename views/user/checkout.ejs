@@ -7,11 +7,12 @@
     <link rel="stylesheet" href="/css/checkOut.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.32/sweetalert2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/home.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.32/sweetalert2.all.min.js"></script>
 </head>
 <body>
     <header class="header">
-        <img src="/public/images/Fiora1/2.png" style="margin: -30px; margin-left: 50px; width: 70px;" alt="Logo" class="logo">
+        <img src="/images/Fiora1/2.png" style="margin: -30px; margin-left: 50px; width: 70px;" alt="Logo" class="logo">
     </header>
 
     <div class="container">
@@ -153,7 +154,8 @@
             </form>
         </div>
     </div>
-
+    <img style="width: 100vw;" src="/images/54815E6F-C058-446C-AD70-DF26744C9EFB.jpeg" alt="">
+<%- include('../partials/user/footer.ejs') %>
     <script>
         // DOM Elements
 const aside = document.querySelector('aside');
@@ -342,6 +344,99 @@ addressModal?.addEventListener('click', (e) => {
         addressModal.classList.remove('active');
     }
 });
+
+// Add this function to your checkout.js
+async function placeOrder() {
+    try {
+        const selectedAddress = document.querySelector('.address-card.selected');
+        const selectedPayment = document.querySelector('input[name="payment"]:checked');
+
+        if (!selectedAddress) {
+            throw new Error('Please select a delivery address');
+        }
+
+        if (!selectedPayment) {
+            throw new Error('Please select a payment method');
+        }
+
+
+        const addressDetails = {
+            fullName: selectedAddress.querySelector('h3').textContent,
+            address: selectedAddress.querySelector('p:nth-child(2)').textContent, // landMark
+            city: selectedAddress.querySelector('p:nth-child(3)').textContent.split(',')[0].trim(),
+            state: selectedAddress.querySelector('p:nth-child(3)').textContent.split(',')[1].split('-')[0].trim(),
+            pincode: selectedAddress.querySelector('p:nth-child(3)').textContent.split('-')[1].trim(),
+            mobile: selectedAddress.querySelector('p:nth-child(4)').textContent.replace('Phone: ', ''),
+        };
+
+        const orderData = {
+            addressId: selectedAddress.dataset.id,
+            addressDetails: addressDetails, // Include full address details
+            paymentMethod: selectedPayment.id
+        };
+        
+
+        const addressId = selectedAddress.dataset.id;
+        const paymentMethod = selectedPayment.id;
+
+        // Show loading state
+        Swal.fire({
+            title: 'Processing Order',
+            text: 'Please wait...',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            willOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        const response = await fetch('/place-order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(orderData)
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.status) {
+            if (selectedPayment.id === 'cod') {
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Order Placed Successfully!',
+                    text: `Order ID: ${data.orderId}`,
+                    showConfirmButton: true
+                });
+                window.location.href = `/order-confirmation/${data.orderId}`;
+            
+            // ... rest of your payment handling code
+        } else if (paymentMethod === 'razorpay') {
+                // Handle Razorpay payment initiation
+                // You'll need to implement this based on your Razorpay integration
+                handleRazorpayPayment(data.orderId);
+            } else if (paymentMethod === 'paypal') {
+                // Handle PayPal payment initiation
+                handlePaypalPayment(data.orderId);
+            } else if (paymentMethod === 'upi') {
+                // Handle UPI payment initiation
+                handleUPIPayment(data.orderId);
+            }
+        } else {
+            throw new Error(data.message || 'Failed to place order');
+        }
+
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: error.message || 'Failed to place order'
+        });
+    }
+}
+
+// Replace your existing continue button event listener with this:
+document.querySelector('.continue-btn').addEventListener('click', placeOrder);
 
 // Continue button handling
 document.querySelector('.continue-btn')?.addEventListener('click', () => {

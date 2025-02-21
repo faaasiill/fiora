@@ -77,7 +77,9 @@ router.post("/addToCart", userAuth, cartController.addToCart);
 router.put("/updateCartQuantity", userAuth, cartController.updateCartQuantity);
 router.delete("/removeFromCart", userAuth, cartController.removeFromCart);
 // checkOut management
-router.get('/checkout', userAuth, checkOutController.loadCheckOut);
+router.get("/checkout", userAuth, checkOutController.loadCheckOut);
+router.post("/place-order", userAuth, checkOutController.placeOrder);
+router.get("/order-confirmation/:orderId", userAuth, checkOutController.orderConfirmation);
 
 
 

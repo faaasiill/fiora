@@ -38,9 +38,12 @@ const orderSchema = new Schema({
         required: true
     },
     address: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-        required: true
+        fullName: String,
+        address: String,
+        city: String,
+        state: String,
+        pincode: String,
+        mobile: String
     },
     invoiceDate: {
         type: Date,
@@ -49,6 +52,11 @@ const orderSchema = new Schema({
         type: String,
         required: true,
         enum: ["Pending", "Processing", "Shipped", "Delivered", "Cancelled", "Return Request", "Returned"],
+    },
+    paymentMethod: {
+        type: String,
+        required: true,
+        enum: ["cod", "razorpay", "paypal", "upi"]
     },
     createdOn: {
         type: Date,
