@@ -6,6 +6,7 @@ const fs = require("fs");
 const path = require("path");
 const sharp = require("sharp");
 
+// for get Product AddPage
 const getProductAddPage = async (req, res) => {
   try {
     const category = await Category.find({ isListed: true });
@@ -17,12 +18,14 @@ const getProductAddPage = async (req, res) => {
   }
 };
 
+// for post Product AddPage
 const addProducts = async (req, res) => {
   try {
     const products = req.body;
 
-
-    const productExists = await Product.findOne({ productName: products.productName });
+    const productExists = await Product.findOne({
+      productName: products.productName,
+    });
 
     if (productExists) {
       return res.status(400).json({
@@ -32,19 +35,19 @@ const addProducts = async (req, res) => {
 
     const images = [];
 
-    
     for (let i = 1; i <= 4; i++) {
       const fieldName = `productImage${i}`;
       if (req.files && req.files[fieldName] && req.files[fieldName][0]) {
         const file = req.files[fieldName][0];
-        images.push(file.path); 
+        images.push(file.path);
       }
     }
 
     if (images.length === 0) {
-      return res.status(400).json({ message: "At least one image is required." });
+      return res
+        .status(400)
+        .json({ message: "At least one image is required." });
     }
-
 
     const newProduct = new Product({
       productName: products.productName,
@@ -55,7 +58,7 @@ const addProducts = async (req, res) => {
       createdOn: new Date(),
       color: products.color,
       quantity: products.quantity,
-      productImage: images, 
+      productImage: images,
       status: "Available",
     });
 
@@ -69,156 +72,136 @@ const addProducts = async (req, res) => {
   }
 };
 
+// for get All Products
 const getAllProducts = async (req, res) => {
   try {
-      const search = req.query.search || "";
-      const page = Number(req.query.page) || 1;
-      const limit = 4;
+    const search = req.query.search || "";
+    const page = Number(req.query.page) || 1;
+    const limit = 4;
 
-      // Run all queries in parallel
-      const [productData, count, category] = await Promise.all([
-          Product.find({
-              productName: { $regex: new RegExp(".*" + search + ".*", "i") }
-          })
-          .sort({ _id: -1 }) // Sort by newest added first (Fix)
-          .limit(limit)
-          .skip((page - 1) * limit)
-          .populate("category")
-          .exec(),
+    // Run all queries in parallel
+    const [productData, count, category] = await Promise.all([
+      Product.find({
+        productName: { $regex: new RegExp(".*" + search + ".*", "i") },
+      })
+        .sort({ _id: -1 })
+        .limit(limit)
+        .skip((page - 1) * limit)
+        .populate("category")
+        .exec(),
 
-          Product.countDocuments({
-              productName: { $regex: new RegExp(".*" + search + ".*", "i") }
-          }),
+      Product.countDocuments({
+        productName: { $regex: new RegExp(".*" + search + ".*", "i") },
+      }),
 
-          Category.find({ isListed: true })
-      ]);
+      Category.find({ isListed: true }),
+    ]);
 
-      if (category.length > 0) {
-          res.render("products", {
-              data: productData,
-              currentPage: page,
-              totalPages: Math.ceil(count / limit),
-              cat: category
-          });
-      } else {
-          res.render("page-404");
-      }
+    if (category.length > 0) {
+      res.render("products", {
+        data: productData,
+        currentPage: page,
+        totalPages: Math.ceil(count / limit),
+        cat: category,
+      });
+    } else {
+      res.render("page-404");
+    }
   } catch (error) {
-      console.error("Error fetching products:", error);
-      res.redirect("/pageerror");
+    console.error("Error fetching products:", error);
+    res.redirect("/pageerror");
   }
 };
 
-
-
-
-
-
+// for add Product Offer
 const addProductOffer = async (req, res) => {
-
-    try {
-
-        const {productId, percentage} = req.body;
-        const findProduct = await Product.findOne({_id:productId});
-        const findCategory = await Category.findOne({_id:findProduct.category});
-        if(findCategory.categoryOffer>percentage){
-            return res.json({status: false, message: "Offer percentage is higher than category offer"});
-        }
-
-        findProduct.salePrice = findProduct.salePrice-Math.floor(findProduct.regularPrice*(percentage/100));
-        findProduct.productOffer = parseInt(percentage);
-        await findProduct.save();
-        findCategory.categoryOffer=0;
-        await findCategory.save();
-        res.json({status: true});
-        
-
-    } catch (error) {
-
-        res.redirect("/pageerror");
-        res.status(500).json({status:false, message: "Internal Server Error"});
+  try {
+    const { productId, percentage } = req.body;
+    const findProduct = await Product.findOne({ _id: productId });
+    const findCategory = await Category.findOne({ _id: findProduct.category });
+    if (findCategory.categoryOffer > percentage) {
+      return res.json({
+        status: false,
+        message: "Offer percentage is higher than category offer",
+      });
     }
-    
-}
 
+    findProduct.salePrice =
+      findProduct.salePrice -
+      Math.floor(findProduct.regularPrice * (percentage / 100));
+    findProduct.productOffer = parseInt(percentage);
+    await findProduct.save();
+    findCategory.categoryOffer = 0;
+    await findCategory.save();
+    res.json({ status: true });
+  } catch (error) {
+    res.redirect("/pageerror");
+    res.status(500).json({ status: false, message: "Internal Server Error" });
+  }
+};
+
+// for remove Product Offer
 const removeProductOffer = async (req, res) => {
+  try {
+    const { productId } = req.body;
+    const findProduct = await Product.findOne({ _id: productId });
+    const percentage = findProduct.productOffer;
+    findProduct.salePrice =
+      findProduct.salePrice +
+      Math.floor(findProduct.regularPrice * (percentage / 100));
+    findProduct.productOffer = 0;
+    await findProduct.save();
+    res.json({ status: true });
+  } catch (error) {
+    res.redirect("/pageerror");
+  }
+};
 
-    try {
-
-        const {productId} = req.body;
-        const findProduct = await Product.findOne({_id:productId});
-        const percentage = findProduct.productOffer;
-        findProduct.salePrice = findProduct.salePrice+Math.floor(findProduct.regularPrice*(percentage/100));
-        findProduct.productOffer = 0;
-        await findProduct.save();
-        res.json({status:true});
-        
-    } catch (error) {
-        res.redirect("/pageerror");
-        
-    }
-    
-}
-
-
+// for bloack proucts
 const blockProduct = async (req, res) => {
-    try {
+  try {
+    let id = req.query.id;
+    console.log(id);
+    await Product.updateOne({ _id: id }, { $set: { isBlocked: true } });
+    res.redirect("/admin/products");
+  } catch (error) {
+    console.log("issue while blocking", error);
+    res.redirect("/pageerror");
+  }
+};
 
-        let id = req.query.id;
-        console.log(id);
-        await Product.updateOne({_id: id}, {$set:{isBlocked:true}});
-        res.redirect("/admin/products");
-        
-    } catch (error) {
-        console.log("issue while blocking", error);
-        res.redirect("/pageerror");
-        
-    }
-}
-
-
+// for unblock Products
 const unblockProduct = async (req, res) => {
-    try {
+  try {
+    const id = req.query.id;
+    await Product.updateOne({ _id: id }, { $set: { isBlocked: false } });
+    res.redirect("/admin/products");
+  } catch (error) {
+    console.log("issue while unblocking");
+    res.redirect("/pageerror");
+  }
+};
 
-        const id = req.query.id;
-        await Product.updateOne({_id: id}, {$set:{isBlocked:false}});
-        res.redirect("/admin/products");
-        
-    } catch (error) {
-        console.log("issue while unblocking");
-        res.redirect("/pageerror");
-        
-    }
-}
-
-
+// for get edit product
 const getEditProduct = async (req, res) => {
   try {
-      const id = req.query.id;
-      const product = await Product.findById(id);
-      if (!product) {
-          return res.redirect("/admin/products");
-      }
-      const category = await Category.find({});
-      res.render("edit-product", {
-          product: product,
-          cat: category,
-      });
+    const id = req.query.id;
+    const product = await Product.findById(id);
+    if (!product) {
+      return res.redirect("/admin/products");
+    }
+    const category = await Category.find({});
+    res.render("edit-product", {
+      product: product,
+      cat: category,
+    });
   } catch (error) {
-      console.error('Error in getEditProduct:', error);
-      res.redirect("/pageerror");
+    console.error("Error in getEditProduct:", error);
+    res.redirect("/pageerror");
   }
 };
 
-function ensureUploadDirectory() {
-  const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'product-images');
-  if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-  }
-  return uploadDir;
-}
-
-
+// for edit product
 const editProduct = async (req, res) => {
   try {
     const id = req.params.id;
@@ -245,7 +228,6 @@ const editProduct = async (req, res) => {
       });
     }
 
-    // Handle new image uploads
     const images = [];
     if (req.files && req.files.length > 0) {
       for (const file of req.files) {
@@ -264,7 +246,7 @@ const editProduct = async (req, res) => {
     };
 
     if (images.length > 0) {
-      updateFields.$push = { productImage: { $each: images } }; // Store URLs
+      updateFields.$push = { productImage: { $each: images } }; // Storeing URLs
     }
 
     await Product.findByIdAndUpdate(id, updateFields, {
@@ -279,10 +261,7 @@ const editProduct = async (req, res) => {
   }
 };
 
-
-
-
-
+// for delete Single Image
 const deleteSingleImage = async (req, res) => {
   try {
     const { imageNameToServer, productIdToServer } = req.body;
@@ -307,9 +286,8 @@ const deleteSingleImage = async (req, res) => {
       });
     }
 
-    // Extract public_id from Cloudinary URL to delete the image
-    const publicId = imageNameToServer.split("/").pop().split(".")[0]; // Extract public_id
-    const folder = "product-images"; // Cloudinary folder name
+    const publicId = imageNameToServer.split("/").pop().split(".")[0];
+    const folder = "product-images";
     const cloudinaryImageId = `${folder}/${publicId}`;
 
     // Delete the image from Cloudinary
@@ -340,7 +318,6 @@ const deleteSingleImage = async (req, res) => {
   }
 };
 
-
 module.exports = {
   getProductAddPage,
   addProducts,
@@ -351,5 +328,5 @@ module.exports = {
   unblockProduct,
   getEditProduct,
   editProduct,
-  deleteSingleImage
+  deleteSingleImage,
 };

@@ -5,6 +5,7 @@ const customerController = require("../controllers/admin/customerController");
 const categoryController = require("../controllers/admin/categoryController");
 const productController = require("../controllers/admin/productController");
 const bannerController = require("../controllers/admin/bannerController");
+const orderController = require("../controllers/admin/orderController");
 const uploads = require("../middlewares/multerConfig");
 const upload = require("../middlewares/bannerMulter");
 const { adminAuth } = require("../middlewares/auth");
@@ -51,7 +52,10 @@ router.get("/banner", adminAuth, bannerController.getBannerPage);
 router.get("/addBanner", adminAuth, bannerController.getAddBannerPage);
 router.post("/banners/create", adminAuth, upload.single("bannerImage"), bannerController.postAddBanner);
 router.get("/deleteBanner", adminAuth, bannerController.deleteBanner);
-
+// order management
+router.get("/orderList", adminAuth, orderController.getOrders);
+router.post("/orders/updateStatus", adminAuth, orderController.updateOrderStatus);
+router.get("/orders/:id", adminAuth, orderController.getOrderById);
 
 
 module.exports = router;

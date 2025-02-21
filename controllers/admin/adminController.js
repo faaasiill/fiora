@@ -2,6 +2,7 @@ const User = require("../../models/userSchema");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
+// for error pages
 const pageerror = async (req, res) => {
   try {
     res.render("admin-error");
@@ -11,6 +12,7 @@ const pageerror = async (req, res) => {
   }
 };
 
+// for loading admin login page
 const loadLogin = (req, res) => {
   if (req.session.admin) {
     return res.redirect("/admin/dashboard");
@@ -18,6 +20,7 @@ const loadLogin = (req, res) => {
   res.render("admin-login", { message: null });
 };
 
+// for admin check
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -47,6 +50,7 @@ const login = async (req, res) => {
   }
 };
 
+// for logout admin dashBoard
 const loadDashboard = async (req, res) => {
   if (req.session.admin) {
     try {
@@ -60,6 +64,7 @@ const loadDashboard = async (req, res) => {
   }
 };
 
+// for logout admin 
 const logout = async (req, res) => {
   try {
     req.session.destroy((err) => {

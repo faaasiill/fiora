@@ -1,6 +1,8 @@
 const Category = require("../../models/categorySchema");
 const Product = require("../../models/productSchema");
 
+
+// for category data info
 const categoryInfo = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -11,7 +13,7 @@ const categoryInfo = async (req, res) => {
     let filter = {};
 
     if (searchQuery) {
-      filter.name = { $regex: searchQuery, $options: "i" }; 
+      filter.name = { $regex: searchQuery, $options: "i" };
     }
 
     const category = await Category.find(filter)
@@ -35,13 +37,14 @@ const categoryInfo = async (req, res) => {
   }
 };
 
+// for add Category
 const addCategory = async (req, res) => {
   const { name, description, offerPrice } = req.body;
 
   try {
     // Case-insensitive check using regex
     const existingCategory = await Category.findOne({
-      name: { $regex: new RegExp(`^${name}$`, "i") }
+      name: { $regex: new RegExp(`^${name}$`, "i") },
     });
 
     if (existingCategory) {
@@ -56,13 +59,14 @@ const addCategory = async (req, res) => {
 
     await newCategory.save();
     return res.json({ success: true, message: "Category added successfully" });
-
   } catch (error) {
-    return res.status(500).json({ success: false, message: "Failed to add category" });
+    return res
+      .status(500)
+      .json({ success: false, message: "Failed to add category" });
   }
 };
 
-
+// for add category offer
 const addCategoryOffer = async (req, res) => {
   try {
     const percentage = parseInt(req.body.percentage);
@@ -78,12 +82,10 @@ const addCategoryOffer = async (req, res) => {
       (product) => product.productOffer > percentage
     );
     if (hasProductOffer) {
-      return res
-        .status(400)
-        .json({
-          status: false,
-          message: "Products Within This Category Already Have Offers",
-        });
+      return res.status(400).json({
+        status: false,
+        message: "Products Within This Category Already Have Offers",
+      });
     }
     await Category.updateOne(
       { _id: categoryId },
@@ -101,6 +103,7 @@ const addCategoryOffer = async (req, res) => {
   }
 };
 
+// for remove category
 const removeCategoryOffer = async (req, res) => {
   try {
     const categoryId = req.body.categoryId;
@@ -132,28 +135,31 @@ const removeCategoryOffer = async (req, res) => {
   }
 };
 
+// for get Listed Category
 const getListCategory = async (req, res) => {
   try {
     let id = req.query.id;
     await Category.updateOne({ _id: id }, { $set: { isListed: false } });
-    await Product.updateMany({ category: id}, { $set: { isBlocked: true } });
+    await Product.updateMany({ category: id }, { $set: { isBlocked: true } });
     res.redirect("/admin/category");
   } catch (error) {
     res.redirect("pageerror");
   }
 };
 
+// for get unListed Category
 const getUnlistCategory = async (req, res) => {
   try {
     let id = req.query.id;
     await Category.updateOne({ _id: id }, { $set: { isListed: true } });
-    await Product.updateMany({ category: id}, { $set: { isBlocked: false }});
+    await Product.updateMany({ category: id }, { $set: { isBlocked: false } });
     res.redirect("/admin/category");
   } catch (error) {
     res.redirect("pageerror");
   }
 };
 
+// for get edit category
 const getEditCategory = async (req, res) => {
   try {
     const id = req.params.id;
@@ -165,6 +171,7 @@ const getEditCategory = async (req, res) => {
   }
 };
 
+// for edit category
 const editCategory = async (req, res) => {
   try {
     const id = req.params.id;
