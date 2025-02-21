@@ -1,4 +1,5 @@
 const User = require("../../models/userSchema");
+const Order = require("../../models/orderSchema");
 const Address = require("../../models/addressSchema");
 const nodeMailer = require("nodemailer");
 const bcrypt = require("bcrypt");
@@ -208,23 +209,40 @@ const postNewPassword = async (req, res) => {
 
 const userProfile = async (req, res) => {
     try {
-
         const userId = req.session.user;
         const userData = await User.findById(userId);
         const addressData = await Address.findOne({userId:userId});
+        
+        // Get user's orders with populated product information
+        const orders = await Order.find({userId: userId})
+            .populate('orderItems.product')
+            .sort({createdOn: -1}); // Most recent orders first
+            
+        // Format date for display
+        const formattedOrders = orders.map(order => {
+            const formattedDate = new Date(order.createdOn).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+            
+            return {
+                ...order._doc,
+                formattedDate
+            };
+        });
+        
         res.render("userProfile", {
             user: userData,
-            address: addressData
-        })
+            address: addressData,
+            orders: formattedOrders
+        });
         
     } catch (error) {
-
-        console.error("Error for retrive profile data", error);
+        console.error("Error retrieving profile data", error);
         res.redirect("/pageNotFound");  
-        
     }
-    
-}
+};
 
 
 const changeUserDetails = async (req, res) => {
@@ -475,7 +493,87 @@ const setDefaultAddress = async (req, res) => {
   };
   
 
-  
+  const cancelOrder = async (req, res) => {
+    try {
+        const { orderId, reason, additionalComments } = req.body;
+        
+        // Find the order and validate ownership
+        const order = await Order.findById(orderId);
+        
+        if (!order) {
+            return res.status(404).json({
+                success: false,
+                message: "Order not found"
+            });
+        }
+
+        // Verify that the order belongs to the logged-in user
+        if (order.userId.toString() !== req.session.user) {
+            return res.status(403).json({
+                success: false,
+                message: "Unauthorized access"
+            });
+        }
+
+        // Check if order is eligible for cancellation
+        const cancelableStatuses = ["Pending", "Processing"];
+        if (!cancelableStatuses.includes(order.status)) {
+            return res.status(400).json({
+                success: false,
+                message: "This order cannot be cancelled at this stage"
+            });
+        }
+
+        // If payment is already done, we might need to initiate refund process
+        let refundInitiated = false;
+        if (order.paymentDone && order.paymentMethod !== 'cod') {
+            // Flag for refund initiation
+            refundInitiated = true;
+            // Note: Implement actual refund logic here based on payment method
+        }
+
+        // Update order status and cancellation details
+        const updateResult = await Order.findByIdAndUpdate(
+            orderId,
+            {
+                status: "Cancelled",
+                cancellation: {
+                    cancelledAt: new Date(),
+                    reason: reason === 'Other' ? 'Other' : reason,
+                    otherReason: reason === 'Other' ? additionalComments : null,
+                    comments: additionalComments
+                }
+            },
+            { new: true }
+        );
+
+        if (!updateResult) {
+            return res.status(500).json({
+                success: false,
+                message: "Failed to update order status"
+            });
+        }
+
+        // Send success response with appropriate message
+        let responseMessage = "Order cancelled successfully";
+        if (refundInitiated) {
+            responseMessage += ". Refund process has been initiated";
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: responseMessage,
+            order: updateResult
+        });
+
+    } catch (error) {
+        console.error("Error in order cancellation:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        });
+    }
+};
 
 
 module.exports = {
@@ -492,5 +590,6 @@ module.exports = {
     changePassword,
     addOrEditAddress,
     deleteAddress,
-    setDefaultAddress
+    setDefaultAddress,
+    cancelOrder
 }

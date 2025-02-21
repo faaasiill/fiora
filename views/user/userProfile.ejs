@@ -30,7 +30,7 @@
                 <li class="nav-item" data-section="address">
                     <span class="material-symbols-outlined">location_on</span>My Address
                 </li>
-                <li class="nav-item" data-section="orders">
+                <li class="nav-item" data-section="orders" id="timeline" name="timeline" >
                     <span class="material-symbols-outlined">local_mall</span>Orders
                 </li>
                 <li class="nav-item" data-section="wallet">
@@ -242,12 +242,136 @@
                 
                 
 
-            <div id="orders" class="content-section">
-                <h2 class="section-title">My Orders</h2>
-                <div class="order-card">
-                    <h3>Order #12345</h3>
-                    <p>Status: Delivered</p>
-                    <p>Date: 2024-02-14</p>
+            <div id="orders" class="content-section otrack_body otrack_all_elements">
+                <div class="otrack_container">
+                    <h1 class="otrack_main_title">My Orders</h1>
+                    
+                    <% if (orders && orders.length > 0) { %>
+                        <% orders.forEach(order => { %>
+                            <div class="otrack_order_card">
+                                <div class="otrack_order_header">
+                                    <div>
+                                        <span class="otrack_order_id">Order #<%= order.orderId.substring(0, 8) %></span>
+                                        <p class="otrack_order_date">Ordered on <%= order.formattedDate %></p>
+                                    </div>
+                                    <span class="otrack_order_status otrack_status_<%= order.status.toLowerCase() %>"><%= order.status %></span>
+                                </div>
+                                
+                                <% if (order.orderItems && order.orderItems.length > 0) { %>
+                                    <% order.orderItems.forEach((item, i) => { %>
+                                        <div class="otrack_product_item">
+                                            <img src="<%= item.product.productImage[i] %>" alt="<%= item.product.name %>" class="otrack_product_img">
+                                            <div class="otrack_product_info">
+                                                <h3 class="otrack_product_title"><%= item.product.name %></h3>
+                                                <p class="otrack_product_meta">Quantity: <%= item.quantity %> × ₹<%= item.price.toLocaleString() %></p>
+                                            </div>
+                                        </div>
+                                    <% }); %>
+                                <% } %>
+                                
+                                <button class="otrack_view_order_btn" onclick="otrackOpenModal('<%= order._id %>')">View Order Details</button>
+                                <% if (order.status === "Pending" || order.status === "Processing") { %>
+                                    <button class="cancel">Cancel Order</button>
+                                <% } %>
+                            </div>
+                            
+                            <!-- Modal for this order -->
+                            <div class="otrack_modal_wrapper" id="otrackOrderDetailModal_<%= order._id %>">
+                                <div class="otrack_modal_content_box">
+                                    <div class="otrack_modal_header">
+                                        <h2 class="otrack_modal_title">Order Details</h2>
+                                        <button class="otrack_close_modal_btn" onclick="otrackCloseModal('<%= order._id %>')">&times;</button>
+                                    </div>
+                                    <div class="otrack_order_details_container">
+                                        <h3 class="otrack_order_details_title">Order #<%= order.orderId %></h3>
+                                        <p class="otrack_order_details_text">Ordered on <%= order.formattedDate %></p>
+                                        <p class="otrack_order_details_text">
+                                            <span style="display: inline-block; padding: 3px 10px; background: #fff3cd; color: #b07d1a; border-radius: 20px; font-size: 13px; font-weight: 500;">
+                                                Status: <%= order.status %>
+                                            </span>
+                                        </p>
+                                        <p class="otrack_order_details_text">Payment Method: <%= order.paymentMethod.toUpperCase() %></p>
+                                    </div>
+                                    <div class="otrack_address_container">
+                                        <h3 class="otrack_address_title">Delivery Address</h3>
+                                        <p class="otrack_address_text"><strong><%= order.address.fullName %></strong></p>
+                                        <p class="otrack_address_text"><%= order.address.address %></p>
+                                        <p class="otrack_address_text"><%= order.address.city %>, <%= order.address.state %> - <%= order.address.pincode %></p>
+                                        <p class="otrack_address_text"><strong>Mobile:</strong> <%= order.address.mobile %></p>
+                                    </div>
+                                    <div class="otrack_price_summary">
+                                        <div class="otrack_price_row">
+                                            <span class="otrack_price_label">Total Price:</span>
+                                            <span class="otrack_price_value">₹<%= order.totalPrice.toLocaleString() %></span>
+                                        </div>
+                                        <div class="otrack_price_row">
+                                            <span class="otrack_price_label">Discount:</span>
+                                            <span class="otrack_price_value">₹<%= order.discount.toLocaleString() %></span>
+                                        </div>
+                                        <div class="otrack_price_row">
+                                            <span class="otrack_price_label">Tax:</span>
+                                            <span class="otrack_price_value">₹<%= (order.finalAmount - order.totalPrice + order.discount).toLocaleString() %></span>
+                                        </div>
+                                        <div class="otrack_price_row">
+                                            <span class="otrack_final_price_label">Final Amount:</span>
+                                            <span class="otrack_final_price_value">₹<%= order.finalAmount.toLocaleString() %></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Cancel Order Modal -->
+<div class="otrack_modal_wrapper" id="cancelOrderModal_<%= order._id %>">
+    <div class="otrack_modal_content_box">
+        <div class="otrack_modal_header">
+            <h2 class="otrack_modal_title">Cancel Order</h2>
+            <button class="otrack_close_modal_btn" onclick="closeCancelModal('<%= order._id %>')">&times;</button>
+        </div>
+        <div class="otrack_cancel_container">
+            <p class="otrack_cancel_info">Are you sure you want to cancel order #<%= order.orderId.substring(0, 8) %>?</p>
+            
+            <form id="cancelOrderForm_<%= order._id %>" class="otrack_cancel_form">
+                <input type="hidden" name="orderId" value="<%= order._id %>">
+                
+                <div class="otrack_form_group">
+                    <label class="otrack_form_label">Reason for cancellation</label>
+                    <select name="cancelReason" class="otrack_select_input" required>
+                        <option value="" disabled selected>Select a reason</option>
+                        <option value="Changed my mind">Changed my mind</option>
+                        <option value="Found better price elsewhere">Found better price elsewhere</option>
+                        <option value="Ordered by mistake">Ordered by mistake</option>
+                        <option value="Shipping takes too long">Shipping takes too long</option>
+                        <option value="Payment issues">Payment issues</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="otrack_form_group" id="otherReasonGroup_<%= order._id %>" style="display: none;">
+                    <label class="otrack_form_label">Please specify</label>
+                    <textarea name="otherReason" class="otrack_textarea" rows="3" placeholder="Please provide details..."></textarea>
+                </div>
+                
+                <div class="otrack_form_group">
+                    <label class="otrack_form_label">Additional comments (optional)</label>
+                    <textarea name="comments" class="otrack_textarea" rows="3" placeholder="Any additional information..."></textarea>
+                </div>
+                
+                <div class="otrack_cancel_actions">
+                    <button type="button" class="otrack_cancel_btn_secondary" onclick="closeCancelModal('<%= order._id %>')">Keep My Order</button>
+                    <button type="submit" class="otrack_cancel_btn_primary">Confirm Cancellation</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+                            
+                        <% }); %>
+                    <% } else { %>
+                        <div class="otrack_empty_state">
+                            <p>You haven't placed any orders yet.</p>
+                        </div>
+                    <% } %>
                 </div>
             </div>
 
@@ -940,6 +1064,198 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
 
+
+
+
+        function otrackOpenModal(orderId) {
+        const modal = document.getElementById('otrackOrderDetailModal_' + orderId);
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        
+        // Add active class after a small delay to trigger animations
+        setTimeout(() => {
+            modal.classList.add('otrack_modal_active');
+        }, 10);
+    }
+
+
+    function otrackCloseModal(orderId) {
+        const modal = document.getElementById('otrackOrderDetailModal_' + orderId);
+        modal.classList.remove('otrack_modal_active');
+        
+        // Wait for animation to finish before hiding
+        setTimeout(() => {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }, 300);
+    }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(event) {
+        const modals = document.querySelectorAll('.otrack_modal_wrapper');
+        modals.forEach(modal => {
+            if (event.target === modal) {
+                const orderId = modal.id.replace('otrackOrderDetailModal_', '');
+                otrackCloseModal(orderId);
+            }
+        });
+    });
+
+
+
+
+
+
+    // JavaScript for Cancel Order functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listeners to all cancel buttons
+    const cancelButtons = document.querySelectorAll('.cancel');
+    cancelButtons.forEach(button => {
+        // Get the order id from the closest parent element with order data
+        const orderCard = button.closest('.otrack_order_card');
+        const orderIdElement = orderCard.querySelector('.otrack_order_id');
+        const viewDetailsBtn = orderCard.querySelector('.otrack_view_order_btn');
+        const orderId = viewDetailsBtn.getAttribute('onclick').match(/'([^']+)'/)[1];
+        
+        button.addEventListener('click', function() {
+            openCancelModal(orderId);
+        });
+    });
+    
+    // Set up reason dropdown change handlers for all forms
+    document.querySelectorAll('[id^=cancelOrderForm_]').forEach(form => {
+        const orderId = form.id.replace('cancelOrderForm_', '');
+        const reasonSelect = form.querySelector('select[name="cancelReason"]');
+        const otherReasonGroup = document.getElementById(`otherReasonGroup_${orderId}`);
+        
+        reasonSelect.addEventListener('change', function() {
+            if (this.value === 'Other') {
+                otherReasonGroup.style.display = 'block';
+                otherReasonGroup.querySelector('textarea').setAttribute('required', true);
+            } else {
+                otherReasonGroup.style.display = 'none';
+                otherReasonGroup.querySelector('textarea').removeAttribute('required');
+            }
+        });
+        
+        // Set up form submission
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitCancelOrder(orderId, form);
+        });
+    });
+});
+
+// Function to open the cancel order modal
+function openCancelModal(orderId) {
+    const modal = document.getElementById(`cancelOrderModal_${orderId}`);
+    if (modal) {
+        modal.style.display = 'flex';
+        setTimeout(() => {
+            modal.classList.add('otrack_modal_active');
+        }, 10);
+    }
+}
+
+// Function to close the cancel order modal
+function closeCancelModal(orderId) {
+    const modal = document.getElementById(`cancelOrderModal_${orderId}`);
+    if (modal) {
+        modal.classList.remove('otrack_modal_active');
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 300);
+    }
+}
+
+// Function to handle the cancel order form submission
+function submitCancelOrder(orderId, form) {
+    // Show confirmation animation
+    const modalContent = form.closest('.otrack_modal_content_box');
+    modalContent.classList.add('cancel_confirm_animation');
+    
+    // Get form data
+    const formData = new FormData(form);
+    const cancelReason = formData.get('cancelReason');
+    const otherReason = formData.get('otherReason');
+    const comments = formData.get('comments');
+    
+    // Prepare data for API
+    const data = {
+        orderId: formData.get('orderId'),
+        reason: cancelReason === 'Other' ? otherReason : cancelReason,
+        additionalComments: comments
+    };
+    
+    // Send cancellation request to server
+    fetch('/orders/cancel', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            // Show success message
+            form.innerHTML = `
+                <div class="otrack_success_message">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="otrack_success_icon">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    <h3>Order Cancelled Successfully</h3>
+                    <p>Your order has been cancelled. You will receive a confirmation email shortly.</p>
+                    <button type="button" class="otrack_done_btn" onclick="window.location.reload()">Done</button>
+                </div>
+            `;
+        } else {
+            // Show error message
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'otrack_error_message';
+            errorDiv.textContent = result.message || 'Failed to cancel order. Please try again.';
+            form.prepend(errorDiv);
+            
+            // Remove animation class
+            modalContent.classList.remove('cancel_confirm_animation');
+        }
+    })
+    .catch(error => {
+        console.error('Error cancelling order:', error);
+        
+        // Show error message
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'otrack_error_message';
+        errorDiv.textContent = 'Network error. Please try again later.';
+        form.prepend(errorDiv);
+        
+        // Remove animation class
+        modalContent.classList.remove('cancel_confirm_animation');
+    });
+}
+
+// Function to open the order details modal (copied from existing code)
+function otrackOpenModal(orderId) {
+    const modal = document.getElementById(`otrackOrderDetailModal_${orderId}`);
+    if (modal) {
+        modal.style.display = 'flex';
+        setTimeout(() => {
+            modal.classList.add('otrack_modal_active');
+        }, 10);
+    }
+}
+
+// Function to close the order details modal (copied from existing code)
+function otrackCloseModal(orderId) {
+    const modal = document.getElementById(`otrackOrderDetailModal_${orderId}`);
+    if (modal) {
+        modal.classList.remove('otrack_modal_active');
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 300);
+    }
+}
         
     </script>
 </body>

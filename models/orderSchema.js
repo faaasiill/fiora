@@ -10,6 +10,11 @@ const orderSchema = new Schema({
         default: () => uuidv4(),
         unique: true
     },
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+    },
     orderItems: [{
         product: {
             type: Schema.Types.ObjectId,
@@ -58,6 +63,10 @@ const orderSchema = new Schema({
         required: true,
         enum: ["cod", "razorpay", "paypal", "upi"]
     },
+    paymentDone: {
+        type: Boolean,
+        default: false 
+    },
     createdOn: {
         type: Date,
         default: Date.now,
@@ -66,8 +75,30 @@ const orderSchema = new Schema({
     couponApplied: {
         type: Boolean,
         default: false
+    },
+    cancellation: {
+        cancelledAt: {
+            type: Date
+        },
+        reason: {
+            type: String,
+            enum: [
+                "Changed my mind",
+                "Found better price elsewhere",
+                "Ordered by mistake",
+                "Shipping takes too long",
+                "Payment issues",
+                "Other"
+            ]
+        },
+        otherReason: {
+            type: String
+        },
+        comments: {
+            type: String
+        }
     }
-})
+});
 
 const Order = mongoose.model("Order", orderSchema);
 module.exports = Order;  

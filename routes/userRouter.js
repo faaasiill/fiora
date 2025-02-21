@@ -66,6 +66,7 @@ router.post("/changePassword", userAuth, profileController.changePassword);
 router.post("/addOrEditAddress", userAuth, profileController.addOrEditAddress);
 router.delete("/deleteAddress/:addressId", userAuth, profileController.deleteAddress);
 router.post("/setDefaultAddress", userAuth, profileController.setDefaultAddress);
+router.post("/orders/cancel", userAuth, profileController.cancelOrder);
 // wishlist management
 router.get("/wishlist", userAuth, wishlistController.loadWishlist);
 router.post("/addToWishlist", userAuth, wishlistController.addToWishlist);

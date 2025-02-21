@@ -101,6 +101,7 @@ const placeOrder = async (req, res) => {
 
         // Create new order with address details
         const newOrder = new Order({
+            userId: userId,
             orderItems,
             totalPrice: cart.cartTotal.subtotal,
             discount: cart.cartTotal.discount,
@@ -114,6 +115,12 @@ const placeOrder = async (req, res) => {
 
         // Save order
         await newOrder.save();
+
+        await User.findByIdAndUpdate(
+            userId,
+            { $push: { orderHistory: newOrder._id } },
+            { new: true }
+        );
 
         // Clear cart
         await Cart.findOneAndDelete({ userId });

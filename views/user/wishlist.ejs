@@ -195,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return product.querySelector('.category-tag').textContent.toLowerCase().trim();
         }
 
-        // Main filter function that combines all filtering logic
+
         function filterProducts() {
     const searchTerm = searchInput.value.toLowerCase();
     const filterValue = filterSelect.value;
@@ -237,6 +237,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Check if any products are visible
     checkEmptyState();
 }
+
+
         // Sort function
         function sortProducts() {
             const sortValue = sortSelect.value;
