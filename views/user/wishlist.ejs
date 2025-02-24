@@ -15,52 +15,52 @@
 </head>
 
 <body>
-    <!-- Add this navigation HTML just after your <body> tag -->
-<nav class="main-nav">
-    <div class="nav-container">
-        <div class="logo-container">
-            <img src="/images/Fiora1/2.png" class="logo" alt="Logo" />
+    <nav class="main-nav">
+        <div class="nav-container">
+            <div class="logo-container">
+                <img src="/images/Fiora1/2.png" class="logo" alt="Logo" />
+            </div>
+
+            <!-- Desktop Menu -->
+            <div class="nav-links">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/products" class="nav-link">Shop</a>
+                <a href="/contact" class="nav-link">Contact</a>
+            </div>
+
+            <!-- Icons for desktop -->
+            <div class="nav-icons">
+                <a href="<%= locals.user ? '/userProfile' : '/signup' %>"><span
+                        class="material-symbols-outlined">account_circle</span></a>
+                <a href=""><span class="material-symbols-outlined">local_mall</span></a>
+            </div>
+
+            <!-- Hamburger Menu Button -->
+            <div class="hamburger-menu">
+                <span class="material-symbols-outlined">menu</span>
+            </div>
         </div>
-        
-        <!-- Desktop Menu -->
-        <div class="nav-links">
-            <a href="/" class="nav-link">Home</a>
-            <a href="/products" class="nav-link">Shop</a>
-            <a href="/contact" class="nav-link">Contact</a>
+
+        <!-- Mobile Menu -->
+        <div class="mobile-menu">
+            <a href="/" class="mobile-link">
+                <span class="material-symbols-outlined">home</span>
+                Home
+            </a>
+            <a href="/profile" class="mobile-link">
+                <span class="material-symbols-outlined">person</span>
+                Profile
+            </a>
+            <a href="/cart" class="mobile-link">
+                <span class="material-symbols-outlined">shopping_cart</span>
+                Cart
+            </a>
+            <a href="/logout" class="mobile-link">
+                <span class="material-symbols-outlined">logout</span>
+                Logout
+            </a>
         </div>
-        
-        <!-- Icons for desktop -->
-        <div class="nav-icons">
-            <a href="<%= locals.user ? '/userProfile' : '/signup' %>"><span class="material-symbols-outlined">account_circle</span></a>
-            <a href=""><span class="material-symbols-outlined">local_mall</span></a>
-        </div>
-        
-        <!-- Hamburger Menu Button -->
-        <div class="hamburger-menu">
-            <span class="material-symbols-outlined">menu</span>
-        </div>
-    </div>
-    
-    <!-- Mobile Menu -->
-    <div class="mobile-menu">
-        <a href="/" class="mobile-link">
-            <span class="material-symbols-outlined">home</span>
-            Home
-        </a>
-        <a href="/profile" class="mobile-link">
-            <span class="material-symbols-outlined">person</span>
-            Profile
-        </a>
-        <a href="/cart" class="mobile-link">
-            <span class="material-symbols-outlined">shopping_cart</span>
-            Cart
-        </a>
-        <a href="/logout" class="mobile-link">
-            <span class="material-symbols-outlined">logout</span>
-            Logout
-        </a>
-    </div>
-</nav>
+    </nav>
     <div class="wishlist-page">
         <div class="page-header">
             <h1 class="page-title">My Wishlist</h1>
@@ -73,13 +73,14 @@
                 </div>
                 <select class="category-select">
                     <option value="all">All Categories</option>
-                    <% 
-                    // Assuming you have access to categories from backend
-                    const uniqueCategories = [...new Set(wishlist.map(product => product.category.name))];
-                    uniqueCategories.forEach(category => { 
-                    %>
-                        <option value="<%= category.toLowerCase() %>"><%= category %></option>
-                    <% }); %>
+                    <% // Assuming you have access to categories from backend const uniqueCategories=[...new
+                        Set(wishlist.map(product=> product.category.name))];
+                        uniqueCategories.forEach(category => {
+                        %>
+                        <option value="<%= category.toLowerCase() %>">
+                            <%= category %>
+                        </option>
+                        <% }); %>
                 </select>
                 <select class="filter-select">
                     <option value="all">All Prices</option>
@@ -98,20 +99,28 @@
         </div>
 
         <div class="products-grid">
-            <% if (wishlist.length > 0) { %>
+            <% if (wishlist.length> 0) { %>
                 <% for(let product of wishlist) { %>
                     <div class="product-card" data-category="<%= product.category.name.toLowerCase() %>">
-                        <span class="category-tag"><%= product.category.name %></span>
+                        <span class="category-tag">
+                            <%= product.category.name %>
+                        </span>
                         <a href="/productDetails?id=<%= product._id %>">
-                        <img src="<%= product.productImage[0] %>" alt="<%= product.productName %>" class="product-image">
-                    </a>
-                        <button class="wishlist-button" data-product-id="<%= product._id %>" onclick="confirmRemove('<%= product._id %>')">
-                            <svg style="color: red;" xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
-                              </svg>
+                            <img src="<%= product.productImage[0] %>" alt="<%= product.productName %>"
+                                class="product-image">
+                        </a>
+                        <button class="wishlist-button" data-product-id="<%= product._id %>"
+                            onclick="confirmRemove('<%= product._id %>')">
+                            <svg style="color: red;" xmlns="http://www.w3.org/2000/svg" width="17" height="17"
+                                fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                    d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />
+                            </svg>
                         </button>
                         <div class="product-details">
-                            <h2 class="product-name"><%= product.productName %></h2>
+                            <h2 class="product-name">
+                                <%= product.productName %>
+                            </h2>
                             <div class="price-details">
                                 <span class="current-price">₹<%= product.salePrice %></span>
                                 <span class="original-price">₹<%= product.regularPrice %></span>
@@ -119,59 +128,61 @@
                             <button class="add-cart-button" data-product-id="<%= product._id %>">Add to Cart</button>
                         </div>
                     </div>
-                <% } %>
-            <% } else { %>
-                <div class="empty-state">
-                    <h2 style="font-size: 20px;">Your wishlist is empty</h2>
-                    <p style="margin: 15px; font-size: 12px;">Save your favorite items to your wishlist and they will appear here</p>
-                    <a href="/products"><button class="btn add-cart-button shop-link">Continue Shopping</button></a>
-                </div>
-            <% } %>
-            
-            
-            
+                    <% } %>
+                        <% } else { %>
+                            <div class="empty-state">
+                                <h2 style="font-size: 20px;">Your wishlist is empty</h2>
+                                <p style="margin: 15px; font-size: 12px;">Save your favorite items to your wishlist and
+                                    they will appear here</p>
+                                <a href="/products"><button class="btn add-cart-button shop-link">Continue
+                                        Shopping</button></a>
+                            </div>
+                            <% } %>
+
+
+
         </div>
 
-        
+
     </div>
 
 
     <script>
 
-document.addEventListener('DOMContentLoaded', function() {
-    const hamburgerMenu = document.querySelector('.hamburger-menu');
-    const mobileMenu = document.querySelector('.mobile-menu');
-    
-    hamburgerMenu.addEventListener('click', function() {
-        mobileMenu.classList.toggle('active');
-        
-        // Toggle hamburger icon between menu and close
-        const icon = this.querySelector('.material-symbols-outlined');
-        if (mobileMenu.classList.contains('active')) {
-            icon.textContent = 'close';
-        } else {
-            icon.textContent = 'menu';
-        }
-    });
-    
-    // Close mobile menu when clicking outside
-    document.addEventListener('click', function(event) {
-        const isClickInsideNav = event.target.closest('.main-nav');
-        if (!isClickInsideNav && mobileMenu.classList.contains('active')) {
-            mobileMenu.classList.remove('active');
-            hamburgerMenu.querySelector('.material-symbols-outlined').textContent = 'menu';
-        }
-    });
-    
-    // Close mobile menu when window is resized above mobile breakpoint
-    window.addEventListener('resize', function() {
-        if (window.innerWidth > 768 && mobileMenu.classList.contains('active')) {
-            mobileMenu.classList.remove('active');
-            hamburgerMenu.querySelector('.material-symbols-outlined').textContent = 'menu';
-        }
-    });
-});
-        
+        document.addEventListener('DOMContentLoaded', function () {
+            const hamburgerMenu = document.querySelector('.hamburger-menu');
+            const mobileMenu = document.querySelector('.mobile-menu');
+
+            hamburgerMenu.addEventListener('click', function () {
+                mobileMenu.classList.toggle('active');
+
+                // Toggle hamburger icon between menu and close
+                const icon = this.querySelector('.material-symbols-outlined');
+                if (mobileMenu.classList.contains('active')) {
+                    icon.textContent = 'close';
+                } else {
+                    icon.textContent = 'menu';
+                }
+            });
+
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function (event) {
+                const isClickInsideNav = event.target.closest('.main-nav');
+                if (!isClickInsideNav && mobileMenu.classList.contains('active')) {
+                    mobileMenu.classList.remove('active');
+                    hamburgerMenu.querySelector('.material-symbols-outlined').textContent = 'menu';
+                }
+            });
+
+            // Close mobile menu when window is resized above mobile breakpoint
+            window.addEventListener('resize', function () {
+                if (window.innerWidth > 768 && mobileMenu.classList.contains('active')) {
+                    mobileMenu.classList.remove('active');
+                    hamburgerMenu.querySelector('.material-symbols-outlined').textContent = 'menu';
+                }
+            });
+        });
+
 
 
         // Get all necessary DOM elements
@@ -191,52 +202,52 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         function getProductCategory(product) {
-   
+
             return product.querySelector('.category-tag').textContent.toLowerCase().trim();
         }
 
 
         function filterProducts() {
-    const searchTerm = searchInput.value.toLowerCase();
-    const filterValue = filterSelect.value;
-    const categoryValue = categorySelect.value;
+            const searchTerm = searchInput.value.toLowerCase();
+            const filterValue = filterSelect.value;
+            const categoryValue = categorySelect.value;
 
-    products.forEach(product => {
-        const productName = getProductName(product).toLowerCase();
-        const price = getCurrentPrice(product);
-        const category = getProductCategory(product);
+            products.forEach(product => {
+                const productName = getProductName(product).toLowerCase();
+                const price = getCurrentPrice(product);
+                const category = getProductCategory(product);
 
-        // Check if product matches all filter criteria
-        let matchesSearch = productName.includes(searchTerm);
-        let matchesPrice = true;
-        let matchesCategory = true;
+                // Check if product matches all filter criteria
+                let matchesSearch = productName.includes(searchTerm);
+                let matchesPrice = true;
+                let matchesCategory = true;
 
-        // Price filter
-        switch (filterValue) {
-            case 'under1500':
-                matchesPrice = price < 1500;
-                break;
-            case '1500to2000':
-                matchesPrice = price >= 1500 && price <= 2000;
-                break;
-            case 'above2000':
-                matchesPrice = price > 2000;
-                break;
+                // Price filter
+                switch (filterValue) {
+                    case 'under1500':
+                        matchesPrice = price < 1500;
+                        break;
+                    case '1500to2000':
+                        matchesPrice = price >= 1500 && price <= 2000;
+                        break;
+                    case 'above2000':
+                        matchesPrice = price > 2000;
+                        break;
+                }
+
+                // Category filter
+                if (categoryValue !== 'all') {
+                    // Convert both to lowercase for case-insensitive comparison
+                    matchesCategory = category.toLowerCase() === categoryValue.toLowerCase();
+                }
+
+                // Show/hide product based on all criteria
+                product.style.display = (matchesSearch && matchesPrice && matchesCategory) ? '' : 'none';
+            });
+
+            // Check if any products are visible
+            checkEmptyState();
         }
-
-        // Category filter
-        if (categoryValue !== 'all') {
-            // Convert both to lowercase for case-insensitive comparison
-            matchesCategory = category.toLowerCase() === categoryValue.toLowerCase();
-        }
-
-        // Show/hide product based on all criteria
-        product.style.display = (matchesSearch && matchesPrice && matchesCategory) ? '' : 'none';
-    });
-
-    // Check if any products are visible
-    checkEmptyState();
-}
 
 
         // Sort function
@@ -299,41 +310,41 @@ document.addEventListener('DOMContentLoaded', function() {
         // Initial check for empty state
         checkEmptyState();
 
-        
+
         function confirmRemove(productId) {
-    Swal.fire({
-        title: 'Are you sure you want to remove this?',
-        text: 'You will not be able to revert this action.',
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: 'Yes, remove it!',
-    }).then((result) => {
-        if (result.isConfirmed) {
-            fetch('/removeFromWishlist', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ productId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status) {
-                    Swal.fire('Removed!', data.message, 'success').then(() => {
-                        location.reload(); // Refresh to update UI
-                    });
-                } else {
-                    Swal.fire('Error', data.message, 'error');
+            Swal.fire({
+                title: 'Are you sure you want to remove this?',
+                text: 'You will not be able to revert this action.',
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: 'Yes, remove it!',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('/removeFromWishlist', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ productId })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status) {
+                                Swal.fire('Removed!', data.message, 'success').then(() => {
+                                    location.reload(); // Refresh to update UI
+                                });
+                            } else {
+                                Swal.fire('Error', data.message, 'error');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire('Error', 'Something went wrong', 'error');
+                        });
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                Swal.fire('Error', 'Something went wrong', 'error');
             });
         }
-    });
-}
 
 
     </script>

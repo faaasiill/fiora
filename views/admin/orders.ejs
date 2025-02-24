@@ -1,3 +1,4 @@
+<!-- views/orders.ejs -->
 <%- include("../../views/partials/admin/header") %>
     <!DOCTYPE html>
     <html lang="en">
@@ -11,81 +12,97 @@
 
     <body>
         <div class="container-fluid">
-            <div class="row">
-                <div class="col-12">
-                    <div class="admin-card">
-                        <div class="admin-card-header">
-                            <h2>Order Management</h2>
-                        </div>
-                        <div class="admin-card-body">
-                            <div class="table-container">
-                                <table class="admin-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Order ID</th>
-                                            <th>Customer</th>
-                                            <th>Order Date</th>
-                                            <th>Status</th>
-                                            <th>Total Amount</th>
-                                            <th>Payment</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="orderTableBody">
-                                        <% orders.forEach(order=> { %>
-                                            <tr>
-                                                <td>
-                                                    <%= order.orderId.substring(0, 8) %>
-                                                        <% if (order.status==='Cancelled' ) { %>
-                                                            <span class="cancellation-badge">Cancelled</span>
-                                                            <% } %>
-                                                </td>
-                                                <td>
-                                                    <%= order.address.fullName %>
-                                                </td>
-                                                <td>
-                                                    <%= helpers.formatDate(order.createdOn) %>
-                                                </td>
-                                                <td>
-                                                    <div class="status-dropdown">
-                                                        <button
-                                                            class="status-btn <%= helpers.getStatusClass(order.status) %>"
-                                                            type="button" onclick="toggleDropdown(this)">
-                                                            <%= order.status %>▼
-                                                        </button>
-                                                        <div class="status-dropdown-content">
-                                                            <% ['Pending', 'Processing' , 'Shipped' , 'Delivered'
-                                                                , 'Cancelled' , 'Return Request' , 'Returned'
-                                                                ].forEach(status=> { %>
-                                                                <a href="#"
-                                                                    onclick="updateOrderStatus('<%= order._id %>', '<%= status %>')">
-                                                                    <%= status %>
-                                                                </a>
-                                                                <% }); %>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <%= helpers.formatCurrency(order.finalAmount) %>
-                                                </td>
-                                                <td>
-                                                    <span
-                                                        class="payment-badge <%= order.paymentDone ? 'paid' : 'pending' %>">
-                                                        <%= order.paymentMethod.toUpperCase() %>
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <button class="view-btn"
-                                                        onclick="viewOrderDetails('<%= order._id %>')">
-                                                        View Details
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                            <% }); %>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+            <div class="admin-card">
+                <div class="admin-card-filters">
+                    <div class="search-section">
+                        <input type="text" id="searchInput" placeholder="Search by Order ID or Customer Name..."
+                            class="search-input">
+                    </div>
+                    <div class="filter-section">
+                        <select id="statusFilter" class="filter-select">
+                            <option value="">Filter by Status</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Processing">Processing</option>
+                            <option value="Shipped">Shipped</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Cancelled">Cancelled</option>
+                            <option value="Return Request">Return Request</option>
+                            <option value="Returned">Returned</option>
+                        </select>
+                        <select id="sortBy" class="filter-select">
+                            <option value="">Sort by</option>
+                            <option value="date-new">Date (Newest First)</option>
+                            <option value="date-old">Date (Oldest First)</option>
+                            <option value="amount-high">Amount (High to Low)</option>
+                            <option value="amount-low">Amount (Low to High)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="admin-card-header">
+                    <!-- Add this right after the admin-card-header div -->
+                    <h2>Order Management</h2>
+                </div>
+                <div class="admin-card-body">
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Order Date</th>
+                                    <th>Status</th>
+                                    <th>Total Amount</th>
+                                    <th>Payment</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% orders.forEach(order=> { %>
+                                    <tr data-order-id="<%= order._id %>">
+                                        <td>
+                                            <%= order.orderId.substring(0, 8) %>
+                                                <% if (order.status==='Cancelled' ) { %>
+                                                    <span class="cancellation-badge">Cancelled</span>
+                                                    <% } %>
+                                        </td>
+                                        <td>
+                                            <%= order.address.fullName %>
+                                        </td>
+                                        <td>
+                                            <%= helpers.formatDate(order.createdOn) %>
+                                        </td>
+                                        <td>
+                                            <div class="status-dropdown">
+                                                <button class="status-btn <%= helpers.getStatusClass(order.status) %>">
+                                                    <%= order.status %> ▼
+                                                </button>
+                                                <div class="status-dropdown-content">
+                                                    <% ['Pending', 'Processing' , 'Shipped' , 'Delivered' , 'Cancelled'
+                                                        , 'Return Request' , 'Returned' ].forEach(status=> { %>
+                                                        <a href="#" class="status-option" data-status="<%= status %>">
+                                                            <%= status %>
+                                                        </a>
+                                                        <% }) %>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <%= helpers.formatCurrency(order.finalAmount) %>
+                                        </td>
+                                        <td>
+                                            <span class="payment-badge <%= order.paymentDone ? 'paid' : 'pending' %>">
+                                                <%= order.paymentMethod.toUpperCase() %>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <button class="view-btn" onclick="viewOrderDetails('<%= order._id %>')">
+                                                View Details
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -98,122 +115,79 @@
                     <h3>Order Details</h3>
                     <span class="close-modal">&times;</span>
                 </div>
-                <div id="modalContent" class="modal-body">
-                    <!-- Content will be loaded dynamically -->
-                </div>
+                <div id="modalContent" class="modal-body"></div>
             </div>
         </div>
 
-        <!-- SweetAlert2 CDN -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
         <script>
-            const orders = <% - JSON.stringify(orders) %>;
-            // Helper function to get status class
-            function getStatusClass(status) {
-                status = status.toLowerCase().replace(' ', '');
-                switch (status) {
-                    case 'pending': return 'status-pending';
-                    case 'processing': return 'status-processing';
-                    case 'shipped': return 'status-shipped';
-                    case 'delivered': return 'status-delivered';
-                    case 'cancelled': return 'status-cancelled';
-                    case 'returnrequest': return 'status-return';
-                    case 'returned': return 'status-returned';
-                    default: return 'status-pending';
-                }
-            }
 
-            // Format date and time
-            function formatDateTime(dateString) {
-                const date = new Date(dateString);
-                return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            }
-
-            // Populate the table with order data
-            function populateOrderTable() {
-                const tableBody = document.getElementById('orderTableBody');
-                tableBody.innerHTML = '';
-
-                orders.forEach(order => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                    <td>${order.orderId.substring(0, 8)}${order.status === 'Cancelled' ? ' <span class="cancellation-badge">Cancelled</span>' : ''}</td>
-                    <td>${order.address.fullName}</td>
-                    <td>${new Date(order.createdOn).toLocaleDateString()}</td>
-                    <td>
-                        <div class="status-dropdown">
-                            <button class="status-btn ${getStatusClass(order.status)}" 
-                                    type="button" 
-                                    onclick="toggleDropdown(this)">
-                                ${order.status}▼
-                            </button>
-                            <div class="status-dropdown-content">
-                                <a href="#" onclick="updateOrderStatus('${order._id}', 'Pending')">Pending</a>
-                                <a href="#" onclick="updateOrderStatus('${order._id}', 'Processing')">Processing</a>
-                                <a href="#" onclick="updateOrderStatus('${order._id}', 'Shipped')">Shipped</a>
-                                <a href="#" onclick="updateOrderStatus('${order._id}', 'Delivered')">Delivered</a>
-                                <a href="#" onclick="updateOrderStatus('${order._id}', 'Cancelled')">Cancelled</a>
-                                <a href="#" onclick="updateOrderStatus('${order._id}', 'Return Request')">Return Request</a>
-                                <a href="#" onclick="updateOrderStatus('${order._id}', 'Returned')">Returned</a>
-                            </div>
-                        </div>
-                    </td>
-                    <td>₹${order.finalAmount.toLocaleString()}</td>
-                    <td>
-                        <span class="payment-badge ${order.paymentDone ? 'paid' : 'pending'}">
-                            ${order.paymentMethod.toUpperCase()}
-                        </span>
-                    </td>
-                    <td>
-                        <button class="view-btn" onclick="viewOrderDetails('${order._id}')">
-                            View Details
-                        </button>
-                    </td>
-                `;
-                    tableBody.appendChild(row);
-                });
-            }
-
-            document.addEventListener('DOMContentLoaded', function () {
-                if (typeof orders !== 'undefined' && Array.isArray(orders)) {
-                    populateOrderTable();
-                } else {
-                    console.error("Orders data not available or not in expected format");
-                    document.getElementById('orderTableBody').innerHTML =
-                        '<tr><td colspan="7">No orders found or data loading issue</td></tr>';
-                }
+            document.addEventListener('DOMContentLoaded', () => {
+                initializeEventListeners();
             });
 
-            // Toggle status dropdown
-            function toggleDropdown(button) {
-                const dropdown = button.nextElementSibling;
-                const allDropdowns = document.querySelectorAll('.status-dropdown-content');
-
-                // Close all other dropdowns
-                allDropdowns.forEach(d => {
-                    if (d !== dropdown) d.style.display = 'none';
+            function initializeEventListeners() {
+                // Status dropdown handlers
+                document.querySelectorAll('.status-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        toggleDropdown(e);
+                    });
                 });
 
-                // Toggle current dropdown
+                // Status option handlers
+                document.querySelectorAll('.status-option').forEach(option => {
+                    option.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleStatusUpdate(e);
+                        closeAllDropdowns();
+                    });
+                });
+
+                // Modal close handler
+                document.querySelector('.close-modal').addEventListener('click', closeModal);
+                window.addEventListener('click', (e) => {
+                    if (e.target === document.getElementById('orderModal')) {
+                        closeModal();
+                    }
+                });
+
+                // Close dropdowns when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!e.target.matches('.status-btn')) {
+                        closeAllDropdowns();
+                    }
+                });
+            }
+
+            function toggleDropdown(event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                const dropdown = event.target.nextElementSibling;
+                closeAllDropdowns();
                 dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
             }
 
-            // Close dropdowns when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!e.target.matches('.status-btn')) {
-                    const dropdowns = document.querySelectorAll('.status-dropdown-content');
-                    dropdowns.forEach(d => d.style.display = 'none');
-                }
-            });
+            function closeAllDropdowns() {
+                document.querySelectorAll('.status-dropdown-content').forEach(dropdown => {
+                    dropdown.style.display = 'none';
+                });
+            }
 
-            // Update order status
-            async function updateOrderStatus(orderId, newStatus) {
+            async function handleStatusUpdate(event) {
+                event.preventDefault();
+                const orderId = event.target.closest('tr').dataset.orderId;
+                const newStatus = event.target.dataset.status;
+
                 try {
                     const response = await fetch('/admin/orders/updateStatus', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
+                            // Add CSRF token if you're using it
                         },
                         body: JSON.stringify({ orderId, status: newStatus })
                     });
@@ -221,140 +195,246 @@
                     const data = await response.json();
 
                     if (data.success) {
-                        Swal.fire('Success', 'Order status updated successfully', 'success')
-                            .then(() => {
-                                window.location.reload();
-                            });
+                        await Swal.fire({
+                            title: 'Success',
+                            text: 'Order status updated successfully',
+                            icon: 'success'
+                        });
+                        location.reload();
                     } else {
-                        Swal.fire('Error', data.message || 'Failed to update status', 'error');
+                        throw new Error(data.message || 'Failed to update order status');
                     }
                 } catch (error) {
                     console.error('Error:', error);
-                    Swal.fire('Error', 'Failed to update status', 'error');
+                    Swal.fire({
+                        title: 'Error',
+                        text: error.message || 'Failed to update order status',
+                        icon: 'error'
+                    });
+                }
+            }
+            async function viewOrderDetails(orderId) {
+                try {
+                    const response = await fetch(`/admin/orders/${orderId}`);
+                    if (!response.ok) throw new Error('Failed to fetch order details');
+
+                    const order = await response.json();
+                    console.log('Received order data:', order); // Add this logging
+                    console.log('Order items:', order.orderItems);
+
+
+                    document.getElementById('modalContent').innerHTML = generateOrderDetailHTML(order);
+                    document.getElementById('orderModal').style.display = 'block';
+                } catch (error) {
+                    console.error('Error:', error);
+                    Swal.fire('Error', 'Failed to load order details', 'error');
                 }
             }
 
-            // View order details
-            async function viewOrderDetails(orderId) {
-                try {
-                    console.log(`Fetching details for order: ${orderId}`);
-                    const response = await fetch(`/admin/orders/${orderId}`);
+            function generateOrderDetailHTML(order) {
+                return `
+        <div class="order-details">
+            <div class="detail-section">
+                <h4>Order Information</h4>
+                <p><strong>Order ID:</strong> ${order.orderId}</p>
+                <p><strong>Date:</strong> ${formatDateTime(order.createdOn)}</p>
+                <p><strong>Status:</strong> ${order.status}</p>
+                <p><strong>Payment Method:</strong> ${order.paymentMethod.toUpperCase()}</p>
+                <p><strong>Payment Status:</strong> ${order.paymentDone ? 'Paid' : 'Pending'}</p>
+            </div>
 
-                    if (!response.ok) {
-                        const errorText = await response.text();
-                        console.error(`Server responded with ${response.status}: ${errorText}`);
-                        throw new Error(`Server responded with ${response.status}`);
-                    }
+            <div class="detail-section">
+                <h4>Customer Details</h4>
+                <p>${order.address.fullName}</p>
+                <p>${order.address.address}</p>
+                <p>${order.address.city}, ${order.address.state} ${order.address.pincode}</p>
+                <p>Phone: ${order.address.mobile}</p>
+            </div>
 
-                    const order = await response.json();
-                    if (order) {
-                        const modal = document.getElementById('orderModal');
-                        const modalContent = document.getElementById('modalContent');
-                        modalContent.innerHTML = generateOrderDetailHTML(order);
-                        modal.style.display = 'block';
-                    }
-                } catch (error) {
-                    console.error('Error fetching order details:', error);
-                    Swal.fire('Error', `Failed to load order details: ${error.message}`, 'error');
-                }
-            }       // Close modal when clicking the X
-            document.querySelector('.close-modal').onclick = function () {
+            <div class="detail-section">
+                <h4>Order Items</h4>
+                <table class="detail-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${generateOrderItemsHTML(order.orderItems)}
+                    </tbody>
+                    <tfoot>
+                        ${generateOrderSummaryHTML(order)}
+                    </tfoot>
+                </table>
+            </div>
+            ${order.cancellation ? generateCancellationHTML(order.cancellation) : ''}
+        </div>
+    `;
+            }
+
+            function closeModal() {
                 document.getElementById('orderModal').style.display = 'none';
             }
 
-            // Close modal when clicking outside
-            window.onclick = function (event) {
-                const modal = document.getElementById('orderModal');
-                if (event.target == modal) {
-                    modal.style.display = 'none';
-                }
+            // Helper functions
+            function formatDateTime(dateString) {
+                return new Date(dateString).toLocaleString('en-IN', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
             }
 
-            // Generate order detail HTML
-            function generateOrderDetailHTML(order) {
-                // Format the order details for the modal
+            function generateOrderItemsHTML(items) {
+                return items.map((item, i) => `
+        <tr>
+            <td>${item.product.productName}</td>
+            <td>${item.quantity}</td>
+            <td>₹${item.price.toLocaleString()}</td>
+            <td>₹${(item.price * item.quantity).toLocaleString()}</td>
+        </tr>
+    `).join('');
+            }
+
+            function generateOrderSummaryHTML(order) {
                 return `
-                <div class="order-detail-grid">
-                    <div class="detail-section">
-                        <h4>Order Information</h4>
-                        <p><strong>Order ID:</strong> ${order.orderId}</p>
-                        <p><strong>Date:</strong> ${formatDateTime(order.createdOn)}</p>
-                        <p><strong>Status:</strong> <span class="${getStatusClass(order.status)}" style="padding: 3px 8px; border-radius: 4px;">${order.status}</span></p>
-                        <p><strong>Payment:</strong> ${order.paymentMethod.toUpperCase()}</p>
-                        <p><strong>Payment Status:</strong> <span class="payment-badge ${order.paymentDone ? 'paid' : 'pending'}">${order.paymentDone ? 'Paid' : 'Pending'}</span></p>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <h4>Shipping Address</h4>
-                        <p>${order.address.fullName}</p>
-                        <p>${order.address.address}</p>
-                        <p>${order.address.city}, ${order.address.state} - ${order.address.pincode}</p>
-                        <p>Phone: ${order.address.mobile}</p>
-                    </div>
-                    
-                    <div class="detail-section full-width">
-                        <h4>Order Items</h4>
-                        <table class="detail-table">
-                            <thead>
-                                <tr>
-                                    <th>Product</th>
-                                    <th>Quantity</th>
-                                    <th>Price</th>
-                                    <th>Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${order.orderItems.map(item => `
-                                    <tr>
-                                        <td>${item.product.name || 'Product'}</td>
-                                        <td>${item.quantity}</td>
-                                        <td>₹${item.price.toLocaleString()}</td>
-                                        <td>₹${(item.price * item.quantity).toLocaleString()}</td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="3" class="text-right"><strong>Subtotal:</strong></td>
-                                    <td>₹${order.totalPrice.toLocaleString()}</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3" class="text-right"><strong>Discount:</strong></td>
-                                    <td>₹${order.discount.toLocaleString()}</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3" class="text-right"><strong>Final Amount:</strong></td>
-                                    <td>₹${order.finalAmount.toLocaleString()}</td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                    
-                    <div class="detail-section full-width">
-                        <h4>Cancellation Information</h4>
-                        ${order.cancellation ? `
-                            <div class="cancellation-section">
-                                <p><strong>Cancelled On:</strong> ${formatDateTime(order.cancellation.cancelledAt)}</p>
-                                <p><strong>Reason:</strong> ${order.cancellation.reason}</p>
-                                ${order.cancellation.otherReason ? `<p><strong>Other Reason:</strong> ${order.cancellation.otherReason}</p>` : ''}
-                                ${order.cancellation.comments ? `
-                                    <div class="cancellation-details">
-                                        <strong>Comments:</strong>
-                                        <p>${order.cancellation.comments}</p>
-                                    </div>
-                                ` : ''}
-                            </div>
-                        ` : `
-                            <p class="no-cancellation-info">This order has not been cancelled.</p>
-                        `}
-                    </div>
-                </div>
-            `;
+        <tr>
+            <td colspan="3" class="text-right"><strong>Subtotal:</strong></td>
+            <td>₹${order.totalPrice.toLocaleString()}</td>
+        </tr>
+        <tr>
+            <td colspan="3" class="text-right"><strong>Discount:</strong></td>
+            <td>₹${order.discount.toLocaleString()}</td>
+        </tr>
+        <tr>
+            <td colspan="3" class="text-right"><strong>Final Amount:</strong></td>
+            <td>₹${order.finalAmount.toLocaleString()}</td>
+        </tr>
+    `;
             }
 
-            // Initialize the page
-            document.addEventListener('DOMContentLoaded', function () {
-                populateOrderTable();
+            function generateCancellationHTML(cancellation) {
+                return `
+        <div class="detail-section full-width">
+            <h4>Cancellation Information</h4>
+            ${cancellation ? `
+                <div class="cancellation-section">
+                    <p><strong>Cancelled On:</strong> ${formatDateTime(cancellation.cancelledAt)}</p>
+                    <p><strong>Reason:</strong> ${cancellation.reason}</p>
+                    ${cancellation.otherReason ? `<p><strong>Other Reason:</strong> ${cancellation.otherReason}</p>` : ''}
+                    ${cancellation.comments ? `
+                        <div class="cancellation-details">
+                            <strong>Comments:</strong>
+                            <p>${cancellation.comments}</p>
+                        </div>
+                    ` : ''}
+                </div>
+            ` : `
+                <p class="no-cancellation-info">This order has not been cancelled.</p>
+            `}
+        </div>
+    `;
+            }
+
+
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const searchInput = document.getElementById('searchInput');
+                const statusFilter = document.getElementById('statusFilter');
+                const sortBy = document.getElementById('sortBy');
+
+                // Debounce function to limit how often the search is performed
+                function debounce(func, wait) {
+                    let timeout;
+                    return function executedFunction(...args) {
+                        const later = () => {
+                            clearTimeout(timeout);
+                            func(...args);
+                        };
+                        clearTimeout(timeout);
+                        timeout = setTimeout(later, wait);
+                    };
+                }
+
+                // Function to filter and sort orders
+                function filterAndSortOrders() {
+                    const rows = Array.from(document.querySelectorAll('.admin-table tbody tr'));
+                    const searchTerm = searchInput.value.toLowerCase();
+                    const statusValue = statusFilter.value;
+                    const sortValue = sortBy.value;
+
+                    rows.forEach(row => {
+                        const orderId = row.querySelector('td:first-child').textContent.toLowerCase();
+                        const customerName = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                        const status = row.querySelector('.status-btn').textContent.trim();
+
+                        // Remove any existing highlights
+                        row.classList.remove('highlight');
+
+                        // Search filter
+                        const matchesSearch = searchTerm === '' ||
+                            orderId.includes(searchTerm) ||
+                            customerName.includes(searchTerm);
+
+                        // Status filter
+                        const matchesStatus = statusValue === '' || status.includes(statusValue);
+
+                        // Show/hide rows based on filters
+                        row.style.display = (matchesSearch && matchesStatus) ? '' : 'none';
+
+                        // Add highlight if search term matches
+                        if (matchesSearch && searchTerm !== '') {
+                            row.classList.add('highlight');
+                        }
+                    });
+
+                    // Sort the visible rows
+                    const visibleRows = rows.filter(row => row.style.display !== 'none');
+                    sortRows(visibleRows, sortValue);
+                }
+
+                // Function to sort rows
+                function sortRows(rows, sortValue) {
+                    const tbody = document.querySelector('.admin-table tbody');
+
+                    rows.sort((a, b) => {
+                        switch (sortValue) {
+                            case 'date-new':
+                                return new Date(getOrderDate(b)) - new Date(getOrderDate(a));
+                            case 'date-old':
+                                return new Date(getOrderDate(a)) - new Date(getOrderDate(b));
+                            case 'amount-high':
+                                return getOrderAmount(b) - getOrderAmount(a);
+                            case 'amount-low':
+                                return getOrderAmount(a) - getOrderAmount(b);
+                            default:
+                                return 0;
+                        }
+                    });
+
+                    // Re-append sorted rows
+                    rows.forEach(row => tbody.appendChild(row));
+                }
+
+                // Helper functions to get sortable values
+                function getOrderDate(row) {
+                    return row.querySelector('td:nth-child(3)').textContent;
+                }
+
+                function getOrderAmount(row) {
+                    const amountText = row.querySelector('td:nth-child(5)').textContent;
+                    return parseFloat(amountText.replace(/[^0-9.-]+/g, ''));
+                }
+
+                //event listeners
+                searchInput.addEventListener('input', debounce(filterAndSortOrders, 300));
+                statusFilter.addEventListener('change', filterAndSortOrders);
+                sortBy.addEventListener('change', filterAndSortOrders);
             });
         </script>
     </body>

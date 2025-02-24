@@ -5,7 +5,7 @@ const getOrders = async (req, res) => {
   try {
     const orders = await Order.find()
       .populate("userId", "name email")
-      .populate("orderItems.product", "name")
+      .populate("orderItems.product", "productName")
       .sort({ createdOn: -1 });
 
     res.render("orders", {
@@ -39,7 +39,6 @@ const getOrders = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error fetching orders:", error);
     res.status(500).render("error", {
       message: "Error loading orders. Please try again later.",
     });
@@ -61,8 +60,9 @@ const updateOrderStatus = async (req, res) => {
     if (status === "Cancelled" && order.status !== "Cancelled") {
       order.cancellation = {
         cancelledAt: new Date(),
-        reason: "Admin cancelled",
+        reason: "Other",
         comments: "Cancelled by administrator",
+        otherReason: "Administrative cancellation",
       };
     } else if (order.status === "Cancelled" && status !== "Cancelled") {
       order.cancellation = undefined;
@@ -73,7 +73,6 @@ const updateOrderStatus = async (req, res) => {
 
     res.json({ success: true, message: "Order status updated successfully" });
   } catch (error) {
-    console.error("Error updating order status:", error);
     res.status(500).json({
       success: false,
       message: "Error updating order status",
@@ -81,12 +80,12 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
-// for getvOrder ById
+// for get Order ById
 const getOrderById = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id)
       .populate("userId", "name email")
-      .populate("orderItems.product", "name");
+      .populate("orderItems.product", "productName");
 
     if (!order) {
       return res.status(404).json({ error: "Order not found" });
@@ -94,7 +93,6 @@ const getOrderById = async (req, res) => {
 
     res.json(order);
   } catch (error) {
-    console.error("Error fetching order details:", error);
     res.status(500).json({ error: "Error loading order details" });
   }
 };

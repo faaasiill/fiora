@@ -1,169 +1,168 @@
 <%- include("../../views/partials/admin/header") %>
     <style>
+        .main-wrap {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            margin: 0;
+            margin-top: 60px;
+        }
 
-.main-wrap {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    background-color: #ffffff;
-    margin: 0;
-    margin-top: 60px;
-}
+        .content {
+            padding: 20px;
+            flex-grow: 1;
+            background-color: #f4f7f600;
+        }
 
-.content {
-    padding: 20px;
-    flex-grow: 1;
-    background-color: #f4f7f600;
-}
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 0px;
+            transition: border-color 0.3s ease;
+        }
 
-.form-control {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border-radius: 0px;
-    transition: border-color 0.3s ease;
-}
+        .form-control:focus {
+            border-color: #007bff;
+            outline: none;
+        }
 
-.form-control:focus {
-    border-color: #007bff;
-    outline: none;
-}
+        .btn-primary {
+            background-color: #007bff00;
 
-.btn-primary {
-    background-color: #007bff00;
+            border: 1px solid #720b2e;
+            padding: 10px 20px;
+            border-radius: 0px;
+            color: #650915;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
 
-    border: 1px solid #720b2e;
-    padding: 10px 20px;
-    border-radius: 0px;
-    color: #650915;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
+        .btn-primary:hover {
+            background-color: #650915;
+            border: 0;
+            border-radius: 0px;
 
-.btn-primary:hover {
-    background-color: #650915;
-    border: 0;
-    border-radius: 0px;
-   
-}
+        }
 
-.btn-primary:active {
-    background-color: #650915 !important;
-    border: 0 !important;
-    transform: scale(0.95);
-}
+        .btn-primary:active {
+            background-color: #650915 !important;
+            border: 0 !important;
+            transform: scale(0.95);
+        }
 
-.pagination-container {
-    text-align: center;
-    margin-top: 20px;
-}
+        .pagination-container {
+            text-align: center;
+            margin-top: 20px;
+        }
 
-aside.minimized .menu-link .menu-icon {
-    margin-right: 0;
-}
+        aside.minimized .menu-link .menu-icon {
+            margin-right: 0;
+        }
 
-aside .menu-link span {
-    display: inline;
-}
+        aside .menu-link span {
+            display: inline;
+        }
 
-aside.minimized .menu-link span {
-    display: none;
-}
+        aside.minimized .menu-link span {
+            display: none;
+        }
 
-.card {
-    background-color: #ffffff;
-    padding: 20px;
-    margin-top: 20px;
-    border-radius: 0px;
-}
+        .card {
+            background-color: #ffffff;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 0px;
+        }
 
-.card-header {
-    margin-bottom: 20px;
-    border: 0px;
-    background-color: #007bff00;
-}
+        .card-header {
+            margin-bottom: 20px;
+            border: 0px;
+            background-color: #007bff00;
+        }
 
-.content-header h2 {
-    font-size: 24px;
-    color: #8b0a0a;
-    margin-bottom: 10px;
-}
-
-
+        .content-header h2 {
+            font-size: 24px;
+            color: #8b0a0a;
+            margin-bottom: 10px;
+        }
     </style>
-</head>
+    </head>
 
-<body>
-    <div class="main-wrap">
+    <body>
+        <div class="main-wrap">
 
-        <section class="content">
-            <div class="content-header">
-                <h2 class="content-title">Category Edit</h2>
-            </div>
+            <section class="content">
+                <div class="content-header">
+                    <h2 class="content-title">Category Edit</h2>
+                </div>
 
-            <div class="card">
-                <div class="card-header">
-                <div class="container">
-                    <div class="row justify-content-center">
-                        <div class="col-md-6 mt-60">
-                            <form method="post" action="/admin/editCategory/<%=category._id%>">
-                                <div class="mb-4 mt-30">
-                                    <label for="product_name" class="form-label">Name</label>
-                                    <input name="categoryName" class="form-control border" value="<%= category.name %>">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="container">
+                            <div class="row justify-content-center">
+                                <div class="col-md-6 mt-60">
+                                    <form method="post" action="/admin/editCategory/<%=category._id%>">
+                                        <div class="mb-4 mt-30">
+                                            <label for="product_name" class="form-label">Name</label>
+                                            <input name="categoryName" class="form-control border"
+                                                value="<%= category.name %>">
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <label class="form-label">Description</label>
+                                            <textarea name="description"
+                                                class="form-control border"><%=category.description%></textarea>
+                                        </div>
+                                        <div class="d-grid text-end mt-30 col-md-5">
+                                            <button class="btn btn-primary" type="submit">Update category</button>
+                                        </div>
+                                    </form>
                                 </div>
-
-                                <div class="mb-4">
-                                    <label class="form-label">Description</label>
-                                    <textarea name="description" class="form-control border"><%=category.description%></textarea>
-                                </div>
-                                <div class="d-grid text-end mt-30 col-md-5">
-                                    <button class="btn btn-primary" type="submit">Update category</button>
-                                </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
-                </div>
-                </div>
             </section>
 
 
             <script>
-                document.querySelector('form').addEventListener('submit', function(event) {
-    let isValid = true;
-    const nameInput = document.querySelector('input[name="name"]');
-    const descriptionInput = document.querySelector('textarea[name="description"]');
-    
-    // Clear previous error messages
-    document.querySelectorAll('.error-message').forEach(el => el.remove());
+                document.querySelector('form').addEventListener('submit', function (event) {
+                    let isValid = true;
+                    const nameInput = document.querySelector('input[name="name"]');
+                    const descriptionInput = document.querySelector('textarea[name="description"]');
 
-    // Name validation
-    if (nameInput.value.trim() === '') {
-        const errorElement = document.createElement('div');
-        errorElement.className = 'error-message text-danger';
-        errorElement.textContent = 'Category name is required';
-        nameInput.after(errorElement);
-        isValid = false;
-    } else if (!/^[a-zA-Z\s]+$/.test(nameInput.value.trim())) {
-        const errorElement = document.createElement('div');
-        errorElement.className = 'error-message text-danger';
-        errorElement.textContent = 'Category name should only contain alphabetic characters and spaces';
-        nameInput.after(errorElement);
-        isValid = false;
-    }
+                    // Clear previous error messages
+                    document.querySelectorAll('.error-message').forEach(el => el.remove());
 
-    // Description validation
-    if (descriptionInput.value.trim() === '') {
-        const errorElement = document.createElement('div');
-        errorElement.className = 'error-message text-danger';
-        errorElement.textContent = 'Description is required';
-        descriptionInput.after(errorElement);
-        isValid = false;
-    }
+                    // Name validation
+                    if (nameInput.value.trim() === '') {
+                        const errorElement = document.createElement('div');
+                        errorElement.className = 'error-message text-danger';
+                        errorElement.textContent = 'Category name is required';
+                        nameInput.after(errorElement);
+                        isValid = false;
+                    } else if (!/^[a-zA-Z\s]+$/.test(nameInput.value.trim())) {
+                        const errorElement = document.createElement('div');
+                        errorElement.className = 'error-message text-danger';
+                        errorElement.textContent = 'Category name should only contain alphabetic characters and spaces';
+                        nameInput.after(errorElement);
+                        isValid = false;
+                    }
 
-    if (!isValid) {
-        event.preventDefault();
-    }
-});
+                    // Description validation
+                    if (descriptionInput.value.trim() === '') {
+                        const errorElement = document.createElement('div');
+                        errorElement.className = 'error-message text-danger';
+                        errorElement.textContent = 'Description is required';
+                        descriptionInput.after(errorElement);
+                        isValid = false;
+                    }
+
+                    if (!isValid) {
+                        event.preventDefault();
+                    }
+                });
             </script>
 
-        </body>
+    </body>

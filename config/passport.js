@@ -82,11 +82,10 @@ passport.deserializeUser(async (id, done) => {
 // Middleware to store user in req.session.user
 const sessionMiddleware = (req, res, next) => {
   if (req.isAuthenticated()) {
-    req.session.user = req.user; 
+    req.session.user = req.user;
   }
   next();
 };
-
 
 module.exports = {
   passport,

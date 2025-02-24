@@ -1,245 +1,248 @@
 <%- include("../../views/partials/admin/header") %>
 
-<head>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.css">
-    <link rel="stylesheet" href="/css/minimal-banner-form.css">
-</head>
+    <head>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.css">
+        <link rel="stylesheet" href="/css/minimal-banner-form.css">
+    </head>
 
-<section class="content-main">
-    <div class="row">
-        <div class="col-9">
-            <div class="content-header">
-                <h2 class="content-title">Add New Banner</h2>
+    <section class="content-main">
+        <div class="row">
+            <div class="col-9">
+                <div class="content-header">
+                    <h2 class="content-title">Add New Banner</h2>
+                </div>
             </div>
-        </div>
-        
-        <div class="col-lg-8">
-            <div class="card">
-                <div class="card-body">
-                    <form method="POST" action="/admin/banners/create" enctype="multipart/form-data" onsubmit="return validateForm()">                        <!-- Banner Title -->
-                        <div class="mb-4">
-                            <label for="product_name" class="form-label">Banner Title</label>
-                            <input type="text" placeholder="Enter banner title" name="title" class="form-control" id="product_name">
-                            <div id="productName-error" class="error-message"></div>
-                        </div>
 
-                        <!-- Description -->
-                        <div class="mb-4">
-                            <label class="form-label">Description</label>
-                            <textarea placeholder="Enter description" name="description" class="form-control" rows="4"></textarea>
-                            <div id="description" class="error-message"></div>
-                        </div>
-
-                        <!-- Dates -->
-                        <div class="row">
-                            <div class="col-md-6 mb-4">
-                                <label for="startingDate" class="form-label">Start Date</label>
-                                <input type="date" name="startDate" class="form-control" id="startingDate" required>
-                                <div id="error-start-date" class="error-message"></div>
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-body">
+                        <form method="POST" action="/admin/banners/create" enctype="multipart/form-data"
+                            onsubmit="return validateForm()"> <!-- Banner Title -->
+                            <div class="mb-4">
+                                <label for="product_name" class="form-label">Banner Title</label>
+                                <input type="text" placeholder="Enter banner title" name="title" class="form-control"
+                                    id="product_name">
+                                <div id="productName-error" class="error-message"></div>
                             </div>
 
-                            <div class="col-md-6 mb-4">
-                                <label for="expiringDate" class="form-label">End Date</label>
-                                <input type="date" name="endDate" class="form-control" id="expiringDate" required>
-                                <div id="error-end-date" class="error-message"></div>
+                            <!-- Description -->
+                            <div class="mb-4">
+                                <label class="form-label">Description</label>
+                                <textarea placeholder="Enter description" name="description" class="form-control"
+                                    rows="4"></textarea>
+                                <div id="description" class="error-message"></div>
                             </div>
-                        </div>
 
-                        <!-- Page Selection -->
-                        <div class="mb-4">
-                            <label class="form-label">Select Page</label>
-                            <select name="page" class="form-select" required>
-                                <option value="">Choose page...</option>
-                                <option value="home">home</option>
-                                <option value="product">product</option>
-                                <option value="category">category</option>
-                                <option value="about">about</option>
-                                <option value="contact">contact</option>
-                            </select>
-                            <div id="page-error" class="error-message"></div>
-                        </div>
+                            <!-- Dates -->
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <label for="startingDate" class="form-label">Start Date</label>
+                                    <input type="date" name="startDate" class="form-control" id="startingDate" required>
+                                    <div id="error-start-date" class="error-message"></div>
+                                </div>
 
-                        <!-- Link -->
-                        <div class="mb-4">
-                            <label class="form-label">Link</label>
-                            <input placeholder="Enter banner link" name="link" type="text" class="form-control">
-                            <div id="link-error" class="error-message"></div>
-                        </div>
+                                <div class="col-md-6 mb-4">
+                                    <label for="expiringDate" class="form-label">End Date</label>
+                                    <input type="date" name="endDate" class="form-control" id="expiringDate" required>
+                                    <div id="error-end-date" class="error-message"></div>
+                                </div>
+                            </div>
 
-                        <!-- Image Upload -->
-                        <div class="card-header">
-                            <h4>Choose Banner Image</h4>
-                        </div>
-                        <div class="img-area" onclick="document.getElementById('inputFile').click()">
-                            <img src="/images/upload-icon.svg" alt="" id="imgView1">
-                            <p>Click or drag image here to upload</p>
-                        </div>
-                        <input type="file" name="bannerImage" id="inputFile" accept="image/png, image/jpeg, image/jpg" 
-           onchange="viewImage(event, 1)" style="display: none">
+                            <!-- Page Selection -->
+                            <div class="mb-4">
+                                <label class="form-label">Select Page</label>
+                                <select name="page" class="form-select" required>
+                                    <option value="">Choose page...</option>
+                                    <option value="home">home</option>
+                                    <option value="product">product</option>
+                                    <option value="category">category</option>
+                                    <option value="about">about</option>
+                                    <option value="contact">contact</option>
+                                </select>
+                                <div id="page-error" class="error-message"></div>
+                            </div>
 
-                        <!-- Submit Button -->
-                        <div class="publish-button-container">
-                            <button class="publish-button" type="submit">
-                                Publish Banner
-                            </button>
-                        </div>
-                    </form>
+                            <!-- Link -->
+                            <div class="mb-4">
+                                <label class="form-label">Link</label>
+                                <input placeholder="Enter banner link" name="link" type="text" class="form-control">
+                                <div id="link-error" class="error-message"></div>
+                            </div>
+
+                            <!-- Image Upload -->
+                            <div class="card-header">
+                                <h4>Choose Banner Image</h4>
+                            </div>
+                            <div class="img-area" onclick="document.getElementById('inputFile').click()">
+                                <img src="/images/upload-icon.svg" alt="" id="imgView1">
+                                <p>Click or drag image here to upload</p>
+                            </div>
+                            <input type="file" name="bannerImage" id="inputFile"
+                                accept="image/png, image/jpeg, image/jpg" onchange="viewImage(event, 1)"
+                                style="display: none">
+
+                            <!-- Submit Button -->
+                            <div class="publish-button-container">
+                                <button class="publish-button" type="submit">
+                                    Publish Banner
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- Cropper Modal -->
-<div class="cropper-modal" id="cropperModal">
-    <div class="cropper-container">
-        <div class="cropper-wrapper">
-            <img src="" id="cropperImage" alt="">
+    <!-- Cropper Modal -->
+    <div class="cropper-modal" id="cropperModal">
+        <div class="cropper-container">
+            <div class="cropper-wrapper">
+                <img src="" id="cropperImage" alt="">
+            </div>
+            <div class="cropper-actions">
+                <button type="button" class="btn-secondary" onclick="cancelCrop()">Cancel</button>
+                <button type="button" class="btn-primary" onclick="saveCrop()">Save Crop</button>
+            </div>
         </div>
-        <div class="cropper-actions">
-            <button type="button" class="btn-secondary" onclick="cancelCrop()">Cancel</button>
-            <button type="button" class="btn-primary" onclick="saveCrop()">Save Crop</button>
-        </div>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.js"></script>
-<script>
-    let cropper = null;
+    <script src="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.js"></script>
+    <script>
+        let cropper = null;
 
-function viewImage(event, index) {
-    let input = event.target;
-    let reader = new FileReader();
+        function viewImage(event, index) {
+            let input = event.target;
+            let reader = new FileReader();
 
-    reader.onload = function() {
-        const modal = document.getElementById('cropperModal');
-        const cropperImage = document.getElementById('cropperImage');
-        
-        cropperImage.src = reader.result;
-        modal.style.display = 'block';
-        
-        cropper = new Cropper(cropperImage, {
-            viewMode: 1,
-            guides: true,
-            background: false,
-            autoCropArea: 0.8,
-            zoomable: true,
-            dragMode: 'move',
-            cropBoxResizable: true,  // Allows resizing the crop box
-            cropBoxMovable: true,    // Allows moving the crop box
-            toggleDragModeOnDblclick: true,  // Toggle between 'crop' and 'move' on double click
-            // Remove the aspectRatio constraint to allow free cropping
-        });
-    };
+            reader.onload = function () {
+                const modal = document.getElementById('cropperModal');
+                const cropperImage = document.getElementById('cropperImage');
 
-    reader.readAsDataURL(input.files[0]);
-}
+                cropperImage.src = reader.result;
+                modal.style.display = 'block';
 
-    function cancelCrop() {
-        const modal = document.getElementById('cropperModal');
-        modal.style.display = 'none';
-        if (cropper) {
-            cropper.destroy();
-            cropper = null;
-        }
-    }
-    function saveCrop() {
-    if (!cropper) return;
+                cropper = new Cropper(cropperImage, {
+                    viewMode: 1,
+                    guides: true,
+                    background: false,
+                    autoCropArea: 0.8,
+                    zoomable: true,
+                    dragMode: 'move',
+                    cropBoxResizable: true,
+                    cropBoxMovable: true,
+                    toggleDragModeOnDblclick: true,
+                });
+            };
 
-    const croppedCanvas = cropper.getCroppedCanvas();
-    const imgView = document.getElementById('imgView1');
-    
-    imgView.src = croppedCanvas.toDataURL('image/jpeg', 1.0);
-    
-    croppedCanvas.toBlob(blob => {
-        const fileName = `cropped-banner-${Date.now()}.jpg`;
-        const file = new File([blob], fileName, { type: 'image/jpeg' });
-        
-        const dataTransfer = new DataTransfer();
-        dataTransfer.items.add(file);
-        document.getElementById('inputFile').files = dataTransfer.files;
-    }, 'image/jpeg');
-
-    cancelCrop();
-}
-
-
-    function validateForm() {
-        resetErrorMessages();
-        let isValid = true;
-
-        // Validate Title
-        const title = document.getElementById("product_name").value;
-        if (!title.trim()) {
-            displayErrorMessage("productName-error", "Banner title is required");
-            isValid = false;
+            reader.readAsDataURL(input.files[0]);
         }
 
-        // Validate Description
-        const description = document.getElementsByName('description')[0].value;
-        if (!description.trim()) {
-            displayErrorMessage("description", "Description is required");
-            isValid = false;
+        function cancelCrop() {
+            const modal = document.getElementById('cropperModal');
+            modal.style.display = 'none';
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+        }
+        function saveCrop() {
+            if (!cropper) return;
+
+            const croppedCanvas = cropper.getCroppedCanvas();
+            const imgView = document.getElementById('imgView1');
+
+            imgView.src = croppedCanvas.toDataURL('image/jpeg', 1.0);
+
+            croppedCanvas.toBlob(blob => {
+                const fileName = `cropped-banner-${Date.now()}.jpg`;
+                const file = new File([blob], fileName, { type: 'image/jpeg' });
+
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                document.getElementById('inputFile').files = dataTransfer.files;
+            }, 'image/jpeg');
+
+            cancelCrop();
         }
 
-        // Validate Dates
-        const startDate = document.getElementById('startingDate').value;
-        const endDate = document.getElementById('expiringDate').value;
 
-        if (!startDate) {
-            displayErrorMessage("error-start-date", "Start date is required");
-            isValid = false;
+        function validateForm() {
+            resetErrorMessages();
+            let isValid = true;
+
+            // Validate Title
+            const title = document.getElementById("product_name").value;
+            if (!title.trim()) {
+                displayErrorMessage("productName-error", "Banner title is required");
+                isValid = false;
+            }
+
+            // Validate Description
+            const description = document.getElementsByName('description')[0].value;
+            if (!description.trim()) {
+                displayErrorMessage("description", "Description is required");
+                isValid = false;
+            }
+
+            // Validate Dates
+            const startDate = document.getElementById('startingDate').value;
+            const endDate = document.getElementById('expiringDate').value;
+
+            if (!startDate) {
+                displayErrorMessage("error-start-date", "Start date is required");
+                isValid = false;
+            }
+
+            if (!endDate) {
+                displayErrorMessage("error-end-date", "End date is required");
+                isValid = false;
+            }
+
+            if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+                displayErrorMessage("error-end-date", "End date must be after start date");
+                isValid = false;
+            }
+
+            // Validate Link
+            const link = document.getElementsByName('link')[0].value;
+            if (!link.trim()) {
+                displayErrorMessage("link-error", "Link is required");
+                isValid = false;
+            }
+
+            // Validate Image
+            const imageFile = document.getElementById('inputFile').files[0];
+            if (!imageFile) {
+                displayErrorMessage("image-error", "Please select an image");
+                isValid = false;
+            }
+
+            const pageSelect = document.querySelector('select[name="page"]');
+            const pageError = document.getElementById('page-error');
+
+            if (!pageSelect.value) {
+                pageError.textContent = 'Please select a page for the banner';
+                isValid = false;
+            }
+
+
+            return isValid;
         }
 
-        if (!endDate) {
-            displayErrorMessage("error-end-date", "End date is required");
-            isValid = false;
+        function displayErrorMessage(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.style.display = "block";
         }
 
-        if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
-            displayErrorMessage("error-end-date", "End date must be after start date");
-            isValid = false;
+        function resetErrorMessages() {
+            const errorElements = document.querySelectorAll(".error-message");
+            errorElements.forEach(element => {
+                element.textContent = "";
+                element.style.display = "none";
+            });
         }
+    </script>
 
-        // Validate Link
-        const link = document.getElementsByName('link')[0].value;
-        if (!link.trim()) {
-            displayErrorMessage("link-error", "Link is required");
-            isValid = false;
-        }
-
-        // Validate Image
-        const imageFile = document.getElementById('inputFile').files[0];
-        if (!imageFile) {
-            displayErrorMessage("image-error", "Please select an image");
-            isValid = false;
-        }
-
-        const pageSelect = document.querySelector('select[name="page"]');
-    const pageError = document.getElementById('page-error');
-    
-    if (!pageSelect.value) {
-        pageError.textContent = 'Please select a page for the banner';
-        isValid = false;
-    }
-    
-
-        return isValid;
-    }
-
-    function displayErrorMessage(elementId, message) {
-        const errorElement = document.getElementById(elementId);
-        errorElement.textContent = message;
-        errorElement.style.display = "block";
-    }
-
-    function resetErrorMessages() {
-        const errorElements = document.querySelectorAll(".error-message");
-        errorElements.forEach(element => {
-            element.textContent = "";
-            element.style.display = "none";
-        });
-    }
-</script>
-
-<%- include("../../views/partials/admin/footer") %>
+    <%- include("../../views/partials/admin/footer") %>

@@ -1,240 +1,208 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Products</title>
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1"
-    />
-    <link rel="stylesheet" href="/css/prducts.css"/>
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@40,200,0,-25"
-    />
-    <!-- Load jQuery and SweetAlert first -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="/js/products.js"></script>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Products</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <link rel="stylesheet" href="/css/prducts.css" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@40,200,0,-25" />
+  <!-- Load jQuery and SweetAlert first -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="/js/products.js"></script>
 
 
-  </head>
-  <body>
-    <div class="container banner-slide" id="bannerContainer" style="background-image: url('<%= banner.length > 0 ? banner[0].image : [] %>');">
-      <nav class="navbar">
-        <!-- Logo -->
-         <a href="/">
+</head>
+
+<body>
+  <div class="container banner-slide" id="bannerContainer"
+    style="background-image: url('<%= banner.length > 0 ? banner[0].image : [] %>');">
+    <nav class="navbar">
+      <!-- Logo -->
+      <a href="/">
         <img src="/images/Fiora1/1.png" class="logo" alt="Logo" />
       </a>
-        <!-- Navigation links -->
-        <ul class="nav-links">
-          <li><a href="/">Home</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#contact">Contact Us</a></li>
-        </ul>
+      <!-- Navigation links -->
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact Us</a></li>
+      </ul>
 
-        <!-- Search bar -->
-        <input type="text" class="search-bar" placeholder="Search..." />
+      <!-- Search bar -->
+      <input type="text" class="search-bar" placeholder="Search..." />
 
-        <!-- Navigation icons -->
-        <div class="nav-icons">
-          <a id="profile-link" style="color: white;" href="<%= locals.user ? '/wishlist' : '/signup' %>"><span class="material-symbols-outlined icon">favorite</span></a>
-          <a id="profile-link" style="color: white;" href="<%= locals.user ? '/userProfile' : '/signup' %>"><span class="material-symbols-outlined icon">person</span></a>
-          <a id="profile-link" style="color: white;" href="<%= locals.user ? '/cart' : '/signup' %>"><span class="material-symbols-outlined icon">local_mall</span></a>
-        </div>
+      <!-- Navigation icons -->
+      <div class="nav-icons">
+        <a id="profile-link" style="color: white;" href="<%= locals.user ? '/wishlist' : '/signup' %>"><span
+            class="material-symbols-outlined icon">favorite</span></a>
+        <a id="profile-link" style="color: white;" href="<%= locals.user ? '/userProfile' : '/signup' %>"><span
+            class="material-symbols-outlined icon">person</span></a>
+        <a id="profile-link" style="color: white;" href="<%= locals.user ? '/cart' : '/signup' %>"><span
+            class="material-symbols-outlined icon">local_mall</span></a>
+      </div>
 
-        <!-- Hamburger menu for mobile view -->
-        <div class="hamburger" id="hamburger">
-          <span class="material-symbols-outlined menu">menu</span>
-        </div>
+      <!-- Hamburger menu for mobile view -->
+      <div class="hamburger" id="hamburger">
+        <span class="material-symbols-outlined menu">menu</span>
+      </div>
 
-        <!-- Mobile menu -->
-        <ul class="mobile-menu" id="mobile-menu">
-          <li><a href="#home">Home</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#contact">Contact Us</a></li>
-          <li>
-            <a href="#wishlist"><i class="fa fa-heart"></i> Wishlist</a>
-          </li>
-          <li>
-            <a href="#profile"><i class="fa fa-user"></i> Profile</a>
-          </li>
-          <li>
-            <a href="#cart"><i class="fa fa-shopping-bag"></i> Cart</a>
-          </li>
-        </ul>
-      </nav>
+      <!-- Mobile menu -->
+      <ul class="mobile-menu" id="mobile-menu">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact Us</a></li>
+        <li>
+          <a href="#wishlist"><i class="fa fa-heart"></i> Wishlist</a>
+        </li>
+        <li>
+          <a href="#profile"><i class="fa fa-user"></i> Profile</a>
+        </li>
+        <li>
+          <a href="#cart"><i class="fa fa-shopping-bag"></i> Cart</a>
+        </li>
+      </ul>
+    </nav>
 
-    </div>
-    <!-- product section -->
-    <h1 class="title">PRODUCTS</h1>
+  </div>
+  <!-- product section -->
+  <h1 class="title">PRODUCTS</h1>
 
-    <!-- Filter and Sort Section -->
-    <div class="filters">
-      <select id="sort-price" onchange="sortProducts()">
-        <option value="default">Sort By</option>
-        <option value="low-to-high">Price: Low to High</option>
-        <option value="high-to-low">Price: High to Low</option>
-        <option value="a-to-z">Name: A to Z</option>
-        <option value="z-to-a">Name: Z to A</option>
-      </select>
-      <select id="filter-category" onchange="filterProducts()">
-        <option value="all">All Categories</option>
-        <% for (let i = 0; i < cat.length; i++) { %>
-          <option value="<%= cat[i]._id %>"><%= cat[i].name %></option>
+  <!-- Filter and Sort Section -->
+  <div class="filters">
+    <select id="sort-price" onchange="sortProducts()">
+      <option value="default">Sort By</option>
+      <option value="low-to-high">Price: Low to High</option>
+      <option value="high-to-low">Price: High to Low</option>
+      <option value="a-to-z">Name: A to Z</option>
+      <option value="z-to-a">Name: Z to A</option>
+    </select>
+    <select id="filter-category" onchange="filterProducts()">
+      <option value="all">All Categories</option>
+      <% for (let i=0; i < cat.length; i++) { %>
+        <option value="<%= cat[i]._id %>">
+          <%= cat[i].name %>
+        </option>
         <% } %>
-      </select>
-    </div>
+    </select>
+  </div>
 
-    <!-- Product List -->
-    <div class="product-card" onclick="openModal()">
-      <!-- Product details here -->
-      <div class="product-container" id="product-container">
-        <% products.forEach((product) => { %>
-          <div class="product">
-            <a href="/productDetails?id=<%= product._id %>" style="text-decoration: none;">
-              <img src="<%= product.productImage[0] %>" alt="<%= product.productName %>">
-            </a>
-            <div class="wishlist-button" data-product-id="<%= product._id %>">
-              <span class="material-symbols-outlined">favorite</span>
-            </div>          
-            <div class="product-name"><%= product.productName %></div>
-            <div class="product-price">
-              <span class="original-price">₹<%= product.regularPrice %></span> 
-              <span class="discount-price">₹<%= product.salePrice %></span>
-            </div>
+  <!-- Product List -->
+  <div class="product-card" onclick="openModal()">
+    <!-- Product details here -->
+    <div class="product-container" id="product-container">
+      <% products.forEach((product)=> { %>
+        <div class="product">
+          <a href="/productDetails?id=<%= product._id %>" style="text-decoration: none;">
+            <img src="<%= product.productImage[0] %>" alt="<%= product.productName %>">
+          </a>
+          <div class="wishlist-button" data-product-id="<%= product._id %>">
+            <span class="material-symbols-outlined">favorite</span>
           </div>
+          <div class="product-name">
+            <%= product.productName %>
+          </div>
+          <div class="product-price">
+            <span class="original-price">₹<%= product.regularPrice %></span>
+            <span class="discount-price">₹<%= product.salePrice %></span>
+          </div>
+        </div>
         <% }); %>
+    </div>
+  </div>
+
+  <!-- Load More Button -->
+
+  <button class="load-more">Load More</button>
+
+
+  <!-- Product Details Modal -->
+  <a href="#" id="scrollToTopBtn" class="scroll-top-btn">↑</a>
+
+  <!-- footer -->
+  <footer>
+    <div class="footer-container">
+      <!-- Footer Column 1 -->
+      <div class="footer-column">
+        <img src="/images/Fiora1/2.png" class="logo" alt="Logo" />
+        <p>
+          Our timeless bag collections for daily & occasional use at
+          affordable prices.
+        </p>
+        <div class="divider"></div>
+        <p><strong>Email Us</strong></p>
+        <p>faazilrahmaan@gmail.com</p>
+        <div class="social-icons">
+          <a href="#" aria-label="Instagram"><img class="socialmedialogo" src="/images/logos/instagram.png"
+              alt="Instagram" /></a>
+          <a href="#" aria-label="Facebook"><img class="socialmedialogo" src="/images/logos/facebook.png"
+              alt="Facebook" /></a>
+          <a href="#" aria-label="LinkedIn"><img class="socialmedialogo" src="/images/logos/linkedin-logo.png"
+              alt="LinkedIn" /></a>
+        </div>
+      </div>
+
+      <!-- Footer Column 2 -->
+      <div class="footer-column">
+        <h3>Our Shop</h3>
+        <ul>
+          <li><a href="#">Terms & Policy</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Gift Cards</a></li>
+          <li><a href="#">Offers & Promotions</a></li>
+        </ul>
+      </div>
+
+      <!-- Footer Column 3 -->
+      <div class="footer-column">
+        <h3>Store Locator</h3>
+        <p>312, Awesome Street,</p>
+        <p>Malappuram, Kerala.</p>
       </div>
     </div>
+    <hr style="border-top: 0.1px solid #a2a2a2; width: 80%; margin: auto" />
+    <div class="footer-bottom">designed by @faaasiill</div>
+  </footer>
 
-    <!-- Load More Button -->
+  <script>
+    let currentSort = 'default';
+    let currentCategory = 'all';
+    let currentSearch = '';
+    let currentPage = 1;
+    const productsPerPage = 16;
 
-    <button class="load-more">Load More</button>
+    // Add to wishlist function
+    function addToWishlist(productId) {
+      if (!productId) {
+        console.error('No product ID provided');
+        return;
+      }
 
-
-    <!-- Product Details Modal -->
-    <a href="#" id="scrollToTopBtn" class="scroll-top-btn">↑</a>
-
-    <!-- footer -->
-    <footer>
-      <div class="footer-container">
-        <!-- Footer Column 1 -->
-        <div class="footer-column">
-          <img src="/images/Fiora1/2.png" class="logo" alt="Logo" />
-          <p>
-            Our timeless bag collections for daily & occasional use at
-            affordable prices.
-          </p>
-          <div class="divider"></div>
-          <p><strong>Email Us</strong></p>
-          <p>faazilrahmaan@gmail.com</p>
-          <div class="social-icons">
-            <a href="#" aria-label="Instagram"
-              ><img
-                class="socialmedialogo"
-                src="/images/logos/instagram.png"
-                alt="Instagram"
-            /></a>
-            <a href="#" aria-label="Facebook"
-              ><img
-                class="socialmedialogo"
-                src="/images/logos/facebook.png"
-                alt="Facebook"
-            /></a>
-            <a href="#" aria-label="LinkedIn"
-              ><img
-                class="socialmedialogo"
-                src="/images/logos/linkedin-logo.png"
-                alt="LinkedIn"
-            /></a>
-          </div>
-        </div>
-
-        <!-- Footer Column 2 -->
-        <div class="footer-column">
-          <h3>Our Shop</h3>
-          <ul>
-            <li><a href="#">Terms & Policy</a></li>
-            <li><a href="#">Contact Us</a></li>
-            <li><a href="#">Gift Cards</a></li>
-            <li><a href="#">Offers & Promotions</a></li>
-          </ul>
-        </div>
-
-        <!-- Footer Column 3 -->
-        <div class="footer-column">
-          <h3>Store Locator</h3>
-          <p>312, Awesome Street,</p>
-          <p>Malappuram, Kerala.</p>
-        </div>
-      </div>
-      <hr style="border-top: 0.1px solid #a2a2a2; width: 80%; margin: auto" />
-      <div class="footer-bottom">designed by @faaasiill</div>
-    </footer>
-    
-    <script>
-      // Global variables
-      let currentSort = 'default';
-      let currentCategory = 'all';
-      let currentSearch = '';
-      let currentPage = 1;
-      const productsPerPage = 16;
-      
-      // Add to wishlist function
-      function addToWishlist(productId) {
-        if (!productId) {
-          console.error('No product ID provided');
-          return;
-        }
-      
-        $.ajax({
-          type: "POST",
-          url: "/addToWishlist",
-          data: JSON.stringify({ productId: productId }),
-          contentType: "application/json",
-          dataType: 'json',
-          success: (response) => {
-            if (response.status) {
-              Swal.fire({
-                title: "Added!",
-                text: "Product added to wishlist",
-                icon: "success",
-                timer: 2000
-              });
-              // Add active class to button for red color
-              const wishlistButton = document.querySelector(`[data-product-id="${productId}"]`);
-              wishlistButton.classList.add('active');
-            } else {
-              if (response.notLoggedIn) {
-                Swal.fire({
-                  title: "Please Login",
-                  text: "You need to login first to add items to wishlist",
-                  icon: "info",
-                  showCancelButton: true,
-                  confirmButtonText: "Login",
-                  cancelButtonText: "Cancel"
-                }).then((result) => {
-                  if (result.isConfirmed) {
-                    window.location.href = "/login";
-                  }
-                });
-              } else {
-                Swal.fire({
-                  title: "Oops!",
-                  text: response.message || "Something went wrong",
-                  icon: "info",
-                  timer: 2000
-                });
-              }
-            }
-          },
-          error: (xhr, status, error) => {
-            if (xhr.status === 401) {
+      $.ajax({
+        type: "POST",
+        url: "/addToWishlist",
+        data: JSON.stringify({ productId: productId }),
+        contentType: "application/json",
+        dataType: 'json',
+        success: (response) => {
+          if (response.status) {
+            Swal.fire({
+              title: "Added!",
+              text: "Product added to wishlist",
+              icon: "success",
+              timer: 2000
+            });
+            // Add active class to button for red color
+            const wishlistButton = document.querySelector(`[data-product-id="${productId}"]`);
+            wishlistButton.classList.add('active');
+          } else {
+            if (response.notLoggedIn) {
               Swal.fire({
                 title: "Please Login",
-                text: xhr.responseJSON?.message || "You need to login first to add items to wishlist",
+                text: "You need to login first to add items to wishlist",
                 icon: "info",
                 showCancelButton: true,
                 confirmButtonText: "Login",
@@ -246,115 +214,139 @@
               });
             } else {
               Swal.fire({
-                title: "Error!",
-                text: xhr.responseJSON?.message || "User not found, please Login First!", 
-                icon: "error",
+                title: "Oops!",
+                text: response.message || "Something went wrong",
+                icon: "info",
                 timer: 2000
               });
             }
           }
-        });
-      }
-
-      function removeFromWishlist(productId, button) {
-  if (!productId) {
-    console.error('No product ID provided');
-    return;
-  }
-
-  $.ajax({
-    type: "POST",
-    url: "/removeFromWishlist",
-    data: JSON.stringify({ productId: productId }),
-    contentType: "application/json",
-    dataType: 'json',
-    success: (response) => {
-      if (response.status) {
-        Swal.fire({
-          title: "Removed!",
-          text: "Product removed from wishlist",
-          icon: "success",
-          timer: 2000
-        });
-        button.classList.remove('active');
-      } else {
-        if (response.notLoggedIn) {
-          Swal.fire({
-            title: "Please Login",
-            text: "You need to login first to modify your wishlist",
-            icon: "info",
-            showCancelButton: true,
-            confirmButtonText: "Login",
-            cancelButtonText: "Cancel"
-          }).then((result) => {
-            if (result.isConfirmed) window.location.href = "/login";
-          });
-        } else {
-          Swal.fire({
-            title: "Oops!",
-            text: response.message || "Something went wrong",
-            icon: "info",
-            timer: 2000
-          });
+        },
+        error: (xhr, status, error) => {
+          if (xhr.status === 401) {
+            Swal.fire({
+              title: "Please Login",
+              text: xhr.responseJSON?.message || "You need to login first to add items to wishlist",
+              icon: "info",
+              showCancelButton: true,
+              confirmButtonText: "Login",
+              cancelButtonText: "Cancel"
+            }).then((result) => {
+              if (result.isConfirmed) {
+                window.location.href = "/login";
+              }
+            });
+          } else {
+            Swal.fire({
+              title: "Error!",
+              text: xhr.responseJSON?.message || "User not found, please Login First!",
+              icon: "error",
+              timer: 2000
+            });
+          }
         }
+      });
+    }
+
+    function removeFromWishlist(productId, button) {
+      if (!productId) {
+        console.error('No product ID provided');
+        return;
       }
-    },
-    error: (xhr, status, error) => {
-      if (xhr.status === 401) {
-        Swal.fire({
-          title: "Please Login",
-          text: xhr.responseJSON?.message || "You need to login first to modify your wishlist",
-          icon: "info",
-          showCancelButton: true,
-          confirmButtonText: "Login",
-          cancelButtonText: "Cancel"
-        }).then((result) => {
-          if (result.isConfirmed) window.location.href = "/login";
+
+      $.ajax({
+        type: "POST",
+        url: "/removeFromWishlist",
+        data: JSON.stringify({ productId: productId }),
+        contentType: "application/json",
+        dataType: 'json',
+        success: (response) => {
+          if (response.status) {
+            Swal.fire({
+              title: "Removed!",
+              text: "Product removed from wishlist",
+              icon: "success",
+              timer: 2000
+            });
+            button.classList.remove('active');
+          } else {
+            if (response.notLoggedIn) {
+              Swal.fire({
+                title: "Please Login",
+                text: "You need to login first to modify your wishlist",
+                icon: "info",
+                showCancelButton: true,
+                confirmButtonText: "Login",
+                cancelButtonText: "Cancel"
+              }).then((result) => {
+                if (result.isConfirmed) window.location.href = "/login";
+              });
+            } else {
+              Swal.fire({
+                title: "Oops!",
+                text: response.message || "Something went wrong",
+                icon: "info",
+                timer: 2000
+              });
+            }
+          }
+        },
+        error: (xhr, status, error) => {
+          if (xhr.status === 401) {
+            Swal.fire({
+              title: "Please Login",
+              text: xhr.responseJSON?.message || "You need to login first to modify your wishlist",
+              icon: "info",
+              showCancelButton: true,
+              confirmButtonText: "Login",
+              cancelButtonText: "Cancel"
+            }).then((result) => {
+              if (result.isConfirmed) window.location.href = "/login";
+            });
+          } else {
+            Swal.fire({
+              title: "Error!",
+              text: xhr.responseJSON?.message || "Failed to remove from wishlist",
+              icon: "error",
+              timer: 2000
+            });
+          }
+        }
+      });
+    }
+
+    // Initialize wishlist states
+    async function initializeWishlistStates() {
+      try {
+        // Get all wishlist buttons
+        const wishlistButtons = document.querySelectorAll('.wishlist-button');
+
+        // Fetch all wishlisted products in one request
+        const response = await fetch('/getWishlistedProducts');
+        if (!response.ok) throw new Error('Failed to fetch wishlist data');
+
+        const wishlistedProducts = await response.json();
+
+        // Update each button's state
+        wishlistButtons.forEach(button => {
+          const productId = button.dataset.productId;
+          if (wishlistedProducts.includes(productId)) {
+            button.classList.add('active');
+          }
         });
-      } else {
-        Swal.fire({
-          title: "Error!",
-          text: xhr.responseJSON?.message || "Failed to remove from wishlist", 
-          icon: "error",
-          timer: 2000
-        });
+      } catch (error) {
+        console.error('Error initializing wishlist states:', error);
       }
     }
-  });
-}
-      
-      // Initialize wishlist states
-      async function initializeWishlistStates() {
-        try {
-          // Get all wishlist buttons
-          const wishlistButtons = document.querySelectorAll('.wishlist-button');
-          
-          // Fetch all wishlisted products in one request
-          const response = await fetch('/getWishlistedProducts');
-          if (!response.ok) throw new Error('Failed to fetch wishlist data');
-          
-          const wishlistedProducts = await response.json();
-          
-          // Update each button's state
-          wishlistButtons.forEach(button => {
-            const productId = button.dataset.productId;
-            if (wishlistedProducts.includes(productId)) {
-              button.classList.add('active');
-            }
-          });
-        } catch (error) {
-          console.error('Error initializing wishlist states:', error);
-        }
-      }
-      
-      // Append products to the container
-      function appendProducts(products) {
-        const productContainer = document.getElementById("product-container");
-        products.forEach(product => {
-          const productElement = document.createElement("div");
-          productElement.classList.add("product");
-      
-          productElement.innerHTML = `
+
+    // Append products to the container
+    function appendProducts(products) {
+      const productContainer = document.getElementById("product-container");
+      products.forEach(product => {
+        const productElement = document.createElement("div");
+        productElement.classList.add("product");
+
+        productElement.innerHTML = `
             <a href="/productDetails?id=${product._id}" style="text-decoration: none;">
               <img src="${product.productImage[0]}" alt="${product.productName}">
             </a>
@@ -367,225 +359,226 @@
               <span class="discount-price">₹${product.salePrice}</span>
             </div>
           `;
-          productContainer.appendChild(productElement);
-      
-          // Check if product is already in wishlist
-          checkIfInWishlist(product._id);
-      
-          // Add click event listener to the wishlist button
-          const wishlistBtn = productElement.querySelector('.wishlist-button');
-          wishlistBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    const prodId = this.dataset.productId;
-    const isActive = this.classList.contains('active');
-    if (isActive) {
-      removeFromWishlist(prodId, this);
-    } else {
-      addToWishlist(prodId, this);
-    }
-          });
-        });
-      
-        // Initialize wishlist states for newly added products
-        initializeWishlistStates();
-      }
-      
-      // Check if a product is already in the wishlist and update the button color
-      function checkIfInWishlist(productId) {
-        $.ajax({
-          type: "GET",
-          url: `/isProductInWishlist?productId=${productId}`,
-          success: (response) => {
-            if (response.isInWishlist) {
-              const wishlistButton = document.querySelector(`[data-product-id="${productId}"]`);
-              wishlistButton.classList.add('active'); // Use class instead of inline style
-            }
-          },
-          error: (xhr, status, error) => {
-            console.error('Error checking wishlist status:', error);
-          }
-        });
-      }
-      
-      // Update the product display with new products
-      function updateProductDisplay(products) {
-        const productContainer = document.getElementById("product-container");
-        productContainer.innerHTML = '';
-        appendProducts(products);
-      }
-      
-      // Fetch products based on current filters, sorting, and pagination
-      async function fetchProducts() {
-        try {
-          const queryParams = new URLSearchParams({
-            sort: currentSort,
-            category: currentCategory,
-            search: currentSearch,
-            page: currentPage,
-            limit: productsPerPage
-          });
-      
-          const response = await fetch(`/api/products?${queryParams.toString()}`, {
-            headers: { "Accept": "application/json" }
-          });
-      
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-      
-          const data = await response.json();
-          
-          // Sort the products if needed
-          let sortedProducts = [...data.products];
-          
-          switch(currentSort) {
-            case 'a-to-z':
-              sortedProducts.sort((a, b) => a.productName.localeCompare(b.productName));
-              break;
-            case 'z-to-a':
-              sortedProducts.sort((a, b) => b.productName.localeCompare(a.productName));
-              break;
-            case 'low-to-high':
-              sortedProducts.sort((a, b) => parseFloat(a.salePrice) - parseFloat(b.salePrice));
-              break;
-            case 'high-to-low':
-              sortedProducts.sort((a, b) => parseFloat(b.salePrice) - parseFloat(a.salePrice));
-              break;
-          }
-      
-          if (currentPage === 1) {
-            updateProductDisplay(sortedProducts);
+        productContainer.appendChild(productElement);
+
+        // Check if product is already in wishlist
+        checkIfInWishlist(product._id);
+
+        // Add click event listener to the wishlist button
+        const wishlistBtn = productElement.querySelector('.wishlist-button');
+        wishlistBtn.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          const prodId = this.dataset.productId;
+          const isActive = this.classList.contains('active');
+          if (isActive) {
+            removeFromWishlist(prodId, this);
           } else {
-            appendProducts(sortedProducts);
-          }
-          
-          updateLoadMoreButton(data.hasMore);
-          updateURL();
-          toggleNoResultsMessage(sortedProducts.length === 0);
-        } catch (error) {
-          console.error("Error fetching products:", error);
-          showErrorMessage("Failed to fetch products. Please try again.");
-        }
-      }
-      
-      // Load more products (pagination)
-      async function loadMore() {
-        currentPage++;
-        await fetchProducts();
-      }
-      
-      // Update visibility of the "Load More" button
-      function updateLoadMoreButton(hasMore) {
-        const loadMoreButton = document.querySelector(".load-more");
-        if (loadMoreButton) {
-          loadMoreButton.style.display = hasMore ? "block" : "none";
-        }
-      }
-      
-      // Show or hide the "no results" message
-      function toggleNoResultsMessage(show) {
-        let messageElement = document.getElementById('no-results-message');
-        if (!messageElement) {
-          messageElement = document.createElement('div');
-          messageElement.id = 'no-results-message';
-          messageElement.className = 'no-results';
-          messageElement.textContent = 'No products found';
-          const productContainer = document.getElementById("product-container");
-          productContainer.parentNode.insertBefore(messageElement, productContainer);
-        }
-        messageElement.style.display = show ? 'block' : 'none';
-      }
-      
-      // Display an error message
-      function showErrorMessage(message) {
-        console.error(message);
-      }
-      
-      // Update the URL with current filters
-      function updateURL() {
-        const params = new URLSearchParams();
-        if (currentSort !== 'default') params.set('sort', currentSort);
-        if (currentCategory !== 'all') params.set('category', currentCategory);
-        if (currentSearch) params.set('search', currentSearch);
-        const newURL = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
-        window.history.replaceState({}, '', newURL);
-      }
-      
-      // Handle search input with debounce
-      function handleSearch() {
-        const searchInput = document.querySelector('.search-bar');
-        let debounceTimer;
-        searchInput.addEventListener('input', () => {
-          clearTimeout(debounceTimer);
-          debounceTimer = setTimeout(async () => {
-            currentSearch = searchInput.value.trim();
-            currentPage = 1; // Reset to first page on new search
-            await fetchProducts();
-          }, 300);
-        });
-        searchInput.addEventListener('keypress', async (e) => {
-          if (e.key === 'Enter') {
-            currentSearch = searchInput.value.trim();
-            currentPage = 1;
-            await fetchProducts();
-          }
-        });
-      }
-      
-      // Handle sorting changes
-      async function sortProducts() {
-        const sortSelect = document.getElementById('sort-price');
-        currentSort = sortSelect.value;
-        currentPage = 1;
-        await fetchProducts();
-      }
-      
-      // Handle filtering changes
-      async function filterProducts() {
-        const filterSelect = document.getElementById('filter-category');
-        currentCategory = filterSelect.value;
-        currentPage = 1;
-        await fetchProducts();
-      }
-      
-      // Initialize all event listeners when the DOM is fully loaded
-      document.addEventListener("DOMContentLoaded", function() {
-        const sortSelect = document.getElementById('sort-price');
-        const filterSelect = document.getElementById('filter-category');
-        const loadMoreButton = document.querySelector(".load-more");
-      
-        if (sortSelect) {
-          sortSelect.addEventListener("change", sortProducts);
-        }
-        if (filterSelect) {
-          filterSelect.addEventListener("change", filterProducts);
-        }
-        if (loadMoreButton) {
-          loadMoreButton.addEventListener("click", loadMore);
-        }
-      
-        // Initialize search functionality
-        handleSearch();
-      
-        // Initialize wishlist states
-        initializeWishlistStates();
-      
-        // Load initial products
-        fetchProducts();
-      
-        // Scroll-to-top button display logic
-        document.addEventListener("scroll", function () {
-          const scrollToTopBtn = document.getElementById("scrollToTopBtn");
-          if (window.scrollY > 300) {
-            scrollToTopBtn.style.display = "block";
-          } else {
-            scrollToTopBtn.style.display = "none";
+            addToWishlist(prodId, this);
           }
         });
       });
-      </script>
-      
 
-  </body>
+      // Initialize wishlist states for newly added products
+      initializeWishlistStates();
+    }
+
+    // Check if a product is already in the wishlist and update the button color
+    function checkIfInWishlist(productId) {
+      $.ajax({
+        type: "GET",
+        url: `/isProductInWishlist?productId=${productId}`,
+        success: (response) => {
+          if (response.isInWishlist) {
+            const wishlistButton = document.querySelector(`[data-product-id="${productId}"]`);
+            wishlistButton.classList.add('active'); // Use class instead of inline style
+          }
+        },
+        error: (xhr, status, error) => {
+          console.error('Error checking wishlist status:', error);
+        }
+      });
+    }
+
+    // Update the product display with new products
+    function updateProductDisplay(products) {
+      const productContainer = document.getElementById("product-container");
+      productContainer.innerHTML = '';
+      appendProducts(products);
+    }
+
+    // Fetch products based on current filters, sorting, and pagination
+    async function fetchProducts() {
+      try {
+        const queryParams = new URLSearchParams({
+          sort: currentSort,
+          category: currentCategory,
+          search: currentSearch,
+          page: currentPage,
+          limit: productsPerPage
+        });
+
+        const response = await fetch(`/api/products?${queryParams.toString()}`, {
+          headers: { "Accept": "application/json" }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // Sort the products if needed
+        let sortedProducts = [...data.products];
+
+        switch (currentSort) {
+          case 'a-to-z':
+            sortedProducts.sort((a, b) => a.productName.localeCompare(b.productName));
+            break;
+          case 'z-to-a':
+            sortedProducts.sort((a, b) => b.productName.localeCompare(a.productName));
+            break;
+          case 'low-to-high':
+            sortedProducts.sort((a, b) => parseFloat(a.salePrice) - parseFloat(b.salePrice));
+            break;
+          case 'high-to-low':
+            sortedProducts.sort((a, b) => parseFloat(b.salePrice) - parseFloat(a.salePrice));
+            break;
+        }
+
+        if (currentPage === 1) {
+          updateProductDisplay(sortedProducts);
+        } else {
+          appendProducts(sortedProducts);
+        }
+
+        updateLoadMoreButton(data.hasMore);
+        updateURL();
+        toggleNoResultsMessage(sortedProducts.length === 0);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        showErrorMessage("Failed to fetch products. Please try again.");
+      }
+    }
+
+    // Load more products (pagination)
+    async function loadMore() {
+      currentPage++;
+      await fetchProducts();
+    }
+
+    // Update visibility of the "Load More" button
+    function updateLoadMoreButton(hasMore) {
+      const loadMoreButton = document.querySelector(".load-more");
+      if (loadMoreButton) {
+        loadMoreButton.style.display = hasMore ? "block" : "none";
+      }
+    }
+
+    // Show or hide the "no results" message
+    function toggleNoResultsMessage(show) {
+      let messageElement = document.getElementById('no-results-message');
+      if (!messageElement) {
+        messageElement = document.createElement('div');
+        messageElement.id = 'no-results-message';
+        messageElement.className = 'no-results';
+        messageElement.textContent = 'No products found';
+        const productContainer = document.getElementById("product-container");
+        productContainer.parentNode.insertBefore(messageElement, productContainer);
+      }
+      messageElement.style.display = show ? 'block' : 'none';
+    }
+
+    // Display an error message
+    function showErrorMessage(message) {
+      console.error(message);
+    }
+
+    // Update the URL with current filters
+    function updateURL() {
+      const params = new URLSearchParams();
+      if (currentSort !== 'default') params.set('sort', currentSort);
+      if (currentCategory !== 'all') params.set('category', currentCategory);
+      if (currentSearch) params.set('search', currentSearch);
+      const newURL = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
+      window.history.replaceState({}, '', newURL);
+    }
+
+    // Handle search input with debounce
+    function handleSearch() {
+      const searchInput = document.querySelector('.search-bar');
+      let debounceTimer;
+      searchInput.addEventListener('input', () => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(async () => {
+          currentSearch = searchInput.value.trim();
+          currentPage = 1; // Reset to first page on new search
+          await fetchProducts();
+        }, 300);
+      });
+      searchInput.addEventListener('keypress', async (e) => {
+        if (e.key === 'Enter') {
+          currentSearch = searchInput.value.trim();
+          currentPage = 1;
+          await fetchProducts();
+        }
+      });
+    }
+
+    // Handle sorting changes
+    async function sortProducts() {
+      const sortSelect = document.getElementById('sort-price');
+      currentSort = sortSelect.value;
+      currentPage = 1;
+      await fetchProducts();
+    }
+
+    // Handle filtering changes
+    async function filterProducts() {
+      const filterSelect = document.getElementById('filter-category');
+      currentCategory = filterSelect.value;
+      currentPage = 1;
+      await fetchProducts();
+    }
+
+    // Initialize all event listeners when the DOM is fully loaded
+    document.addEventListener("DOMContentLoaded", function () {
+      const sortSelect = document.getElementById('sort-price');
+      const filterSelect = document.getElementById('filter-category');
+      const loadMoreButton = document.querySelector(".load-more");
+
+      if (sortSelect) {
+        sortSelect.addEventListener("change", sortProducts);
+      }
+      if (filterSelect) {
+        filterSelect.addEventListener("change", filterProducts);
+      }
+      if (loadMoreButton) {
+        loadMoreButton.addEventListener("click", loadMore);
+      }
+
+      // Initialize search functionality
+      handleSearch();
+
+      // Initialize wishlist states
+      initializeWishlistStates();
+
+      // Load initial products
+      fetchProducts();
+
+      // Scroll-to-top button display logic
+      document.addEventListener("scroll", function () {
+        const scrollToTopBtn = document.getElementById("scrollToTopBtn");
+        if (window.scrollY > 300) {
+          scrollToTopBtn.style.display = "block";
+        } else {
+          scrollToTopBtn.style.display = "none";
+        }
+      });
+    });
+  </script>
+
+
+</body>
+
 </html>

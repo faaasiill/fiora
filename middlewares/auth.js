@@ -1,5 +1,6 @@
 const User = require("../models/userSchema");
 
+// middileware for user authentication
 const userAuth = (req, res, next) => {
   if (!req.session.user) {
     // Check if it's an AJAX request
@@ -34,9 +35,10 @@ const userAuth = (req, res, next) => {
     });
 };
 
+// middileware for admin authentication
 const adminAuth = (req, res, next) => {
   if (!req.session.admin) {
-    return res.redirect("/login"); 
+    return res.redirect("/login");
   }
 
   User.findById(req.session.admin)

@@ -1,124 +1,127 @@
 <%- include("../../views/partials/user/header") %>
 
-      <!-- Hero section -->
-      <div class="content">
-        <h1 class="first-text"></h1>
-        <a href="/products"><button class="btn-sn">Shop Now</button></a>
-      </div>
-    </div>
+  <!-- Hero section -->
+  <div class="content">
+    <h1 class="first-text"></h1>
+    <a href="/products"><button class="btn-sn">Shop Now</button></a>
+  </div>
+  </div>
 
-    <!-- NEW PRODUCTS Section -->
-    <div class="best-sellers-container">
-      <h1 class="best-sellers-title">NEW PRODUCTS</h1>
-      <a href="/products" class="view-all-link">View All</a>
-      
-      <div class="best-sellers-slider">
-        <!-- Navigation arrows for slider -->
-        <button class="arrow left-arrow">
-          <span class="material-symbols-outlined">arrow_back_ios</span>
-        </button>
-        
-        <div class="best-sellers-grid">
-          <% for (let i = 0; i < products.length; i++) { %>
-            <div class="product-card">
-              <div style="position: relative;">
-                <a href="/productDetails?id=<%= products[i]._id %>">
-                  <img src="<%= products[i].productImage[0] %>" 
-                       alt="<%= products[i].productName %>" 
-                       class="product-image">
-                </a>                  
-                
-                <button class="wishlist-btn" 
-            data-product-id="<%= products[i]._id %>" 
-            onclick="WishlistManager.toggleWishlist(event, '<%= products[i]._id %>', this)">
-          <span class="material-symbols-outlined wishlist-icon">favorite</span>
-          </button>                               
-              </div>
-              
-              <h3 class="product-name"><%= products[i].productName %></h3>
-              
-              <p class="product-price">
-                ₹<%= products[i].salePrice %> 
+  <!-- NEW PRODUCTS Section -->
+  <div class="best-sellers-container">
+    <h1 class="best-sellers-title">NEW PRODUCTS</h1>
+    <a href="/products" class="view-all-link">View All</a>
+
+    <div class="best-sellers-slider">
+      <!-- Navigation arrows for slider -->
+      <button class="arrow left-arrow">
+        <span class="material-symbols-outlined">arrow_back_ios</span>
+      </button>
+
+      <div class="best-sellers-grid">
+        <% for (let i=0; i < products.length; i++) { %>
+          <div class="product-card">
+            <div style="position: relative;">
+              <a href="/productDetails?id=<%= products[i]._id %>">
+                <img src="<%= products[i].productImage[0] %>" alt="<%= products[i].productName %>"
+                  class="product-image">
+              </a>
+
+              <button class="wishlist-btn" data-product-id="<%= products[i]._id %>"
+                onclick="WishlistManager.toggleWishlist(event, '<%= products[i]._id %>', this)">
+                <span class="material-symbols-outlined wishlist-icon">favorite</span>
+              </button>
+            </div>
+
+            <h3 class="product-name">
+              <%= products[i].productName %>
+            </h3>
+
+            <p class="product-price">
+              ₹<%= products[i].salePrice %>
                 <% if (products[i].regularPrice) { %>
                   <span class="original-price">₹<%= products[i].regularPrice %></span>
-                <% } %>
-              </p>
-            </div>
+                  <% } %>
+            </p>
+          </div>
           <% } %>
-        </div>
-        
-        <button class="arrow right-arrow">
-          <span class="material-symbols-outlined">arrow_forward_ios</span>
-        </button>
+      </div>
+
+      <button class="arrow right-arrow">
+        <span class="material-symbols-outlined">arrow_forward_ios</span>
+      </button>
+    </div>
+  </div>
+
+
+  <!-- Trending Now Section -->
+  <div class="main-container">
+    <hr style="border-top: 0.1px solid #a2a2a2; margin-bottom: 30px;">
+    <h1 class="title">TRENDING NOW</h1>
+    <div class="row">
+      <div class="col">
+        <img src="/images/2024-L7-CK2-50782376-A-09-2.webp" alt="Trending Item">
+        <a href="#" class="shop-now">shop now</a>
+      </div>
+      <div class="col">
+        <img src="/images/puffychain.jpg" alt="Trending Item">
+        <a href="#" class="shop-now">shop now</a>
       </div>
     </div>
-    
+  </div>
 
-    <!-- Trending Now Section -->
-    <div class="main-container">
-      <hr style="border-top: 0.1px solid #a2a2a2; margin-bottom: 30px;">
-      <h1 class="title">TRENDING NOW</h1>
-      <div class="row">
-        <div class="col">
-          <img src="/images/2024-L7-CK2-50782376-A-09-2.webp" alt="Trending Item">
-          <a href="#" class="shop-now">shop now</a>
-        </div>
-        <div class="col">
-          <img src="/images/puffychain.jpg" alt="Trending Item">
-          <a href="#" class="shop-now">shop now</a>
-        </div>
+  <!-- Categories Section -->
+  <div class="category-container">
+    <hr style="border-top: 0.1px solid #a2a2a2; margin-bottom: 30px;">
+    <h1 class="title">CATEGORIES</h1>
+    <div class="category-grid">
+      <!-- Category cards -->
+      <div class="category-card">
+        <img src="/images/totebag.webp" alt="Tote Bags">
+        <h3 class="category-text">Tote Bags</h3>
+      </div>
+      <div class="category-card">
+        <img src="/images/hobobag.jpg" alt="Hobo Bags">
+        <h3 class="category-text">Hobo Bags</h3>
+      </div>
+      <div class="category-card">
+        <img src="/images/crossbody.jpg" alt="Crossbody Bags">
+        <h3 class="category-text">Crossbody Bags</h3>
+      </div>
+      <div class="category-card">
+        <img src="/images/handile-bag.jpg" alt="Handle Bags">
+        <h3 class="category-text">Handle Bags</h3>
+      </div>
+      <div class="category-card">
+        <img src="/images/workwear-1.webp" alt="Workwear">
+        <h3 class="category-text">Workwear</h3>
+      </div>
+      <div class="category-card">
+        <img src="/images/trending.webp" alt="Trending">
+        <h3 class="category-text">Trending</h3>
       </div>
     </div>
+  </div>
 
-    <!-- Categories Section -->
-    <div class="category-container">
-      <hr style="border-top: 0.1px solid #a2a2a2; margin-bottom: 30px;">
-      <h1 class="title">CATEGORIES</h1>
-      <div class="category-grid">
-        <!-- Category cards -->
-        <div class="category-card">
-          <img src="/images/totebag.webp" alt="Tote Bags">
-          <h3 class="category-text">Tote Bags</h3>
-        </div>
-        <div class="category-card">
-          <img src="/images/hobobag.jpg" alt="Hobo Bags">
-          <h3 class="category-text">Hobo Bags</h3>
-        </div>
-        <div class="category-card">
-          <img src="/images/crossbody.jpg" alt="Crossbody Bags">
-          <h3 class="category-text">Crossbody Bags</h3>
-        </div>
-        <div class="category-card">
-          <img src="/images/handile-bag.jpg" alt="Handle Bags">
-          <h3 class="category-text">Handle Bags</h3>
-        </div>
-        <div class="category-card">
-          <img src="/images/workwear-1.webp" alt="Workwear">
-          <h3 class="category-text">Workwear</h3>
-        </div>
-        <div class="category-card">
-          <img src="/images/trending.webp" alt="Trending">
-          <h3 class="category-text">Trending</h3>
-        </div>
-      </div>
-    </div>
+  <!-- Inspired By Section -->
+  <hr style="border-top: 0.1px solid #a2a2a2; width: 80%; margin: auto;">
+  <h1 class="title">INSPIRED BY</h1>
+  <div class="inspired-images">
+    <img class="logo-inspired" src="/images/logos/chanel-1.svg" alt="Chanel Logo">
+    <img class="logo-inspired" src="/images/logos/dior.svg" alt="Dior Logo">
+    <img class="logo-inspired" src="/images/logos/gucci-4.svg" alt="Gucci Logo">
+    <img class="logo-inspired" src="/images/logos/hermes-1.svg" alt="Hermes Logo">
+    <img class="logo-inspired" src="/images/logos/louis-vuitton-1.svg" alt="Louis Vuitton Logo">
+  </div>
 
-    <!-- Inspired By Section -->
-    <hr style="border-top: 0.1px solid #a2a2a2; width: 80%; margin: auto;">
-    <h1 class="title">INSPIRED BY</h1>
-    <div class="inspired-images">
-      <img class="logo-inspired" src="/images/logos/chanel-1.svg" alt="Chanel Logo">
-      <img class="logo-inspired" src="/images/logos/dior.svg" alt="Dior Logo">
-      <img class="logo-inspired" src="/images/logos/gucci-4.svg" alt="Gucci Logo">
-      <img class="logo-inspired" src="/images/logos/hermes-1.svg" alt="Hermes Logo">
-      <img class="logo-inspired" src="/images/logos/louis-vuitton-1.svg" alt="Louis Vuitton Logo">
-    </div>
+  <!-- Big Image Section -->
+  <div class="bigi-container">
+    <p class="text-forbimg">TIMELESS & RELIABLE BAGS</p>
+    <!-- <img class="bigimg" src="/images/pixelcut-export (3).jpeg" alt="Woman with a Bag"> -->
+    <video class="bigimg"
+      src="https://assets.charleskeith.com/media/charles-keith-fall-23-friends-of-house-banner-desktop.mp4" autoplay=""
+      loop="" muted="" playsinline="" webkit-playsinline=""
+      poster="https://www.charleskeith.eu/on/demandware.static/-/Library-Sites-CharlesKeithEU/default/dw41e3e2fe/images/Muse/Fall23/foh/charles-keith-fall-23-friends-of-house-banner-desktop-fallback.jpg"></video>
+  </div>
 
-    <!-- Big Image Section -->
-    <div class="bigi-container">
-      <p class="text-forbimg">TIMELESS & RELIABLE BAGS</p>
-      <!-- <img class="bigimg" src="/images/pixelcut-export (3).jpeg" alt="Woman with a Bag"> -->
-      <video class="bigimg" src="https://assets.charleskeith.com/media/charles-keith-fall-23-friends-of-house-banner-desktop.mp4" autoplay="" loop="" muted="" playsinline="" webkit-playsinline="" poster="https://www.charleskeith.eu/on/demandware.static/-/Library-Sites-CharlesKeithEU/default/dw41e3e2fe/images/Muse/Fall23/foh/charles-keith-fall-23-friends-of-house-banner-desktop-fallback.jpg"></video>
-    </div>
-
-    <%- include("../../views/partials/user/footer") %>
+  <%- include("../../views/partials/user/footer") %>

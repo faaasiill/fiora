@@ -1,8 +1,8 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const stateSchema = new mongoose.Schema({
   code: String,
-  name: String
+  name: String,
 });
 
-module.exports = mongoose.model('State', stateSchema);
+module.exports = mongoose.model("State", stateSchema);

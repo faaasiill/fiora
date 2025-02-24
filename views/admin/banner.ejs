@@ -1,82 +1,92 @@
 <%- include("../../views/partials/admin/header") %>
-<link rel="stylesheet" href="/css/banner-management.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.32/sweetalert2.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.32/sweetalert2.min.css">
-<div class="content-header">
+  <link rel="stylesheet" href="/css/banner-management.css">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.32/sweetalert2.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.32/sweetalert2.min.css">
+  <div class="content-header">
     <div class="d-flex justify-content-between align-items-center">
-        <h2 class="content-title">Banners</h2>
+      <h2 class="content-title">Banners</h2>
     </div>
-</div>
+  </div>
 
-<div class="table-container">
+  <div class="table-container">
     <table class="table">
-        <thead>
+      <thead>
+        <tr>
+          <th scope="col">Image</th>
+          <th scope="col">Title</th>
+          <th scope="col">Description</th>
+          <th scope="col">Page</th>
+          <th scope="col">Status</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (locals.data && data.length> 0) { %>
+          <% for(let i=0; i < data.length; i++) { %>
             <tr>
-                <th scope="col">Image</th>
-                <th scope="col">Title</th>
-                <th scope="col">Description</th>
-                <th scope="col">Page</th>
-                <th scope="col">Status</th>
-                <th scope="col">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% if (locals.data && data.length > 0) { %>
-              <% for(let i = 0; i < data.length; i++) { %>
-                <tr>
-                  <td>
-                    <img src="<%= data[i].image %>" style="height: 2rem; width: 3rem;" class="img-xs rounded" alt="<%= data[i].title %>">
-                  </td>
-                  <td><%= data[i].title %></td>
-                  <td><%= data[i].description %></td>
-                  <td><%= data[i].page %></td>
-                  <td>
-                    <% if (new Date(data[i].startDate) <= new Date() && new Date(data[i].endDate) >= new Date()) { %>
-                      <span class="badge alert-success">Active</span>
-                    <% } else { %>
-                      <span class="badge alert-danger">Inactive</span>
+              <td>
+                <img src="<%= data[i].image %>" style="height: 2rem; width: 3rem;" class="img-xs rounded"
+                  alt="<%= data[i].title %>">
+              </td>
+              <td>
+                <%= data[i].title %>
+              </td>
+              <td>
+                <%= data[i].description %>
+              </td>
+              <td>
+                <%= data[i].page %>
+              </td>
+              <td>
+                <% if (new Date(data[i].startDate) <=new Date() && new Date(data[i].endDate)>= new Date()) { %>
+                  <span class="badge alert-success">Active</span>
+                  <% } else { %>
+                    <span class="badge alert-danger">Inactive</span>
                     <% } %>
-                  </td>
-                  <td class="action">
-                   
-                    <a href="/admin/deleteBanner?id=<%= data[i]._id %>" class="text-danger" title="Delete" 
-                       onclick="return confirmDelete('<%= data[i]._id %>')">
-                       <span class="material-symbols-outlined" style="color: red;">
-                        delete
-                        </span>
-                    </a>
-                  </td>
-                </tr>
-              <% } %>
-            <% } else { %>
-              <tr><td colspan="5" class="text-center">No Banners Found</td></tr>
-            <% } %>
-          </tbody>          
-    </table>
-</div>
+              </td>
+              <td class="action">
 
-<div class="button-container">
+                <a href="/admin/deleteBanner?id=<%= data[i]._id %>" class="text-danger" title="Delete"
+                  onclick="return confirmDelete('<%= data[i]._id %>')">
+                  <span class="material-symbols-outlined" style="color: red;">
+                    delete
+                  </span>
+                </a>
+              </td>
+            </tr>
+            <% } %>
+              <% } else { %>
+                <tr>
+                  <td colspan="5" class="text-center">No Banners Found</td>
+                </tr>
+                <% } %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="button-container">
     <a href="/admin/addBanner">
-        <button class="btn btn-primary" type="button">Add Banner</button>
+      <button class="btn btn-primary" type="button">Add Banner</button>
     </a>
-</div>
-<script>
+  </div>
+  <script>
     function confirmDelete(bannerId) {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = `/admin/deleteBanner?id=${bannerId}`;
-            }
-        });
-        return false;
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = `/admin/deleteBanner?id=${bannerId}`;
+        }
+      });
+      return false;
     }
-    </script>
-<%- include("../../views/partials/admin/footer") %>
+  </script>
+  <%- include("../../views/partials/admin/footer") %>

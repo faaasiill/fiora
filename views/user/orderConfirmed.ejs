@@ -1,77 +1,86 @@
 <!-- views/orderConfirmed.ejs -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Order Confirmed</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/orderConfirmed.css">
 </head>
+
 <body>
     <div class="confirmation-container">
         <div class="success-checkmark">
             <svg viewBox="0 0 24 24">
-                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
             </svg>
         </div>
-        
+
         <h1>Thank You for Your Order!</h1>
         <p>Your order has been successfully placed.</p>
-        
+
         <div class="order-details">
             <div class="detail-row">
                 <span>Order ID</span>
-                <span id="orderId"><%= order.orderId %></span>
+                <span id="orderId">
+                    <%= order.orderId %>
+                </span>
             </div>
             <div class="detail-row">
                 <span>Order Date</span>
-                <span id="orderDate"><%= orderDate %></span>
+                <span id="orderDate">
+                    <%= orderDate %>
+                </span>
             </div>
             <div class="detail-row">
                 <span>Payment Method</span>
-                <span id="paymentMethod"><%= order.paymentMethod %></span>
-            </div>
-
-            <% order.orderItems.forEach((item, i) => { %>
-            <div class="detail-row product-row">
-                <span class="product-info">
-                    <img src="<%= item.product.productImage[i] %>" alt="<%= item.product.productName %>" class="product-thumbnail">
-                    <%= item.product.productName %>
-                </span>
-                <span class="product-price">
-                    <%= item.quantity %> x ₹<%= item.price.toLocaleString('en-IN') %>
+                <span id="paymentMethod">
+                    <%= order.paymentMethod %>
                 </span>
             </div>
-            <% }); %>
 
-            <% if (order.discount > 0) { %>
-            <div class="detail-row">
-                <span>Discount</span>
-                <span>- ₹<%= order.discount.toLocaleString('en-IN') %></span>
-            </div>
-            <% } %>
+            <% order.orderItems.forEach((item, i)=> { %>
+                <div class="detail-row product-row">
+                    <span class="product-info">
+                        <img src="<%= item.product.productImage[i] %>" alt="<%= item.product.productName %>"
+                            class="product-thumbnail">
+                        <%= item.product.productName %>
+                    </span>
+                    <span class="product-price">
+                        <%= item.quantity %> x ₹<%= item.price.toLocaleString('en-IN') %>
+                    </span>
+                </div>
+                <% }); %>
 
-            <div class="detail-row address-row">
-                <span>Delivery Address</span>
-                <span class="address-details">
-                    <% if (!addressError && order.address) { %>
-                        <%= order.address.fullName %><br>
-                        <%= order.address.address %><br>
-                        <%= order.address.city %>, <%= order.address.state %><br>
-                        <%= order.address.pincode %><br>
-                        Phone: <%= order.address.mobile %>
-                    <% } else { %>
-                        <p>Address information is currently unavailable</p>
-                    <% } %>
-                </span>
-            </div>
-            
-            
+                    <% if (order.discount> 0) { %>
+                        <div class="detail-row">
+                            <span>Discount</span>
+                            <span>- ₹<%= order.discount.toLocaleString('en-IN') %></span>
+                        </div>
+                        <% } %>
+
+                            <div class="detail-row address-row">
+                                <span>Delivery Address</span>
+                                <span class="address-details">
+                                    <% if (!addressError && order.address) { %>
+                                        <%= order.address.fullName %><br>
+                                            <%= order.address.address %><br>
+                                                <%= order.address.city %>, <%= order.address.state %><br>
+                                                        <%= order.address.pincode %><br>
+                                                            Phone: <%= order.address.mobile %>
+                                                                <% } else { %>
+                                                                    <p>Address information is currently unavailable</p>
+                                                                    <% } %>
+                                </span>
+                            </div>
+
+
         </div>
 
         <div class="delivery-status">
-            <p>🚚 Estimated Delivery: 
-                <%= deliveryEstimate.min.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %> - 
-                <%= deliveryEstimate.max.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %>
+            <p>🚚 Estimated Delivery:
+                <%= deliveryEstimate.min.toLocaleDateString('en-US', { month: 'short' , day: 'numeric' }) %> -
+                    <%= deliveryEstimate.max.toLocaleDateString('en-US', { month: 'short' , day: 'numeric' }) %>
             </p>
         </div>
 
@@ -80,7 +89,7 @@
         </div>
 
         <p>We'll send you shipping confirmation and tracking details shortly.</p>
-        
+
         <div class="action-buttons">
             <a href="/userProfile#timeline" class="btn view-orders">View Orders</a>
             <a href="/" class="btn continue-shopping">Continue Shopping</a>
@@ -89,4 +98,5 @@
 
 
 </body>
+
 </html>

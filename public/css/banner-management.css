@@ -2,129 +2,129 @@
 
 /* Content Header */
 .content-header {
-    padding: 2rem 2.5rem;
-    background-color: #fff;
-    border-bottom: 1px solid #eee;
-    margin-bottom: 2rem;
+  padding: 2rem 2.5rem;
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 2rem;
 }
 
 .content-title {
-    font-size: 1.75rem;
-    font-weight: 600;
-    color: #333;
-    margin: 0;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
 }
 
 /* Table Styles */
 .table-container {
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    padding: 1.5rem;
-    margin: 0 2.5rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+  margin: 0 2.5rem;
 }
 
 .table {
-    width: 100%;
-    margin-bottom: 0;
+  width: 100%;
+  margin-bottom: 0;
 }
 
 .table thead th {
-    background-color: #f8f9fa;
-    border-bottom: 2px solid #dee2e6;
-    padding: 1rem;
-    font-weight: 600;
-    color: #495057;
-    text-transform: uppercase;
-    font-size: 0.875rem;
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+  padding: 1rem;
+  font-weight: 600;
+  color: #495057;
+  text-transform: uppercase;
+  font-size: 0.875rem;
 }
 
 .table tbody td {
-    padding: 1rem;
-    vertical-align: middle;
-    border-bottom: 1px solid #dee2e6;
+  padding: 1rem;
+  vertical-align: middle;
+  border-bottom: 1px solid #dee2e6;
 }
 
 /* Image Thumbnail */
 .img-xs {
-    object-fit: cover;
-    border-radius: 4px;
-    border: 1px solid #dee2e6;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #dee2e6;
 }
 
 /* Status Badges */
 .badge {
-    padding: 0.5rem 1rem;
-    font-weight: 500;
-    border-radius: 30px;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  border-radius: 30px;
 }
 
 .alert-success {
-    background-color: #e8f5e9;
-    color: #2e7d32;
+  background-color: #e8f5e9;
+  color: #2e7d32;
 }
 
 .alert-danger {
-    background-color: #ffebee;
-    color: #c62828;
+  background-color: #ffebee;
+  color: #c62828;
 }
 
 /* Action Buttons */
 .action {
-    white-space: nowrap;
+  white-space: nowrap;
 }
 
 .action a {
-    display: inline-block;
-    padding: 0.5rem;
-    margin: 0 0.25rem;
-    transition: all 0.2s ease;
+  display: inline-block;
+  padding: 0.5rem;
+  margin: 0 0.25rem;
+  transition: all 0.2s ease;
 }
 
 .action a:hover {
-    transform: translateY(-2px);
+  transform: translateY(-2px);
 }
 
 .material-icons {
-    font-size: 1.25rem;
+  font-size: 1.25rem;
 }
 
 /* Add Banner Button Container */
 .button-container {
-    padding: 2rem;
-    text-align: center;
+  padding: 2rem;
+  text-align: center;
 }
 
 .btn-primary {
-    padding: 0.75rem 2rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    background-color: #1976d2;
-    border: none;
-    border-radius: 4px;
-    transition: all 0.2s ease;
+  padding: 0.75rem 2rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background-color: #1976d2;
+  border: none;
+  border-radius: 4px;
+  transition: all 0.2s ease;
 }
 
 .btn-primary:hover {
-    background-color: #1565c0;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #1565c0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
-    .content-header {
-        padding: 1.5rem;
-    }
-    
-    .table-container {
-        margin: 0 1rem;
-        padding: 1rem;
-        overflow-x: auto;
-    }
-    
-    .table {
-        min-width: 800px;
-    }
+  .content-header {
+    padding: 1.5rem;
+  }
+
+  .table-container {
+    margin: 0 1rem;
+    padding: 1rem;
+    overflow-x: auto;
+  }
+
+  .table {
+    min-width: 800px;
+  }
 }

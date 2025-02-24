@@ -7,6 +7,7 @@ const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const mongoose = require("mongoose");
 
+// for load signup page.
 const loadSignup = async (req, res) => {
   try {
     return res.render("signup");
@@ -16,26 +17,26 @@ const loadSignup = async (req, res) => {
   }
 };
 
+// for load home page
 const loadHomepage = async (req, res) => {
   try {
     const today = new Date().toISOString();
     const findBanner = await Banner.find({
-      startDate: {$lt: new Date(today)},
-      endDate: {$gt: new Date(today)},
-      page: 'home'
+      startDate: { $lt: new Date(today) },
+      endDate: { $gt: new Date(today) },
+      page: "home",
     });
     let userData = null;
     const categories = await Category.find({ isListed: true });
 
-
     let productData = await Product.find({
-      isBlocked: false, 
-      category: { $in: categories.map(category => category._id) }, 
-      quantity: { $gt: 0 }
+      isBlocked: false,
+      category: { $in: categories.map((category) => category._id) },
+      quantity: { $gt: 0 },
     })
-    .sort({ createdAt: -1 }) 
-    .limit(7) 
-    .lean();
+      .sort({ createdAt: -1 })
+      .limit(7)
+      .lean();
 
     const isLogin = req.session.user;
 
@@ -44,7 +45,11 @@ const loadHomepage = async (req, res) => {
       userData = await User.findById(userId).lean();
 
       if (userData) {
-        return res.render("home", { user: userData, products: productData , banner:findBanner || ""});
+        return res.render("home", {
+          user: userData,
+          products: productData,
+          banner: findBanner || "",
+        });
       } else {
         console.log("User not found in database!");
         req.session.user = null;
@@ -52,15 +57,18 @@ const loadHomepage = async (req, res) => {
     }
 
     // Default render
-    return res.render("home", { products: productData, isLogin , banner:findBanner || ""});
-
+    return res.render("home", {
+      products: productData,
+      isLogin,
+      banner: findBanner || "",
+    });
   } catch (error) {
     console.log("Error rendering home page:", error.message);
     res.status(500).send("Server Error");
   }
 };
 
-
+// for page error
 const pageNotFound = async (req, res) => {
   try {
     res.render("page-404");
@@ -69,10 +77,12 @@ const pageNotFound = async (req, res) => {
   }
 };
 
+// for genarate otp
 function generateOtp() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
+// for send Verification to Email
 async function sendVerificationEmail(email, otp) {
   try {
     const transporter = nodemailer.createTransport({
@@ -101,6 +111,7 @@ async function sendVerificationEmail(email, otp) {
   }
 }
 
+// for signup
 const signup = async (req, res) => {
   try {
     const { name, phone, email, password, confirmPassword } = req.body;
@@ -127,14 +138,18 @@ const signup = async (req, res) => {
   }
 };
 
+// for secure password
 const securePassword = async (password) => {
   try {
     const passwordHash = await bcrypt.hash(password, 10);
 
     return passwordHash;
-  } catch (error) {}
+  } catch (error) {
+    console.error("Error hashing password", error);
+  }
 };
 
+// for verify otp
 const verifyOtp = async (req, res) => {
   try {
     const { otp } = req.body;
@@ -165,6 +180,7 @@ const verifyOtp = async (req, res) => {
   }
 };
 
+//  for resend otp
 const resendOtp = async (req, res) => {
   try {
     const { email } = req.session.userData;
@@ -188,15 +204,14 @@ const resendOtp = async (req, res) => {
     }
   } catch (error) {
     console.error("Error resending OTP", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Internel Server Error Please try again",
-      });
+    res.status(500).json({
+      success: false,
+      message: "Internel Server Error Please try again",
+    });
   }
 };
 
+// for load login
 const loadLogin = async (req, res) => {
   try {
     if (!req.session.user) {
@@ -209,6 +224,7 @@ const loadLogin = async (req, res) => {
   }
 };
 
+//  for login registrations
 const login = async (req, res) => {
   try {
     console.log("Login request received:", req.body);
@@ -238,6 +254,7 @@ const login = async (req, res) => {
   }
 };
 
+// for user logout
 const logout = async (req, res) => {
   try {
     req.session.destroy((err) => {

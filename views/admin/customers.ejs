@@ -1,314 +1,323 @@
 <%- include("../../views/partials/admin/header") %>
 
-<style>
-    body {
-        display: flex;
-        flex-direction: column;
-        height: 100vh;
-        margin: 0;
-        background-color: #ffffff;
-    }
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            background-color: #ffffff;
+        }
 
-    .content-header {
-        padding-top: 120px;
-        padding-left: 15px;
-    }
-
-    .content-title {
-        font-size: 24px;
-        color: #790d30;
-        margin-bottom: 20px;
-    }
-
-    .content {
-        padding: 20px;
-        flex-grow: 1;
-        display: flex;
-        justify-content: flex-end;
-    }
-
-    .table-container {
-        width: 80%;
-    }
-
-    .table {
-        width: 100%;
-        margin-bottom: 1rem;
-        color: #212529;
-        border-collapse: collapse;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .table th,
-    .table td {
-        padding: 1rem;
-        vertical-align: middle;
-        border-top: 1px solid #dee2e6;
-        text-align: center;
-    }
-
-    .table thead th {
-        background-color: #6E0B21;
-        font-weight: 400;
-        color: white;
-        text-align: center;
-    }
-
-    .table-striped tbody tr:nth-of-type(odd) {
-        background-color: rgba(0, 0, 0, 0.05);
-    }
-
-    .table-hover tbody tr:hover {
-        background-color: rgba(0, 0, 0, 0.075);
-    }
-
-    .btn {
-        padding: 8px 12px;
-        border-radius: 5px;
-        color: white;
-        cursor: pointer;
-        border: none;
-        transition: background-color 0.3s ease, transform 0.2s ease;
-    }
-
-    .btn a {
-        color: white;
-        text-decoration: none;
-    }
-
-    .btn-danger {
-        background-color: #dc3545;
-    }
-
-    .btn-danger:hover {
-        background-color: #c82333;
-        transform: scale(1.05);
-    }
-
-    .btn-success {
-        background-color: #28a745;
-    }
-
-    .btn-success:hover {
-        background-color: #218838;
-        transform: scale(1.05);
-    }
-
-    .pagination {
-        display: flex;
-        justify-content: center;
-        margin-top: 20px;
-        margin-left: 100px;
-    }
-
-    .pagination .page-item {
-        margin: 0 5px;
-    }
-
-    .pagination .page-item .page-link {
-        padding: 10px 15px;
-        border-radius: 5px;
-        background-color: #6E0B21;
-        color: white;
-        border: none;
-        text-decoration: none;
-        transition: background-color 0.3s, transform 0.2s;
-    }
-
-    .pagination .page-item .page-link {
-    padding: 10px 15px;
-    border-radius: 5px;
-    background-color: #6E0B21;
-    color: white;
-    border: 1px solid #6E0B21;  
-    text-decoration: none;
-    transition: all 0.3s ease;  
-}
-
-
-
-    @media (max-width: 768px) {
         .content-header {
-            padding-top: 60px;
-            padding-left: 10px;
+            padding-top: 120px;
+            padding-left: 15px;
         }
 
         .content-title {
-            font-size: 20px;
+            font-size: 24px;
+            color: #790d30;
+            margin-bottom: 20px;
+        }
+
+        .content {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .table-container {
+            width: 80%;
+        }
+
+        .table {
+            width: 100%;
+            margin-bottom: 1rem;
+            color: #212529;
+            border-collapse: collapse;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .table th,
         .table td {
-            padding: 0.5rem;
+            padding: 1rem;
+            vertical-align: middle;
+            border-top: 1px solid #dee2e6;
+            text-align: center;
+        }
+
+        .table thead th {
+            background-color: #6E0B21;
+            font-weight: 400;
+            color: white;
+            text-align: center;
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(0, 0, 0, 0.075);
+        }
+
+        .btn {
+            padding: 8px 12px;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            transform: scale(1.05);
+        }
+
+        .btn-success {
+            background-color: #28a745;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            margin-left: 100px;
+        }
+
+        .pagination .page-item {
+            margin: 0 5px;
         }
 
         .pagination .page-item .page-link {
-            padding: 5px 10px;
+            padding: 10px 15px;
+            border-radius: 5px;
+            background-color: #6E0B21;
+            color: white;
+            border: none;
+            text-decoration: none;
+            transition: background-color 0.3s, transform 0.2s;
         }
-    }
-    .search-container {
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 20px;
-    margin-right: 20px;
-    margin-top: 50px;
-}
 
-#searchInput {
-    padding: 8px;
-    width: 300px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
-.search-button {
-    padding: 8px 12px;
-    border-radius: 5px;
-    background-color: #6E0B21;
-    color: white;
-    border: none;
-    cursor: pointer;
-    margin-left: 5px;
-}
+        .pagination .page-item .page-link {
+            padding: 10px 15px;
+            border-radius: 5px;
+            background-color: #6E0B21;
+            color: white;
+            border: 1px solid #6E0B21;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
 
 
-</style>
 
-<div class="content-header">
-    <h2 class="content-title" style="text-align: center; padding-left: 100px;">User Management</h2>
-    <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Search by name, email, or phone">
-        <button class="search-button" onclick="searchUsers()">Search</button>
+        @media (max-width: 768px) {
+            .content-header {
+                padding-top: 60px;
+                padding-left: 10px;
+            }
+
+            .content-title {
+                font-size: 20px;
+            }
+
+            .table th,
+            .table td {
+                padding: 0.5rem;
+            }
+
+            .pagination .page-item .page-link {
+                padding: 5px 10px;
+            }
+        }
+
+        .search-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+            margin-right: 20px;
+            margin-top: 50px;
+        }
+
+        #searchInput {
+            padding: 8px;
+            width: 300px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .search-button {
+            padding: 8px 12px;
+            border-radius: 5px;
+            background-color: #6E0B21;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+    </style>
+
+    <div class="content-header">
+        <h2 class="content-title" style="text-align: center; padding-left: 100px;">User Management</h2>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search by name, email, or phone">
+            <button class="search-button" onclick="searchUsers()">Search</button>
+        </div>
     </div>
-</div>
 
 
-<div class="content">
-    <div class="table-container">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th scope="col"><b>Name</b></th>
-                    <th scope="col"><b>Email</b></th>
-                    <th scope="col"><b>Phone No</b></th>
-                    <th scope="col"><b>Action</b></th>
-                </tr>
-            </thead>
-            <tbody>
-                <% for(let i = 0; i < data.length; i++) { %>
+    <div class="content">
+        <div class="table-container">
+            <table class="table table-striped">
+                <thead>
                     <tr>
-                        <td><%= data[i].name %></td>
-                        <td><%= data[i].email %></td>
-                        <td><%= data[i].phone %></td>
-                        <td>
-                            <% if (data[i].isBlocked === false) { %>
-                                <button class="btn btn-danger btn-block" onclick="confirmAction('<%= data[i].id %>', 'block')">
-                                    Block
-                                </button>
-                            <% } else { %>
-                                <button class="btn btn-success btn-unblock" onclick="confirmAction('<%= data[i].id %>', 'unblock')">
-                                    Unblock
-                                </button>
-                            <% } %>
-                        </td>
+                        <th scope="col"><b>Name</b></th>
+                        <th scope="col"><b>Email</b></th>
+                        <th scope="col"><b>Phone No</b></th>
+                        <th scope="col"><b>Action</b></th>
                     </tr>
-                <% } %>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <% for(let i=0; i < data.length; i++) { %>
+                        <tr>
+                            <td>
+                                <%= data[i].name %>
+                            </td>
+                            <td>
+                                <%= data[i].email %>
+                            </td>
+                            <td>
+                                <%= data[i].phone %>
+                            </td>
+                            <td>
+                                <% if (data[i].isBlocked===false) { %>
+                                    <button class="btn btn-danger btn-block"
+                                        onclick="confirmAction('<%= data[i].id %>', 'block')">
+                                        Block
+                                    </button>
+                                    <% } else { %>
+                                        <button class="btn btn-success btn-unblock"
+                                            onclick="confirmAction('<%= data[i].id %>', 'unblock')">
+                                            Unblock
+                                        </button>
+                                        <% } %>
+                            </td>
+                        </tr>
+                        <% } %>
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
 
-<div class="container mt-3">
-    <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center mb-20">
-            <% for(let i = 1; i <= totalPages; i++) { %>
-                <li class="page-item <%=(i===currentPage) ? 'active' : '' %>">
-                    <a class="page-link" href="?page=<%= i %>"><%= i %></a>
-                </li>
-            <% } %>
-        </ul>
-    </nav>
-</div>
+    <div class="container mt-3">
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center mb-20">
+                <% for(let i=1; i <=totalPages; i++) { %>
+                    <li class="page-item <%=(i===currentPage) ? 'active' : '' %>">
+                        <a class="page-link" href="?page=<%= i %>">
+                            <%= i %>
+                        </a>
+                    </li>
+                    <% } %>
+            </ul>
+        </nav>
+    </div>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    function confirmAction(userId, action) {
-        let actionText = action === 'block' ? 'Block' : 'Unblock';
-        let actionUrl = action === 'block' ? `/admin/blockCustomer?id=${userId}` : `/admin/unblockCustomer?id=${userId}`;
-        
-        Swal.fire({
-            title: `Are you sure you want to ${actionText} this user?`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: action === 'block' ? '#d33' : '#3085d6',
-            cancelButtonColor: '#aaa',
-            confirmButtonText: actionText
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = actionUrl;
-            }
-        });
-    }
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function confirmAction(userId, action) {
+            let actionText = action === 'block' ? 'Block' : 'Unblock';
+            let actionUrl = action === 'block' ? `/admin/blockCustomer?id=${userId}` : `/admin/unblockCustomer?id=${userId}`;
 
-
-
-
-
-
-    const pageLinks = document.querySelectorAll('.page-link');
-
-
-    pageLinks.forEach(link => {
-        link.addEventListener('click', function() {
-
-            pageLinks.forEach(l => {
-                l.style.backgroundColor = '#6E0B21';  
-                l.style.color = 'white';
+            Swal.fire({
+                title: `Are you sure you want to ${actionText} this user?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: action === 'block' ? '#d33' : '#3085d6',
+                cancelButtonColor: '#aaa',
+                confirmButtonText: actionText
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = actionUrl;
+                }
             });
+        }
 
 
-            this.style.backgroundColor = '#ffffff';
-            this.style.color = '#6E0B21';
-        });
-    });
 
 
-    window.addEventListener('load', function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const currentPage = urlParams.get('page') || '1';
-        
+
+
+        const pageLinks = document.querySelectorAll('.page-link');
+
+
         pageLinks.forEach(link => {
-            if (link.getAttribute('href').includes(`page=${currentPage}`)) {
-                link.style.backgroundColor = '#ffffff';
-                link.style.color = '#6E0B21';
+            link.addEventListener('click', function () {
+
+                pageLinks.forEach(l => {
+                    l.style.backgroundColor = '#6E0B21';
+                    l.style.color = 'white';
+                });
+
+
+                this.style.backgroundColor = '#ffffff';
+                this.style.color = '#6E0B21';
+            });
+        });
+
+
+        window.addEventListener('load', function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const currentPage = urlParams.get('page') || '1';
+
+            pageLinks.forEach(link => {
+                if (link.getAttribute('href').includes(`page=${currentPage}`)) {
+                    link.style.backgroundColor = '#ffffff';
+                    link.style.color = '#6E0B21';
+                }
+            });
+        });
+
+
+
+        function searchUsers() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('.table tbody tr');
+
+            rows.forEach(row => {
+                const name = row.cells[0].textContent.toLowerCase();
+                const email = row.cells[1].textContent.toLowerCase();
+                const phone = row.cells[2].textContent.toLowerCase();
+
+                if (name.includes(input) || email.includes(input) || phone.includes(input)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        document.getElementById('searchInput').addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                searchUsers();
             }
         });
-    });
+    </script>
 
-
-
-    function searchUsers() {
-    const input = document.getElementById('searchInput').value.toLowerCase();
-    const rows = document.querySelectorAll('.table tbody tr');
-
-    rows.forEach(row => {
-        const name = row.cells[0].textContent.toLowerCase();
-        const email = row.cells[1].textContent.toLowerCase();
-        const phone = row.cells[2].textContent.toLowerCase();
-
-        if (name.includes(input) || email.includes(input) || phone.includes(input)) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
-    });
-}
-
-document.getElementById('searchInput').addEventListener('keypress', function(event) {
-    if (event.key === 'Enter') {
-        searchUsers();
-    }
-});
-</script>
-
-<%- include("../../views/partials/admin/footer") %>
+    <%- include("../../views/partials/admin/footer") %>

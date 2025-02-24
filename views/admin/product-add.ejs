@@ -74,10 +74,12 @@
                                         <div class="col-sm-6 mb-3">
                                             <label class="form-label">Category</label>
                                             <select class="form-select" name="category" required>
-                                                <% for (let i = 0; i < cat.length; i++) { %>
-                                                    <option value="<%= cat[i]._id %>"><%= cat[i].name %></option> 
-                                                <% } %>
-                                            </select>                                           
+                                                <% for (let i=0; i < cat.length; i++) { %>
+                                                    <option value="<%= cat[i]._id %>">
+                                                        <%= cat[i].name %>
+                                                    </option>
+                                                    <% } %>
+                                            </select>
                                             <div id="category-error" class="error-message"></div>
                                         </div>
                                     </div>
@@ -91,10 +93,11 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-12 mb-3">
-                                            <small class="text-muted">Upload at least one product image (maximum 4). First image will be used as the main product image.</small>
+                                            <small class="text-muted">Upload at least one product image (maximum 4).
+                                                First image will be used as the main product image.</small>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="row image-upload-grid">
                                         <!-- Primary Image Upload (Required) -->
                                         <div class="wid mb-4">
@@ -102,7 +105,9 @@
                                                 <div class="upload-placeholder">
                                                     <span class="upload-number">1</span>
                                                     <span class="required-badge">Required</span>
-                                                    <input type="file" class="form-control image-input" name="productImage1" accept="image/png, image/jpeg, image/jpg" required>
+                                                    <input type="file" class="form-control image-input"
+                                                        name="productImage1" accept="image/png, image/jpeg, image/jpg"
+                                                        required>
                                                     <div class="upload-icon">
                                                         <i class="fas fa-cloud-upload-alt"></i>
                                                         <span>Main product image</span>
@@ -111,8 +116,10 @@
                                                 <div class="preview-container" style="display: none;">
                                                     <div class="img-preview"></div>
                                                     <div class="cropper-controls">
-                                                        <button type="button" class="btn btn-sm btn-primary btn-save">Save</button>
-                                                        <button type="button" class="btn btn-sm btn-secondary btn-cancel">Cancel</button>
+                                                        <button type="button"
+                                                            class="btn btn-sm btn-primary btn-save">Save</button>
+                                                        <button type="button"
+                                                            class="btn btn-sm btn-secondary btn-cancel">Cancel</button>
                                                     </div>
                                                 </div>
                                                 <div class="final-preview" style="display: none;">
@@ -123,13 +130,15 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
                                         <div class="wid mb-4">
                                             <div class="image-upload-container optional">
                                                 <div class="upload-placeholder">
                                                     <span class="upload-number">2</span>
                                                     <span class="optional-badge">Optional</span>
-                                                    <input type="file" class="form-control image-input" name="productImage2" accept="image/png, image/jpeg, image/jpg" required>
+                                                    <input type="file" class="form-control image-input"
+                                                        name="productImage2" accept="image/png, image/jpeg, image/jpg"
+                                                        required>
                                                     <div class="upload-icon">
                                                         <i class="fas fa-cloud-upload-alt"></i>
                                                         <span>product image</span>
@@ -138,8 +147,10 @@
                                                 <div class="preview-container" style="display: none;">
                                                     <div class="img-preview"></div>
                                                     <div class="cropper-controls">
-                                                        <button type="button" class="btn btn-sm btn-primary btn-save">Save</button>
-                                                        <button type="button" class="btn btn-sm btn-secondary btn-cancel">Cancel</button>
+                                                        <button type="button"
+                                                            class="btn btn-sm btn-primary btn-save">Save</button>
+                                                        <button type="button"
+                                                            class="btn btn-sm btn-secondary btn-cancel">Cancel</button>
                                                     </div>
                                                 </div>
                                                 <div class="final-preview" style="display: none;">
@@ -156,7 +167,9 @@
                                                 <div class="upload-placeholder">
                                                     <span class="upload-number">3</span>
                                                     <span class="optional-badge">Optional</span>
-                                                    <input type="file" class="form-control image-input" name="productImage3" accept="image/png, image/jpeg, image/jpg" required>
+                                                    <input type="file" class="form-control image-input"
+                                                        name="productImage3" accept="image/png, image/jpeg, image/jpg"
+                                                        required>
                                                     <div class="upload-icon">
                                                         <i class="fas fa-cloud-upload-alt"></i>
                                                         <span>product image</span>
@@ -165,8 +178,10 @@
                                                 <div class="preview-container" style="display: none;">
                                                     <div class="img-preview"></div>
                                                     <div class="cropper-controls">
-                                                        <button type="button" class="btn btn-sm btn-primary btn-save">Save</button>
-                                                        <button type="button" class="btn btn-sm btn-secondary btn-cancel">Cancel</button>
+                                                        <button type="button"
+                                                            class="btn btn-sm btn-primary btn-save">Save</button>
+                                                        <button type="button"
+                                                            class="btn btn-sm btn-secondary btn-cancel">Cancel</button>
                                                     </div>
                                                 </div>
                                                 <div class="final-preview" style="display: none;">
@@ -183,7 +198,9 @@
                                                 <div class="upload-placeholder">
                                                     <span class="upload-number">4</span>
                                                     <span class="optional-badge">Optional</span>
-                                                    <input type="file" class="form-control image-input" name="productImage4" accept="image/png, image/jpeg, image/jpg" required>
+                                                    <input type="file" class="form-control image-input"
+                                                        name="productImage4" accept="image/png, image/jpeg, image/jpg"
+                                                        required>
                                                     <div class="upload-icon">
                                                         <i class="fas fa-cloud-upload-alt"></i>
                                                         <span>product image</span>
@@ -192,8 +209,10 @@
                                                 <div class="preview-container" style="display: none;">
                                                     <div class="img-preview"></div>
                                                     <div class="cropper-controls">
-                                                        <button type="button" class="btn btn-sm btn-primary btn-save">Save</button>
-                                                        <button type="button" class="btn btn-sm btn-secondary btn-cancel">Cancel</button>
+                                                        <button type="button"
+                                                            class="btn btn-sm btn-primary btn-save">Save</button>
+                                                        <button type="button"
+                                                            class="btn btn-sm btn-secondary btn-cancel">Cancel</button>
                                                     </div>
                                                 </div>
                                                 <div class="final-preview" style="display: none;">
@@ -209,7 +228,8 @@
                             </div>
                     </div>
                     <div class="btn-div">
-                        <button class="btn-pub btn btn-md rounded font-sm hover-up" type="button" onclick="validateAndSubmit()">Publish</button>
+                        <button class="btn-pub btn btn-md rounded font-sm hover-up" type="button"
+                            onclick="validateAndSubmit()">Publish</button>
                     </div>
                     </form>
                 </div>
@@ -221,7 +241,7 @@
 
     <script>
         function validateAndSubmit() {
-            if(validateForm()) {
+            if (validateForm()) {
                 document.forms[0].submit();
             }
         }
@@ -229,272 +249,272 @@
 
 
         class ImageUploader {
-    constructor(container, options = {}) {
-        this.container = container;
-        this.options = {
-            viewMode: 2,
-            guides: true,
-            background: false,
-            autoCropArea: 0.8,
-            zoomable: true,
-            dragMode: 'move',
-            responsive: true,
-            restore: false,
-            maxContainerWidth: 500,
-            maxContainerHeight: 500,
-            cropBoxResizable: true,
-            cropBoxMovable: true,
-            toggleDragModeOnDblclick: true,
-            ...options
-        };
-        this.cropper = null;
-        this.setupEventListeners();
-    }
+            constructor(container, options = {}) {
+                this.container = container;
+                this.options = {
+                    viewMode: 2,
+                    guides: true,
+                    background: false,
+                    autoCropArea: 0.8,
+                    zoomable: true,
+                    dragMode: 'move',
+                    responsive: true,
+                    restore: false,
+                    maxContainerWidth: 500,
+                    maxContainerHeight: 500,
+                    cropBoxResizable: true,
+                    cropBoxMovable: true,
+                    toggleDragModeOnDblclick: true,
+                    ...options
+                };
+                this.cropper = null;
+                this.setupEventListeners();
+            }
 
-    setupEventListeners() {
-        const input = this.container.querySelector('.image-input');
-        const saveBtn = this.container.querySelector('.btn-save');
-        const cancelBtn = this.container.querySelector('.btn-cancel');
-        const removeBtn = this.container.querySelector('.btn-remove');
+            setupEventListeners() {
+                const input = this.container.querySelector('.image-input');
+                const saveBtn = this.container.querySelector('.btn-save');
+                const cancelBtn = this.container.querySelector('.btn-cancel');
+                const removeBtn = this.container.querySelector('.btn-remove');
 
-        if (input) input.addEventListener('change', (e) => this.handleImageSelect(e));
-        if (saveBtn) saveBtn.addEventListener('click', () => this.saveCroppedImage());
-        if (cancelBtn) cancelBtn.addEventListener('click', () => this.cancelCropping());
-        if (removeBtn) removeBtn.addEventListener('click', () => this.removeImage());
-    }
+                if (input) input.addEventListener('change', (e) => this.handleImageSelect(e));
+                if (saveBtn) saveBtn.addEventListener('click', () => this.saveCroppedImage());
+                if (cancelBtn) cancelBtn.addEventListener('click', () => this.cancelCropping());
+                if (removeBtn) removeBtn.addEventListener('click', () => this.removeImage());
+            }
 
-    handleImageSelect(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-
-        if (file.size > 5 * 1024 * 1024) { 
-            alert('Image size should be less than 5MB');
-            event.target.value = '';
-            return;
-        }
-
-        const preview = this.container.querySelector('.img-preview');
-        const previewContainer = this.container.querySelector('.preview-container');
-        
-        if (this.cropper) {
-            this.cropper.destroy();
-        }
-
-        // Hide upload placeholder
-        this.container.querySelector('.upload-placeholder').style.display = 'none';
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const img = document.createElement('img');
-            img.src = e.target.result;
+            handleImageSelect(event) {
+                const file = event.target.files[0];
+                if (!file) return;
 
 
-            img.onload = () => {
-                const maxDim = 800;
-                let width = img.width;
-                let height = img.height;
-                
-                if (width > maxDim || height > maxDim) {
-                    if (width > height) {
-                        height = (height / width) * maxDim;
-                        width = maxDim;
-                    } else {
-                        width = (width / height) * maxDim;
-                        height = maxDim;
-                    }
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Image size should be less than 5MB');
+                    event.target.value = '';
+                    return;
                 }
-                
-                preview.innerHTML = '';
-                preview.appendChild(img);
 
-                this.cropper = new Cropper(img, {
-                    ...this.options,
-                    width: width,
-                    height: height
+                const preview = this.container.querySelector('.img-preview');
+                const previewContainer = this.container.querySelector('.preview-container');
+
+                if (this.cropper) {
+                    this.cropper.destroy();
+                }
+
+                // Hide upload placeholder
+                this.container.querySelector('.upload-placeholder').style.display = 'none';
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+
+
+                    img.onload = () => {
+                        const maxDim = 800;
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > maxDim || height > maxDim) {
+                            if (width > height) {
+                                height = (height / width) * maxDim;
+                                width = maxDim;
+                            } else {
+                                width = (width / height) * maxDim;
+                                height = maxDim;
+                            }
+                        }
+
+                        preview.innerHTML = '';
+                        preview.appendChild(img);
+
+                        this.cropper = new Cropper(img, {
+                            ...this.options,
+                            width: width,
+                            height: height
+                        });
+
+                        previewContainer.style.display = 'block';
+                    };
+                };
+                reader.readAsDataURL(file);
+            }
+
+            async saveCroppedImage() {
+                if (!this.cropper) return;
+
+                try {
+                    // Get cropped canvas with original crop dimensions
+                    const cropData = this.cropper.getData();
+                    const canvas = this.cropper.getCroppedCanvas({
+                        width: Math.round(cropData.width),
+                        height: Math.round(cropData.height),
+                        imageSmoothingEnabled: true,
+                        imageSmoothingQuality: 'high'
+                    });
+
+                    const blob = await new Promise(resolve =>
+                        canvas.toBlob(resolve, 'image/jpeg', 0.9)
+                    );
+
+                    const fileName = `cropped-${Date.now()}.jpg`;
+                    const croppedFile = new File([blob], fileName, { type: 'image/jpeg' });
+
+                    // Update the input file
+                    const input = this.container.querySelector('.image-input');
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(croppedFile);
+                    input.files = dataTransfer.files;
+
+                    // Show final preview
+                    const finalPreview = this.container.querySelector('.final-preview');
+                    const croppedResult = this.container.querySelector('.cropped-result');
+                    croppedResult.src = URL.createObjectURL(croppedFile);
+
+                    // Hide cropper, show final preview
+                    this.container.querySelector('.preview-container').style.display = 'none';
+                    finalPreview.style.display = 'block';
+
+                    // Cleanup
+                    this.cropper.destroy();
+                    this.cropper = null;
+
+                } catch (error) {
+                    console.error('Error saving cropped image:', error);
+                    alert('Error saving cropped image. Please try again.');
+                }
+            }
+
+            cancelCropping() {
+                if (this.cropper) {
+                    this.cropper.destroy();
+                    this.cropper = null;
+                }
+
+                const input = this.container.querySelector('.image-input');
+                input.value = '';
+                this.container.querySelector('.preview-container').style.display = 'none';
+                this.container.querySelector('.upload-placeholder').style.display = 'block';
+            }
+
+            removeImage() {
+                if (this.cropper) {
+                    this.cropper.destroy();
+                    this.cropper = null;
+                }
+                const input = this.container.querySelector('.image-input');
+                input.value = '';
+                this.container.querySelector('.final-preview').style.display = 'none';
+                this.container.querySelector('.upload-placeholder').style.display = 'block';
+            }
+        }
+
+        // Initialize all uploaders with custom cropping options
+        document.addEventListener('DOMContentLoaded', () => {
+            const containers = document.querySelectorAll('.image-upload-container');
+            containers.forEach((container, index) => {
+                new ImageUploader(container, {
+                    viewMode: 2,
+                    guides: true,
+                    background: false,
+                    autoCropArea: 0.8,
+                    zoomable: true,
+                    dragMode: 'move',
+                    responsive: true,
+                    restore: false
                 });
-                
-                previewContainer.style.display = 'block';
-            };
-        };
-        reader.readAsDataURL(file);
-    }
+            });
+        });
 
-    async saveCroppedImage() {
-        if (!this.cropper) return;
 
-        try {
-            // Get cropped canvas with original crop dimensions
-            const cropData = this.cropper.getData();
-            const canvas = this.cropper.getCroppedCanvas({
-                width: Math.round(cropData.width),
-                height: Math.round(cropData.height),
-                imageSmoothingEnabled: true,
-                imageSmoothingQuality: 'high'
+
+        function validateForm() {
+            let isValid = true;
+            const errors = {};
+
+            // Product Name validation
+            const productName = document.getElementById('product_name').value;
+            if (!productName || productName.trim() === '') {
+                errors.productName = 'Product name is required';
+                isValid = false;
+            }
+
+            // Description validation
+            const description = document.getElementById('descriptionid').value;
+            if (!description || description.trim() === '') {
+                errors.description = 'Description is required';
+                isValid = false;
+            }
+
+            // Regular Price validation
+            const regularPrice = document.querySelector('input[name="regularPrice"]').value;
+            if (!regularPrice || isNaN(regularPrice) || parseFloat(regularPrice) <= 0) {
+                errors.regularPrice = 'Please enter a valid regular price';
+                isValid = false;
+            }
+
+            // Quantity validation
+            const quantity = document.querySelector('input[name="quantity"]').value;
+            if (!quantity || isNaN(quantity) || parseInt(quantity) < 0) {
+                errors.quantity = 'Please enter a valid quantity';
+                isValid = false;
+            }
+
+            // Sale Price validation (optional but must be less than regular price if provided)
+            const salePrice = document.querySelector('input[name="salePrice"]').value;
+            if (salePrice && !isNaN(salePrice)) {
+                if (parseFloat(salePrice) >= parseFloat(regularPrice)) {
+                    errors.salePrice = 'Sale price must be less than regular price';
+                    isValid = false;
+                }
+            }
+
+            // Category validation
+            const category = document.querySelector('select[name="category"]').value;
+            if (!category) {
+                errors.category = 'Please select a category';
+                isValid = false;
+            }
+
+            // Image validation (at least one image is required)
+            const mainImage = document.querySelector('input[name="productImage1"]').files[0];
+            if (!mainImage) {
+                errors.image = 'At least one product image is required';
+                isValid = false;
+            }
+
+            // Display errors if any
+            Object.keys(errors).forEach(key => {
+                const errorElement = document.getElementById(`${key}-error`);
+                if (errorElement) {
+                    errorElement.textContent = errors[key];
+                    errorElement.style.color = 'red';
+                }
             });
 
-            const blob = await new Promise(resolve => 
-                canvas.toBlob(resolve, 'image/jpeg', 0.9)
-            );
-            
-            const fileName = `cropped-${Date.now()}.jpg`;
-            const croppedFile = new File([blob], fileName, { type: 'image/jpeg' });
-
-            // Update the input file
-            const input = this.container.querySelector('.image-input');
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(croppedFile);
-            input.files = dataTransfer.files;
-
-            // Show final preview
-            const finalPreview = this.container.querySelector('.final-preview');
-            const croppedResult = this.container.querySelector('.cropped-result');
-            croppedResult.src = URL.createObjectURL(croppedFile);
-            
-            // Hide cropper, show final preview
-            this.container.querySelector('.preview-container').style.display = 'none';
-            finalPreview.style.display = 'block';
-
-            // Cleanup
-            this.cropper.destroy();
-            this.cropper = null;
-
-        } catch (error) {
-            console.error('Error saving cropped image:', error);
-            alert('Error saving cropped image. Please try again.');
+            return isValid;
         }
-    }
 
-    cancelCropping() {
-        if (this.cropper) {
-            this.cropper.destroy();
-            this.cropper = null;
+        function validateAndSubmit() {
+            // Clear previous error messages
+            const errorElements = document.querySelectorAll('.error-message');
+            errorElements.forEach(element => element.textContent = '');
+
+            if (validateForm()) {
+                // If validation passes, submit the form
+                document.querySelector('form').submit();
+            }
         }
-        
-        const input = this.container.querySelector('.image-input');
-        input.value = '';
-        this.container.querySelector('.preview-container').style.display = 'none';
-        this.container.querySelector('.upload-placeholder').style.display = 'block';
-    }
 
-    removeImage() {
-        if (this.cropper) {
-            this.cropper.destroy();
-            this.cropper = null;
-        }
-        const input = this.container.querySelector('.image-input');
-        input.value = '';
-        this.container.querySelector('.final-preview').style.display = 'none';
-        this.container.querySelector('.upload-placeholder').style.display = 'block';
-    }
-}
-
-// Initialize all uploaders with custom cropping options
-document.addEventListener('DOMContentLoaded', () => {
-    const containers = document.querySelectorAll('.image-upload-container');
-    containers.forEach((container, index) => {
-        new ImageUploader(container, {
-            viewMode: 2,
-            guides: true,
-            background: false,
-            autoCropArea: 0.8,
-            zoomable: true,
-            dragMode: 'move',
-            responsive: true,
-            restore: false
+        // Add event listeners to clear error messages when user starts typing
+        document.querySelectorAll('input, textarea, select').forEach(element => {
+            element.addEventListener('input', function () {
+                const errorElement = document.getElementById(`${this.name}-error`);
+                if (errorElement) {
+                    errorElement.textContent = '';
+                }
+            });
         });
-    });
-});
-
-    
-          
-function validateForm() {
-    let isValid = true;
-    const errors = {};
-    
-    // Product Name validation
-    const productName = document.getElementById('product_name').value;
-    if (!productName || productName.trim() === '') {
-        errors.productName = 'Product name is required';
-        isValid = false;
-    }
-    
-    // Description validation
-    const description = document.getElementById('descriptionid').value;
-    if (!description || description.trim() === '') {
-        errors.description = 'Description is required';
-        isValid = false;
-    }
-    
-    // Regular Price validation
-    const regularPrice = document.querySelector('input[name="regularPrice"]').value;
-    if (!regularPrice || isNaN(regularPrice) || parseFloat(regularPrice) <= 0) {
-        errors.regularPrice = 'Please enter a valid regular price';
-        isValid = false;
-    }
-    
-    // Quantity validation
-    const quantity = document.querySelector('input[name="quantity"]').value;
-    if (!quantity || isNaN(quantity) || parseInt(quantity) < 0) {
-        errors.quantity = 'Please enter a valid quantity';
-        isValid = false;
-    }
-    
-    // Sale Price validation (optional but must be less than regular price if provided)
-    const salePrice = document.querySelector('input[name="salePrice"]').value;
-    if (salePrice && !isNaN(salePrice)) {
-        if (parseFloat(salePrice) >= parseFloat(regularPrice)) {
-            errors.salePrice = 'Sale price must be less than regular price';
-            isValid = false;
-        }
-    }
-    
-    // Category validation
-    const category = document.querySelector('select[name="category"]').value;
-    if (!category) {
-        errors.category = 'Please select a category';
-        isValid = false;
-    }
-    
-    // Image validation (at least one image is required)
-    const mainImage = document.querySelector('input[name="productImage1"]').files[0];
-    if (!mainImage) {
-        errors.image = 'At least one product image is required';
-        isValid = false;
-    }
-    
-    // Display errors if any
-    Object.keys(errors).forEach(key => {
-        const errorElement = document.getElementById(`${key}-error`);
-        if (errorElement) {
-            errorElement.textContent = errors[key];
-            errorElement.style.color = 'red';
-        }
-    });
-    
-    return isValid;
-}
-
-function validateAndSubmit() {
-    // Clear previous error messages
-    const errorElements = document.querySelectorAll('.error-message');
-    errorElements.forEach(element => element.textContent = '');
-    
-    if (validateForm()) {
-        // If validation passes, submit the form
-        document.querySelector('form').submit();
-    }
-}
-
-// Add event listeners to clear error messages when user starts typing
-document.querySelectorAll('input, textarea, select').forEach(element => {
-    element.addEventListener('input', function() {
-        const errorElement = document.getElementById(`${this.name}-error`);
-        if (errorElement) {
-            errorElement.textContent = '';
-        }
-    });
-});
 
 
     </script>

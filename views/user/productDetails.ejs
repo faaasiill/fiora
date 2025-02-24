@@ -20,9 +20,12 @@
 
         </div>
         <div class="nav-icons">
-            <a id="profile-link" href="<%= locals.user ? '/wishlist' : '/signup' %>"><span class="material-symbols-outlined icon">favorite</span></a>
-            <a id="profile-link" href="<%= locals.user ? '/userProfile' : '/signup' %>"><span class="material-symbols-outlined icon">account_circle</span></a>
-            <a id="profile-link" href="<%= locals.user ? '/cart' : '/signup' %>"><span class="material-symbols-outlined icon">local_mall</span></a>
+            <a id="profile-link" href="<%= locals.user ? '/wishlist' : '/signup' %>"><span
+                    class="material-symbols-outlined icon">favorite</span></a>
+            <a id="profile-link" href="<%= locals.user ? '/userProfile' : '/signup' %>"><span
+                    class="material-symbols-outlined icon">account_circle</span></a>
+            <a id="profile-link" href="<%= locals.user ? '/cart' : '/signup' %>"><span
+                    class="material-symbols-outlined icon">local_mall</span></a>
 
         </div>
         <div class="hamburger-menu">
@@ -255,106 +258,106 @@
 
             // Wishlist Functionality
             const WishlistManager = {
-    initialize: () => {
-        const wishlistBtn = document.querySelector('.wishlist-btn');
-        if (!wishlistBtn) return;
+                initialize: () => {
+                    const wishlistBtn = document.querySelector('.wishlist-btn');
+                    if (!wishlistBtn) return;
 
-        const productId = document.querySelector('.add-to-cart')?.dataset.productId;
-        WishlistManager.checkInitialState(productId);
+                    const productId = document.querySelector('.add-to-cart')?.dataset.productId;
+                    WishlistManager.checkInitialState(productId);
 
-        wishlistBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            WishlistManager.toggleWishlist(productId, wishlistBtn);
-        });
-    },
+                    wishlistBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        WishlistManager.toggleWishlist(productId, wishlistBtn);
+                    });
+                },
 
-    toggleWishlistButton: (button) => {
-        const icon = button.querySelector('i');
-        button.classList.toggle('active');
-        icon.classList.toggle('far');
-        icon.classList.toggle('fas');
-        icon.style.color = button.classList.contains('active') ? '#ff4444' : '#333';
-    },
+                toggleWishlistButton: (button) => {
+                    const icon = button.querySelector('i');
+                    button.classList.toggle('active');
+                    icon.classList.toggle('far');
+                    icon.classList.toggle('fas');
+                    icon.style.color = button.classList.contains('active') ? '#ff4444' : '#333';
+                },
 
-    checkInitialState: async (productId) => {
-        try {
-            const response = await fetch('/getWishlistedProducts', {
-                method: 'GET',
-                headers: { 'Accept': 'application/json' },
-                credentials: 'include'
-            });
+                checkInitialState: async (productId) => {
+                    try {
+                        const response = await fetch('/getWishlistedProducts', {
+                            method: 'GET',
+                            headers: { 'Accept': 'application/json' },
+                            credentials: 'include'
+                        });
 
-            if (!response.ok) throw new Error('Failed to check wishlist state');
-            const wishlistedProducts = await response.json();
-            
-            const wishlistBtn = document.querySelector('.wishlist-btn');
-            if (wishlistedProducts.includes(productId)) {
-                WishlistManager.toggleWishlistButton(wishlistBtn);
-            }
-        } catch (error) {
-            console.error('Wishlist check error:', error);
-        }
-    },
+                        if (!response.ok) throw new Error('Failed to check wishlist state');
+                        const wishlistedProducts = await response.json();
 
-    toggleWishlist: async (productId, button) => {
-        if (WishlistState.isProcessing || !productId) return;
-        WishlistState.isProcessing = true;
+                        const wishlistBtn = document.querySelector('.wishlist-btn');
+                        if (wishlistedProducts.includes(productId)) {
+                            WishlistManager.toggleWishlistButton(wishlistBtn);
+                        }
+                    } catch (error) {
+                        console.error('Wishlist check error:', error);
+                    }
+                },
 
-        try {
-            const isRemoving = button.classList.contains('active');
-            
-            if (isRemoving) {
-                const confirmation = await Swal.fire({
-                    title: 'Are you sure?',
-                    text: 'You won\'t be able to revert this!',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, remove it!'
-                });
+                toggleWishlist: async (productId, button) => {
+                    if (WishlistState.isProcessing || !productId) return;
+                    WishlistState.isProcessing = true;
 
-                if (!confirmation.isConfirmed) {
-                    WishlistState.isProcessing = false;
-                    return;
+                    try {
+                        const isRemoving = button.classList.contains('active');
+
+                        if (isRemoving) {
+                            const confirmation = await Swal.fire({
+                                title: 'Are you sure?',
+                                text: 'You won\'t be able to revert this!',
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'Yes, remove it!'
+                            });
+
+                            if (!confirmation.isConfirmed) {
+                                WishlistState.isProcessing = false;
+                                return;
+                            }
+                        }
+
+                        const endpoint = isRemoving ? '/removeFromWishlist' : '/addToWishlist';
+                        const response = await fetch(endpoint, {
+                            method: 'POST', // Change to POST
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json'
+                            },
+                            credentials: 'include',
+                            body: JSON.stringify({ productId }) // Send productId in body
+                        });
+
+                        if (response.status === 401) {
+                            UIUtil.showLoginPrompt();
+                            return;
+                        }
+
+                        if (!response.ok) throw new Error('Server error');
+                        const data = await response.json();
+
+                        if (data.status) {
+                            WishlistManager.toggleWishlistButton(button);
+                            UIUtil.showNotification(
+                                'Success',
+                                isRemoving ? 'Removed from wishlist' : 'Added to wishlist',
+                                'success'
+                            );
+                        }
+                    } catch (error) {
+                        console.error('Wishlist operation error:', error);
+                        UIUtil.showNotification('Error', error.message || 'Operation failed', 'error');
+                    } finally {
+                        WishlistState.isProcessing = false;
+                    }
                 }
-            }
-
-            const endpoint = isRemoving ? '/removeFromWishlist' : '/addToWishlist';
-            const response = await fetch(endpoint, {
-                method: 'POST', // Change to POST
-                headers: { 
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-    },
-    credentials: 'include',
-    body: JSON.stringify({ productId }) // Send productId in body
-            });
-
-            if (response.status === 401) {
-                UIUtil.showLoginPrompt();
-                return;
-            }
-
-            if (!response.ok) throw new Error('Server error');
-            const data = await response.json();
-
-            if (data.status) {
-                WishlistManager.toggleWishlistButton(button);
-                UIUtil.showNotification(
-                    'Success', 
-                    isRemoving ? 'Removed from wishlist' : 'Added to wishlist', 
-                    'success'
-                );
-            }
-        } catch (error) {
-            console.error('Wishlist operation error:', error);
-            UIUtil.showNotification('Error', error.message || 'Operation failed', 'error');
-        } finally {
-            WishlistState.isProcessing = false;
-        }
-    }
-};
+            };
 
 
             // Product Gallery

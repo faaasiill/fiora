@@ -1,319 +1,315 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Verify</title>
-    <link rel="stylesheet" href="/css/signup.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta charset="UTF-8" />
-    <meta name="description" content="Male_Fashion Template" />
-    <meta name="keywords" content="Male_Fashion, unica, creative, html" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
-    <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css" />
-    <link rel="stylesheet" href="css/elegant-icons.css" type="text/css" />
-    <link rel="stylesheet" href="css/magnific-popup.css" type="text/css" />
-    <link rel="stylesheet" href="css/nice-select.css" type="text/css" />
-    <link rel="stylesheet" href="css/owl.carousel.min.css" type="text/css" />
-    <link rel="stylesheet" href="css/slicknav.min.css" type="text/css" />
-    <link rel="stylesheet" href="css/style.css" type="text/css" />
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
-    />
 
-    <style>
-      body {
-        background-image: url(/images/best_sellers_Mobile.jpg);
-        overflow: hidden;
-      }
-      .container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100%;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verify</title>
+  <link rel="stylesheet" href="/css/signup.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="description" content="Male_Fashion Template" />
+  <meta name="keywords" content="Male_Fashion, unica, creative, html" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
+  <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css" />
+  <link rel="stylesheet" href="css/elegant-icons.css" type="text/css" />
+  <link rel="stylesheet" href="css/magnific-popup.css" type="text/css" />
+  <link rel="stylesheet" href="css/nice-select.css" type="text/css" />
+  <link rel="stylesheet" href="css/owl.carousel.min.css" type="text/css" />
+  <link rel="stylesheet" href="css/slicknav.min.css" type="text/css" />
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
+
+  <style>
+    body {
+      background-image: url(/images/best_sellers_Mobile.jpg);
+      overflow: hidden;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+
+    .login_wrap {
+      min-width: 400px;
+      padding: 20px;
+      border-radius: 5px;
+      background: rgba(255, 251, 250, 0.936);
+    }
+
+    .heading_s1 h3 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 600;
+      color: #010101;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-control {
+      padding: 10px;
+      text-align: center;
+    }
+
+    .otp-input {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+    }
+
+    .otp-timer {
+      display: inline-block;
+      margin-left: 10px;
+      font-size: 14px;
+      position: relative;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      line-height: 60px;
+      text-align: center;
+    }
+
+    #timerValue {
+      display: block;
+      font-size: 24px;
+      font-weight: bold;
+      color: #840e31;
+      line-height: 60px;
+    }
+
+    #timerValue.expired {
+      font-size: 14px;
+      color: rgb(186, 22, 22);
+    }
+
+    .btn-primary {
+      background-color: #730d2c;
+      border: none;
+      width: 30%;
+      color: white;
+      padding: 10px;
+      margin-top: 10px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .btn-primary:hover {
+      background-color: #4c0b1e;
+    }
+
+    .btn-secondary {
+      width: 100%;
+      font-weight: 700;
+      border: none;
+      margin-top: 10px;
+      display: block;
+    }
+
+    .btn-secondary:hover {
+      cursor: pointer;
+    }
+
+    .alert-danger {
+      margin-top: 15px;
+      text-align: center;
+    }
+
+    .text-center {
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .text-muted {
+      text-align: center;
+    }
+
+    .pt-25 {
+      padding-top: 25px;
+    }
+
+    @media (max-width: 480px) {
       .login_wrap {
-        min-width: 400px;
-        padding: 20px;
-        border-radius: 5px;
-        background: rgba(255, 251, 250, 0.936);
+        min-width: 280px;
+        padding: 15px;
       }
+
       .heading_s1 h3 {
-        margin: 0;
-        font-size: 24px;
-        font-weight: 600;
-        color: #010101;
-        text-align: center;
-        margin-bottom: 30px;
+        font-size: 20px;
       }
-      .form-group {
-        margin-bottom: 15px;
-      }
+
       .form-control {
-        padding: 10px;
-        text-align: center;
+        padding: 8px;
       }
-      .otp-input {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 10px;
-      }
-      .otp-timer {
-        display: inline-block;
-        margin-left: 10px;
-        font-size: 14px;
-        position: relative;
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        line-height: 60px;
-        text-align: center;
-      }
-      #timerValue {
-        display: block;
-        font-size: 24px;
-        font-weight: bold;
-        color: #840e31;
-        line-height: 60px;
-      }
-      #timerValue.expired {
-        font-size: 14px;
-        color: rgb(186, 22, 22);
-      }
+
       .btn-primary {
-        background-color: #730d2c;
-        border: none;
-        width: 30%;
-        color: white;
-        padding: 10px;
-        margin-top: 10px;
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
+        width: 50%;
+        font-size: 14px;
+        padding: 8px;
       }
-      .btn-primary:hover {
-        background-color: #4c0b1e;
-      }
-      .btn-secondary {
-        width: 100%;
-        font-weight: 700;
-        border: none;
-        margin-top: 10px;
-        display: block;
-      }
-      .btn-secondary:hover {
-        cursor: pointer;
-      }
-      .alert-danger {
-        margin-top: 15px;
-        text-align: center;
-      }
-      .text-center {
-        text-align: center;
-        margin-top: 15px;
-      }
-      .text-muted {
-        text-align: center;
-      }
-      .pt-25 {
-        padding-top: 25px;
-      }
-      @media (max-width: 480px) {
-  .login_wrap {
-    min-width: 280px;
-    padding: 15px;
-  }
 
-  .heading_s1 h3 {
-    font-size: 20px; 
-  }
+      .otp-timer {
+        width: 50px;
+        height: 50px;
+        line-height: 50px;
+      }
 
-  .form-control {
-    padding: 8px; 
-  }
+      #timerValue {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
 
-  .btn-primary {
-    width: 50%; 
-    font-size: 14px; 
-    padding: 8px;
-  }
-
-  .otp-timer {
-    width: 50px;
-    height: 50px;
-    line-height: 50px;
-  }
-
-  #timerValue {
-    font-size: 18px;
-  }
-}
-    </style>
-  </head>
-  <body>
-    <!-- main container -->
-    <div class="main">
-      <!-- left side -->
-      <div class="left"></div>
-      <!-- right side -->
-      <div class="container">
-        <div class="login_wrap">
-          <div class="padding_eight_all bg-white">
-            <div class="heading_s1">
-              <h3>OTP Verification</h3>
+<body>
+  <!-- main container -->
+  <div class="main">
+    <!-- left side -->
+    <div class="left"></div>
+    <!-- right side -->
+    <div class="container">
+      <div class="login_wrap">
+        <div class="padding_eight_all bg-white">
+          <div class="heading_s1">
+            <h3>OTP Verification</h3>
+          </div>
+          <form id="otpForm" action="/verify-otp" method="post" onsubmit="return validateOTPForm()">
+            <label for="otp">
+              <p style="text-align: center">Enter OTP</p>
+            </label>
+            <div class="form-group otp-input">
+              <input type="text" id="otp" name="otp" class="form-control" required maxlength="6" pattern="\d*" />
             </div>
-            <form
-              id="otpForm"
-              action="/verify-otp"
-              method="post"
-              onsubmit="return validateOTPForm()"
-            >
-              <label for="otp"
-                ><p style="text-align: center">Enter OTP</p></label
-              >
-              <div class="form-group otp-input">
-                <input
-                  type="text"
-                  id="otp"
-                  name="otp"
-                  class="form-control"
-                  required
-                  maxlength="6"
-                  pattern="\d*"
-                />
+            <button type="submit" class="btn btn-primary">
+              Verify Email
+            </button>
+            <div class="form-group text-center">
+              <div id="otpTimer" class="otp-timer">
+                <span id="timerValue">60</span>
               </div>
-              <button type="submit" class="btn btn-primary">
-                Verify Email
+              <button type="button" id="resendOtpButton" class="btn btn-secondary" onclick="resendOTP()" disabled>
+                Resend OTP
               </button>
-              <div class="form-group text-center">
-                <div id="otpTimer" class="otp-timer">
-                  <span id="timerValue">60</span>
-                </div>
-                <button
-                  type="button"
-                  id="resendOtpButton"
-                  class="btn btn-secondary"
-                  onclick="resendOTP()"
-                  disabled
-                >
-                  Resend OTP
-                </button>
-              </div>
-              <% if (locals.message && message.length > 0) { %>
-              <div class="alert alert-danger"><%= message %></div>
-              <% } %>
-            </form>
-            <div class="text-muted text-center pt-25">
-              Already verified? <a href="/login">Login now</a>
             </div>
+            <% if (locals.message && message.length> 0) { %>
+              <div class="alert alert-danger">
+                <%= message %>
+              </div>
+              <% } %>
+          </form>
+          <div class="text-muted text-center pt-25">
+            Already verified? <a href="/login">Login now</a>
           </div>
         </div>
       </div>
-      <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-      <script>
-        document.getElementById("otp").focus();
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+      document.getElementById("otp").focus();
 
-        let timer = 60;
-        let timerInterval;
+      let timer = 60;
+      let timerInterval;
 
-        function startTimer() {
-          document.getElementById("resendOtpButton").disabled = true;
-          timerInterval = setInterval(() => {
-            timer--;
-            document.getElementById("timerValue").textContent = timer;
-            if (timer <= 0) {
-              clearInterval(timerInterval);
-              document.getElementById("timerValue").classList.add("expired");
-              document.getElementById("timerValue").textContent = "Expired";
-              document.getElementById("otp").disabled = true;
-              document.getElementById("resendOtpButton").disabled = false;
-            }
-          }, 1000);
-        }
-        startTimer();
+      function startTimer() {
+        document.getElementById("resendOtpButton").disabled = true;
+        timerInterval = setInterval(() => {
+          timer--;
+          document.getElementById("timerValue").textContent = timer;
+          if (timer <= 0) {
+            clearInterval(timerInterval);
+            document.getElementById("timerValue").classList.add("expired");
+            document.getElementById("timerValue").textContent = "Expired";
+            document.getElementById("otp").disabled = true;
+            document.getElementById("resendOtpButton").disabled = false;
+          }
+        }, 1000);
+      }
+      startTimer();
 
-        function validateOTPForm() {
-          const otpInput = document.getElementById("otp").value;
+      function validateOTPForm() {
+        const otpInput = document.getElementById("otp").value;
 
-          $.ajax({
-            type: "POST",
-            url: "verify-otp",
-            data: { otp: otpInput },
-            success: function (response) {
-              if (response.success) {
-                Swal.fire({
-                  icon: "success",
-                  title: "OTP Verified Successfully!",
-                  showConfirmButton: false,
-                  timer: 1500,
-                }).then(() => {
-                  window.location.href = response.redirect;
-                });
-              } else {
-                Swal.fire({
-                  icon: "error",
-                  title: "Invalid OTP",
-                  text: response.message,
-                });
-              }
-            },
-            error: function () {
+        $.ajax({
+          type: "POST",
+          url: "verify-otp",
+          data: { otp: otpInput },
+          success: function (response) {
+            if (response.success) {
+              Swal.fire({
+                icon: "success",
+                title: "OTP Verified Successfully!",
+                showConfirmButton: false,
+                timer: 1500,
+              }).then(() => {
+                window.location.href = response.redirect;
+              });
+            } else {
               Swal.fire({
                 icon: "error",
                 title: "Invalid OTP",
-                text: "Please try again",
+                text: response.message,
               });
-            },
-          });
-          return false;
-        }
+            }
+          },
+          error: function () {
+            Swal.fire({
+              icon: "error",
+              title: "Invalid OTP",
+              text: "Please try again",
+            });
+          },
+        });
+        return false;
+      }
 
-        function resendOTP() {
-          clearInterval(timerInterval);
-          timer = 60;
-          document.getElementById("otp").disabled = false;
-          document.getElementById("timerValue").classList.remove("expired");
-          document.getElementById("timerValue").textContent = timer;
-          document.getElementById("resendOtpButton").disabled = true;
+      function resendOTP() {
+        clearInterval(timerInterval);
+        timer = 60;
+        document.getElementById("otp").disabled = false;
+        document.getElementById("timerValue").classList.remove("expired");
+        document.getElementById("timerValue").textContent = timer;
+        document.getElementById("resendOtpButton").disabled = true;
 
-          $.ajax({
-            type: "POST",
-            url: "resend-otp",
-            success: function (response) {
-              if (response.success) {
-                Swal.fire({
-                  icon: "success",
-                  title: "OTP Resent Successfully!",
-                  showConfirmButton: false,
-                  timer: 1500,
-                });
+        $.ajax({
+          type: "POST",
+          url: "resend-otp",
+          success: function (response) {
+            if (response.success) {
+              Swal.fire({
+                icon: "success",
+                title: "OTP Resent Successfully!",
+                showConfirmButton: false,
+                timer: 1500,
+              });
 
-                startTimer();
-              } else {
-                Swal.fire({
-                  icon: "error",
-                  title: "Error",
-                  text: "An error occurred while sending OTP. Please try again later.",
-                });
-              }
-            },
-          });
+              startTimer();
+            } else {
+              Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "An error occurred while sending OTP. Please try again later.",
+              });
+            }
+          },
+        });
 
-          return false;
-        }
-      </script>
-    </div>
-  </body>
+        return false;
+      }
+    </script>
+  </div>
+</body>
+
 </html>

@@ -1,525 +1,524 @@
-@import url('https://fonts.googleapis.com/css2?family=Julius+Sans+One&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Julius+Sans+One&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "poppins", sans-serif;
 }
 
 /* Layout */
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    display: grid;
-    height: auto !important;
-    grid-template-columns: 2fr 1fr;
-    gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  display: grid;
+  height: auto !important;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
 }
 
 /* Header */
 .header {
-    padding: 20px;
-    border-bottom: 1px solid #e5e5e5;
-    position: sticky;
-    top: 0;
-    background: white;
-    z-index: 100;
+  padding: 20px;
+  border-bottom: 1px solid #e5e5e5;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 100;
 }
 
 .logo {
-    width: 60px;
+  width: 60px;
 }
 
 /* Checkout Sections */
 .checkout-section {
-    background: #fff;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.051);
-    overflow: hidden;
+  background: #fff;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.051);
+  overflow: hidden;
 }
 
 .section-header {
-    padding: 20px;
-    background: #f8f8f8;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  padding: 20px;
+  background: #f8f8f8;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .section-content {
-    padding: 20px;
-    display: none;
+  padding: 20px;
+  display: none;
 }
 
 .section-content.active {
-    display: block;
+  display: block;
 }
 
 .section-title {
-    font-size: 18px;
-    font-weight: 600;
+  font-size: 18px;
+  font-weight: 600;
 }
 
 /* Address Styles */
 .address-list {
-    display: grid;
-    gap: 15px;
+  display: grid;
+  gap: 15px;
 }
 
 .address-card {
-    border: 1px solid #e5e5e5;
-    padding: 15px;
-    border-radius: 4px;
-    display: grid;
-    gap: 5px;
-    margin-bottom: 10px;
+  border: 1px solid #e5e5e5;
+  padding: 15px;
+  border-radius: 4px;
+  display: grid;
+  gap: 5px;
+  margin-bottom: 10px;
 }
 
 .address-card.selected {
-    border-color: #fa5400;
-    background-color: #fff9f7;
+  border-color: #fa5400;
+  background-color: #fff9f7;
 }
 
 .address-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
 }
 
 .address-actions button {
-    padding: 5px 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background: white;
-    cursor: pointer;
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
 }
 
 .address-actions button:hover {
-    background: #f5f5f5;
+  background: #f5f5f5;
 }
 
 .add-address-btn {
-    background: #fff;
-    color: #000;
-    border: 1px solid #000;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
+  background: #fff;
+  color: #000;
+  border: 1px solid #000;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 /* Payment Methods */
 .payment-method {
-    display: flex;
-    align-items: center;
-    padding: 15px;
-    border: 1px solid #e5e5e5;
-    margin-bottom: 10px;
-    border-radius: 4px;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border: 1px solid #e5e5e5;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .payment-method:hover {
-    border-color: #000;
+  border-color: #000;
 }
 
 .payment-method input {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 /* Cart Summary */
 .cart-summary {
-    background: #f8f8f8;
-    padding: 20px;
-    border-radius: 8px;
+  background: #f8f8f8;
+  padding: 20px;
+  border-radius: 8px;
 }
 
 .cart-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
 .close-cart {
-    display: none;
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    padding: 5px 10px;
+  display: none;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 5px 10px;
 }
 
 .summary-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
 }
 
 .total {
-    font-size: 18px;
-    font-weight: 600;
-    padding-top: 15px;
-    border-top: 1px solid #e5e5e5;
+  font-size: 18px;
+  font-weight: 600;
+  padding-top: 15px;
+  border-top: 1px solid #e5e5e5;
 }
 
 .product-info {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
 .product-img {
-    width: 100px;
-    height: 100px;
-    object-fit: contain;
-    margin-right: 15px;
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  margin-right: 15px;
 }
 
 /* Modal */
 .modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-    z-index: 1000;
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
 }
 
 .modal.active {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 500px;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
 }
 
 /* Form Styles */
 .address-form {
-    display: grid;
-    gap: 15px;
+  display: grid;
+  gap: 15px;
 }
 
-.address-form input, 
+.address-form input,
 .address-form select {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
 }
 
 /* Buttons */
 .continue-btn {
-    background: #292929;
-    color: white;
-    border: none;
-    padding: 15px;
-    width: 100%;
-    border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 20px;
+  background: #292929;
+  color: white;
+  border: none;
+  padding: 15px;
+  width: 100%;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 20px;
 }
 
 .continue-btn:hover {
-    background:  #1f1f1f;
+  background: #1f1f1f;
 }
 
 .mobile-cart-toggle {
-    display: none;
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: #f5743400;
-    color: #000000;
-    padding: 10px;
-    background-color: #fa5300e5;
-    border: none;
-    z-index: 100;
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #f5743400;
+  color: #000000;
+  padding: 10px;
+  background-color: #fa5300e5;
+  border: none;
+  z-index: 100;
 }
 
 /* Mobile Styles */
 @media (max-width: 768px) {
-    .container {
-        grid-template-columns: 1fr;
-    }
+  .container {
+    grid-template-columns: 1fr;
+  }
 
-    .mobile-cart-toggle {
-        display: block;
-    }
+  .mobile-cart-toggle {
+    display: block;
+  }
 
-    .close-cart {
-        display: block;
-    }
+  .close-cart {
+    display: block;
+  }
 
-    aside {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: white;
-        z-index: 1000;
-        overflow-y: auto;
-    }
+  aside {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    z-index: 1000;
+    overflow-y: auto;
+  }
 
-    aside.active {
-        display: block;
-    }
+  aside.active {
+    display: block;
+  }
 
-    .cart-summary {
-        height: 100%;
-        border-radius: 0;
-    }
+  .cart-summary {
+    height: 100%;
+    border-radius: 0;
+  }
 }
 .section-content {
-    display: none;
+  display: none;
 }
 
 .section-content.active {
-    display: block;
+  display: block;
 }
 
 .address-list {
-    display: grid;
-    gap: 1rem;
-    margin-bottom: 1rem;
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 
 .address-card {
-    border: 1px solid #ddd;
-    padding: 1rem;
-    border-radius: 8px;
-    position: relative;
-    transition: all 0.3s ease;
+  border: 1px solid #ddd;
+  padding: 1rem;
+  border-radius: 8px;
+  position: relative;
+  transition: all 0.3s ease;
 }
 
 .address-card.selected {
-    border-color: #4CAF50;
-    background-color: #f1f8e9;
+  border-color: #4caf50;
+  background-color: #f1f8e9;
 }
 
 .address-type {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    font-size: 0.8rem;
-    color: #666;
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  font-size: 0.8rem;
+  color: #666;
 }
 
 .address-actions {
-    display: flex;
-    gap: 0.5rem;
-    margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
 }
 
 .address-actions button {
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .default-btn {
-    background-color: #2196F3;
-    color: white;
+  background-color: #2196f3;
+  color: white;
 }
 
 .default-btn.active {
-    background-color: #4CAF50;
+  background-color: #4caf50;
 }
 
 .edit-btn {
-    background-color: #FFC107;
-    color: black;
+  background-color: #ffc107;
+  color: black;
 }
 
 .delete-btn {
-    background-color: #f44336;
-    color: white;
+  background-color: #f44336;
+  color: white;
 }
 
 .add-address-btn {
-    width: 100%;
-    padding: 1rem;
-    background-color: #2196F3;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
+  width: 100%;
+  padding: 1rem;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.5);
-    z-index: 1000;
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
 }
 
 .modal.active {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .modal-content {
-    background-color: white;
-    padding: 2rem;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 500px;
-    position: relative;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
 }
 
 .address-form {
-    display: grid;
-    gap: 1rem;
+  display: grid;
+  gap: 1rem;
 }
 
 .address-form input,
 .address-form select {
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
 }
 
 .no-address {
-    text-align: center;
-    padding: 2rem;
+  text-align: center;
+  padding: 2rem;
 }
 
 @media (max-width: 768px) {
-    .address-list {
-        grid-template-columns: 1fr;
-    }
-    
-    .modal-content {
-        width: 95%;
-        padding: 1rem;
-    }
+  .address-list {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-content {
+    width: 95%;
+    padding: 1rem;
+  }
 }
 .modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.5);
-    z-index: 1000;
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
 }
 
 .modal-content {
-    background-color: white;
-    margin: 15% auto;
-    padding: 20px;
-    width: 80%;
-    max-width: 500px;
-    border-radius: 8px;
+  background-color: white;
+  margin: 15% auto;
+  padding: 20px;
+  width: 80%;
+  max-width: 500px;
+  border-radius: 8px;
 }
 
 .section-content {
-    display: none;
+  display: none;
 }
 
 .section-content.active {
-    display: block;
+  display: block;
 }
 
 .modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
 }
 
 .modal.active {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .modal-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 500px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
 }
 
 .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
 .close-modal {
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    padding: 0 5px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0 5px;
 }
 
 .address-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
 .address-form input,
 .address-form select {
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
 }
 .address-card {
-    border: 1px solid #ddd;
-    padding: 15px;
-    margin-bottom: 15px;
-    border-radius: 8px;
-    transition: all 0.3s ease;
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
 }
 
 .address-card.selected {
-    border-color: #3085d6;
-    background-color: #f8f9fa;
+  border-color: #3085d6;
+  background-color: #f8f9fa;
 }
 
 .address-actions {
-    margin-top: 10px;
-    display: flex;
-    gap: 10px;
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
 }
 
 .default-btn.active {
-    background-color: #28a745;
-    color: white;
+  background-color: #28a745;
+  color: white;
 }
-

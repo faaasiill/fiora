@@ -1,7 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
 :root {
-  /* Updated color scheme for more professional look */
   --primary-bg: #0f172a;
   --sidebar-bg: #1e293b;
   --content-bg: #334155;
@@ -855,8 +854,8 @@ body {
   box-shadow: 0 4px 12px rgba(44, 130, 201, 0.3);
 }
 
-.cancel{
-    background: linear-gradient(135deg, #d53a3a, #c92c2c);
+.cancel {
+  background: linear-gradient(135deg, #d53a3a, #c92c2c);
   color: white;
   border: none;
   padding: 12px 22px;
@@ -869,15 +868,15 @@ body {
   box-shadow: 0 4px 12px rgba(201, 44, 44, 0.3);
 }
 .cancel:hover {
-    background: linear-gradient(135deg, #c93535, #b42626);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(201, 44, 44, 0.4);
+  background: linear-gradient(135deg, #c93535, #b42626);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(201, 44, 44, 0.4);
 }
-  
-  .cancel:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(201, 44, 44, 0.3);
-  }
+
+.cancel:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(201, 44, 44, 0.3);
+}
 
 .otrack_view_order_btn:hover {
   background: linear-gradient(135deg, #3575c9, #2673b4);
@@ -1118,228 +1117,240 @@ body {
 }
 
 .otrack_status_processing {
-    background: linear-gradient(135deg, #e6f7ff, #cceeff);
-    color: #0366d6;
-    border: 1px solid rgba(3, 102, 214, 0.15);
+  background: linear-gradient(135deg, #e6f7ff, #cceeff);
+  color: #0366d6;
+  border: 1px solid rgba(3, 102, 214, 0.15);
 }
 
 .otrack_status_shipped {
-    background: linear-gradient(135deg, #e6f9ff, #ccf2ff);
-    color: #0277bd;
-    border: 1px solid rgba(2, 119, 189, 0.15);
+  background: linear-gradient(135deg, #e6f9ff, #ccf2ff);
+  color: #0277bd;
+  border: 1px solid rgba(2, 119, 189, 0.15);
 }
 
 .otrack_status_delivered {
-    background: linear-gradient(135deg, #e6ffe6, #ccffcc);
-    color: #2e7d32;
-    border: 1px solid rgba(46, 125, 50, 0.15);
+  background: linear-gradient(135deg, #e6ffe6, #ccffcc);
+  color: #2e7d32;
+  border: 1px solid rgba(46, 125, 50, 0.15);
 }
 
 .otrack_status_cancelled {
-    background: linear-gradient(135deg, #ffe6e6, #ffcccc);
-    color: #c62828;
-    border: 1px solid rgba(198, 40, 40, 0.15);
+  background: linear-gradient(135deg, #ffe6e6, #ffcccc);
+  color: #c62828;
+  border: 1px solid rgba(198, 40, 40, 0.15);
 }
 
 .otrack_status_return {
-    background: linear-gradient(135deg, #f2e6ff, #e6ccff);
-    color: #7b1fa2;
-    border: 1px solid rgba(123, 31, 162, 0.15);
+  background: linear-gradient(135deg, #f2e6ff, #e6ccff);
+  color: #7b1fa2;
+  border: 1px solid rgba(123, 31, 162, 0.15);
 }
 
 .otrack_empty_state {
-    background: white;
-    border-radius: 12px;
-    padding: 40px;
-    text-align: center;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-    color: #667790;
-    font-size: 16px;
+  background: white;
+  border-radius: 12px;
+  padding: 40px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  color: #667790;
+  font-size: 16px;
 }
-
 
 /* Cancel Order Modal Styles */
 .otrack_cancel_container {
-    background: #fff;
-    border-radius: 8px;
+  background: #fff;
+  border-radius: 8px;
+}
+
+.otrack_cancel_info {
+  margin-bottom: 20px;
+  font-size: 16px;
+  color: #4a5568;
+  background: #fff3cd;
+  padding: 12px 15px;
+  border-radius: 8px;
+  border-left: 4px solid #f59e0b;
+}
+
+.otrack_cancel_form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.otrack_form_group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.otrack_form_label {
+  font-weight: 500;
+  color: #1a2b47;
+  font-size: 15px;
+}
+
+.otrack_select_input {
+  padding: 12px 15px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 15px;
+  color: #4a5568;
+  background-color: #f8fafd;
+  width: 100%;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.otrack_select_input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  outline: none;
+}
+
+.otrack_textarea {
+  padding: 12px 15px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  resize: vertical;
+  font-size: 15px;
+  color: #4a5568;
+  background-color: #f8fafd;
+  width: 100%;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: inherit;
+}
+
+.otrack_textarea:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  outline: none;
+}
+
+.otrack_cancel_actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.otrack_cancel_btn_secondary {
+  padding: 12px 20px;
+  background-color: #f1f5f9;
+  color: #4b5563;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.otrack_cancel_btn_secondary:hover {
+  background-color: #e2e8f0;
+}
+
+.otrack_cancel_btn_primary {
+  padding: 12px 20px;
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.otrack_cancel_btn_primary:hover {
+  background-color: #dc2626;
+}
+
+/* Animation for the cancel modal */
+@keyframes cancelShake {
+  0%,
+  100% {
+    transform: translateX(0);
   }
-  
-  .otrack_cancel_info {
-    margin-bottom: 20px;
-    font-size: 16px;
-    color: #4a5568;
-    background: #fff3cd;
-    padding: 12px 15px;
-    border-radius: 8px;
-    border-left: 4px solid #f59e0b;
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-5px);
   }
-  
-  .otrack_cancel_form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(5px);
   }
-  
-  .otrack_form_group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  
-  .otrack_form_label {
-    font-weight: 500;
-    color: #1a2b47;
-    font-size: 15px;
-  }
-  
-  .otrack_select_input {
-    padding: 12px 15px;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    font-size: 15px;
-    color: #4a5568;
-    background-color: #f8fafd;
-    width: 100%;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-  
-  .otrack_select_input:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    outline: none;
-  }
-  
-  .otrack_textarea {
-    padding: 12px 15px;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    resize: vertical;
-    font-size: 15px;
-    color: #4a5568;
-    background-color: #f8fafd;
-    width: 100%;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    font-family: inherit;
-  }
-  
-  .otrack_textarea:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    outline: none;
-  }
-  
+}
+
+.cancel_confirm_animation {
+  animation: cancelShake 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
   .otrack_cancel_actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 15px;
-    margin-top: 10px;
-  }
-  
-  .otrack_cancel_btn_secondary {
-    padding: 12px 20px;
-    background-color: #f1f5f9;
-    color: #4b5563;
-    border: none;
-    border-radius: 8px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  .otrack_cancel_btn_secondary:hover {
-    background-color: #e2e8f0;
-  }
-  
-  .otrack_cancel_btn_primary {
-    padding: 12px 20px;
-    background-color: #ef4444;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  .otrack_cancel_btn_primary:hover {
-    background-color: #dc2626;
-  }
-  
-  /* Animation for the cancel modal */
-  @keyframes cancelShake {
-    0%, 100% { transform: translateX(0); }
-    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-    20%, 40%, 60%, 80% { transform: translateX(5px); }
-  }
-  
-  .cancel_confirm_animation {
-    animation: cancelShake 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
-  }
-  
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .otrack_cancel_actions {
-      flex-direction: column;
-      gap: 10px;
-    }
-    
-    .otrack_cancel_btn_secondary,
-    .otrack_cancel_btn_primary {
-      width: 100%;
-      text-align: center;
-    }
+    flex-direction: column;
+    gap: 10px;
   }
 
-  /* Success message styles */
-.otrack_success_message {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  .otrack_cancel_btn_secondary,
+  .otrack_cancel_btn_primary {
+    width: 100%;
     text-align: center;
-    padding: 20px 0;
   }
-  
-  .otrack_success_icon {
-    color: #10b981;
-    margin-bottom: 20px;
-  }
-  
-  .otrack_success_message h3 {
-    color: #1a2b47;
-    font-size: 20px;
-    margin-bottom: 10px;
-  }
-  
-  .otrack_success_message p {
-    color: #64748b;
-    margin-bottom: 20px;
-    max-width: 80%;
-  }
-  
-  .otrack_done_btn {
-    padding: 12px 30px;
-    background-color: #10b981;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  .otrack_done_btn:hover {
-    background-color: #059669;
-  }
-  
-  /* Error message styles */
-  .otrack_error_message {
-    background-color: #fee2e2;
-    border-left: 4px solid #ef4444;
-    color: #b91c1c;
-    padding: 12px 15px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    font-size: 14px;
-  }
-  
+}
+
+/* Success message styles */
+.otrack_success_message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px 0;
+}
+
+.otrack_success_icon {
+  color: #10b981;
+  margin-bottom: 20px;
+}
+
+.otrack_success_message h3 {
+  color: #1a2b47;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.otrack_success_message p {
+  color: #64748b;
+  margin-bottom: 20px;
+  max-width: 80%;
+}
+
+.otrack_done_btn {
+  padding: 12px 30px;
+  background-color: #10b981;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.otrack_done_btn:hover {
+  background-color: #059669;
+}
+
+/* Error message styles */
+.otrack_error_message {
+  background-color: #fee2e2;
+  border-left: 4px solid #ef4444;
+  color: #b91c1c;
+  padding: 12px 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}

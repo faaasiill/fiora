@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +12,7 @@
     <style>
         /* Your existing styles remain the same */
         @import url('https://fonts.googleapis.com/css2?family=Julius+Sans+One&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
         * {
             margin: 0;
             padding: 0;
@@ -144,26 +146,22 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1 class="title">Verify OTP</h1>
         <form id="otpForm">
             <div class="otp-container">
-                <input type="text" 
-                       class="otp-input" 
-                       name="otp" 
-                       id="otp" 
-                       maxlength="6" 
-                       placeholder="Enter OTP"
-                       autocomplete="off"
-                       required>
+                <input type="text" class="otp-input" name="otp" id="otp" maxlength="6" placeholder="Enter OTP"
+                    autocomplete="off" required>
             </div>
             <button type="submit" class="verify-btn" id="verifyBtn">Verify OTP</button>
         </form>
         <div class="timer" id="otpTimer">Time remaining: 1:00</div>
         <div class="resend-otp-btnContainer">
-<button type="button" style="background-color: rgba(255, 255, 255, 0); border: 0;" class="resend" id="resendBtn">Resend OTP</button>
-    </div>
+            <button type="button" style="background-color: rgba(255, 255, 255, 0); border: 0;" class="resend"
+                id="resendBtn">Resend OTP</button>
+        </div>
         <div id="message" class="message"></div>
     </div>
 
@@ -171,26 +169,26 @@
         // Global variables
         let otpTimerInterval;
         let timer = 60;
-        
-        document.addEventListener('DOMContentLoaded', function() {
+
+        document.addEventListener('DOMContentLoaded', function () {
             const verifyBtn = document.getElementById('verifyBtn');
             const resendBtn = document.getElementById('resendBtn');
             const messageDiv = document.getElementById('message');
             const otpInput = document.getElementById('otp');
             const otpForm = document.getElementById('otpForm');
-    
+
             // Initialize timer on page load
             startOtpTimer();
-    
+
             // Validate OTP input in real-time
-            otpInput.addEventListener('input', function(e) {
+            otpInput.addEventListener('input', function (e) {
                 // Remove any non-numeric characters
                 this.value = this.value.replace(/[^0-9]/g, '');
-                
+
                 // Remove error styling if present
                 this.classList.remove('error');
                 messageDiv.textContent = '';
-                
+
                 // Validate input type and length
                 if (this.value.length > 0) {
                     if (!/^\d+$/.test(this.value)) {
@@ -199,26 +197,26 @@
                     }
                 }
             });
-    
+
             // Validate on blur (when input loses focus)
-            otpInput.addEventListener('blur', function() {
+            otpInput.addEventListener('blur', function () {
                 if (this.value.length > 0 && this.value.length < 6) {
                     showError('OTP must be 6 digits');
                     this.classList.add('error');
                 }
             });
-    
+
             // Handle form submission
-            otpForm.addEventListener('submit', function(e) {
+            otpForm.addEventListener('submit', function (e) {
                 e.preventDefault();
-                
+
                 const otp = otpInput.value;
-                
+
                 // Validate OTP before submission
                 if (!validateOTP(otp)) {
                     return;
                 }
-    
+
                 // Show loading state
                 Swal.fire({
                     title: 'Verifying OTP...',
@@ -228,13 +226,13 @@
                         Swal.showLoading();
                     }
                 });
-    
+
                 // Make AJAX call to verify OTP
                 $.ajax({
                     type: 'POST',
                     url: '/verify-passForgot-otp',
                     data: { otp: otp },
-                    success: function(response) {
+                    success: function (response) {
                         if (response.success) {
                             Swal.fire({
                                 icon: 'success',
@@ -254,7 +252,7 @@
                             otpInput.classList.add('error');
                         }
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
@@ -263,16 +261,16 @@
                     }
                 });
             });
-    
+
             // Resend OTP button handler
-            resendBtn.addEventListener('click', function(e) {
+            resendBtn.addEventListener('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                
+
                 if (!this.classList.contains('active')) {
                     return;
                 }
-    
+
                 Swal.fire({
                     title: 'Sending OTP...',
                     allowOutsideClick: false,
@@ -281,17 +279,17 @@
                         Swal.showLoading();
                     }
                 });
-    
+
                 $.ajax({
                     type: 'POST',
                     url: '/resent-forgot-otp',
-                    success: function(response) {
+                    success: function (response) {
                         if (response.success) {
                             startOtpTimer();
                             otpInput.value = '';
                             otpInput.classList.remove('error');
                             messageDiv.textContent = '';
-                            
+
                             Swal.fire({
                                 icon: 'success',
                                 title: 'OTP Sent!',
@@ -307,7 +305,7 @@
                             });
                         }
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         console.error('Resend OTP Error:', error);
                         Swal.fire({
                             icon: 'error',
@@ -318,67 +316,67 @@
                 });
             });
         });
-    
+
         // Validation helper function
         function validateOTP(otp) {
             const messageDiv = document.getElementById('message');
             const otpInput = document.getElementById('otp');
-    
+
             // Check if OTP is empty
             if (!otp) {
                 showError('Please enter OTP');
                 otpInput.classList.add('error');
                 return false;
             }
-    
+
             // Check if OTP is exactly 6 digits
             if (otp.length !== 6) {
                 showError('OTP must be 6 digits');
                 otpInput.classList.add('error');
                 return false;
             }
-    
+
             // Check if OTP contains only numbers
             if (!/^\d+$/.test(otp)) {
                 showError('OTP must contain only numbers');
                 otpInput.classList.add('error');
                 return false;
             }
-    
+
             return true;
         }
-    
+
         // Error display helper function
         function showError(message) {
             const messageDiv = document.getElementById('message');
             messageDiv.textContent = message;
             messageDiv.style.color = '#dc3545';
         }
-    
+
         // Timer color update function
-        function updateTimerColor(percentage) { 
+        function updateTimerColor(percentage) {
             const timerElement = document.getElementById("otpTimer");
-             if (percentage < 15) {
+            if (percentage < 15) {
                 timerElement.style.color = "#dc3545";
             }
         }
-    
+
         // Timer start function
         function startOtpTimer() {
             const verifyBtn = document.getElementById('verifyBtn');
             const resendBtn = document.getElementById('resendBtn');
             const timerElement = document.getElementById('otpTimer');
-    
+
             clearInterval(otpTimerInterval);
             timer = 60;
-            
+
             verifyBtn.disabled = false;
             resendBtn.classList.remove('active');
-            
+
             otpTimerInterval = setInterval(() => {
                 const minutes = Math.floor(timer / 60);
                 const seconds = timer % 60;
-                
+
                 if (timer <= 0) {
                     clearInterval(otpTimerInterval);
                     timerElement.textContent = 'OTP Expired';
@@ -387,20 +385,20 @@
                     resendBtn.classList.add('active');
                     return;
                 }
-                
+
                 timerElement.textContent = `Time remaining: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
                 updateTimerColor((timer / 60) * 100);
                 timer--;
             }, 1000);
         }
     </script>
-    
+
     <style>
         .error {
             border-color: #dc3545 !important;
             box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
         }
-    
+
         #message {
             margin-top: 10px;
             font-size: 14px;
@@ -408,4 +406,5 @@
         }
     </style>
 </body>
+
 </html>
