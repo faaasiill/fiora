@@ -1,0 +1,498 @@
+<%- include("../../views/partials/admin/header")%>
+<link rel="stylesheet" href="/css/couponmanage.css">
+<!-- Add SweetAlert2 CSS and JS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.5/sweetalert2.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.5/sweetalert2.all.min.js"></script>
+
+<div class="container">
+    <div class="header">
+        <h1>Coupon Management</h1>
+    </div>
+    
+    <div id="messageAlert" class="alert" style="display: none;"></div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Create New Coupon</h2>
+        </div>
+        <div class="card-body">
+            <form id="couponForm" method="post" action="/admin/createCoupon">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="name">Coupon Name</label>
+                        <input type="text" id="name" name="name" class="form-control" placeholder="e.g. SUMMER2025" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="createdOn">Created On</label>
+                        <input type="date" id="createdOn" name="createdOn" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="expireOn">Expiry Date</label>
+                        <input type="date" id="expireOn" name="expireOn" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="offerPrice">Offer Price (Discount Amount)</label>
+                        <input type="number" id="offerPrice" name="offerPrice" class="form-control" placeholder="e.g. 20" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="minimumPrice">Minimum Purchase Amount</label>
+                        <input type="number" id="minimumPrice" name="minimumPrice" class="form-control" placeholder="e.g. 100" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="isList">Show in List</label>
+                        <div class="toggle-container">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="isList" name="isList" checked>
+                                <span class="toggle-slider" style="color: rgba(240, 248, 255, 0);"></span>
+                            </label>
+                            <!-- <span>Active</span> -->
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" id="couponId" name="couponId">
+                <button type="submit" class="btn btn-primary">Add Coupon</button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Coupon List</h2>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table" id="couponTable">
+                    <thead>
+                        <tr>
+                            <th>Coupon Name</th>
+                            <th>Offer Price</th>
+                            <th>Min. Purchase</th>
+                            <th>Created On</th>
+                            <th>Expires On</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if(coupons && coupons.length > 0) { %>
+                            <% coupons.forEach(coupon => { %>
+                                <% 
+                                    const today = new Date();
+                                    const expireDate = new Date(coupon.expireOn);
+                                    let status = '';
+                                    let statusClass = '';
+                                    
+                                    if (today > expireDate) {
+                                        status = 'Expired';
+                                        statusClass = 'badge-danger';
+                                    } else if (!coupon.isList) {
+                                        status = 'Inactive';
+                                        statusClass = 'badge-warning';
+                                    } else {
+                                        status = 'Active';
+                                        statusClass = 'badge-success';
+                                    }
+                                %>
+                                <tr data-coupon-id="<%= coupon._id %>">
+                                    <td><%= coupon.name %></td>
+                                    <td>$<%= coupon.offerPrice %></td>
+                                    <td>$<%= coupon.minimumPrice %></td>
+                                    <td><%= new Date(coupon.createdOn).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %></td>
+                                    <td><%= new Date(coupon.expireOn).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %></td>
+                                    <td>
+                                        <span class="badge <%= statusClass %>"><%= status %></span>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-primary action-btn edit-btn" data-id="<%= coupon._id %>">Edit</button>
+                                            <button class="btn btn-danger action-btn delete-btn" data-id="<%= coupon._id %>">Delete</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="7" class="text-center">No coupons found</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set current date for createdOn
+        const today = new Date();
+        const nextMonth = new Date();
+        nextMonth.setMonth(today.getMonth() + 1);
+        
+        document.getElementById('createdOn').valueAsDate = today;
+        document.getElementById('expireOn').valueAsDate = nextMonth;
+        
+        // Handle form submission
+        const couponForm = document.getElementById('couponForm');
+        couponForm.addEventListener('submit', handleFormSubmit);
+        
+        // Toggle switch functionality
+        document.getElementById('isList').addEventListener('change', function() {
+            const statusText = document.querySelector('.toggle-container span');
+            statusText.textContent = this.checked ? 'Active' : 'Inactive';
+        });
+        
+        // Add event listeners to edit buttons
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const couponId = this.getAttribute('data-id');
+                editCoupon(couponId);
+            });
+        });
+        
+        // Add event listeners to delete buttons
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const couponId = this.getAttribute('data-id');
+                deleteCoupon(couponId);
+            });
+        });
+
+        document.querySelectorAll('.coupon-status-toggle').forEach(toggle => {
+            toggle.addEventListener('change', function() {
+                const couponId = this.getAttribute('data-id');
+                const isActive = this.checked;
+                toggleCouponStatus(couponId, isActive);
+            });
+        });
+        
+        // Function to handle form submission
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            // Create an object to hold form data
+            const formData = new FormData(couponForm);
+            const couponId = document.getElementById('couponId').value;
+            
+            // Create a data object from the form
+            const data = {};
+            for (const [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+            
+            // Manually format dates to ensure they're valid
+            data.createdOn = document.getElementById('createdOn').value;
+            data.expireOn = document.getElementById('expireOn').value;
+            
+            // Handle isList checkbox properly
+            data.isList = document.getElementById('isList').checked ? 'on' : 'off';
+            
+            try {
+                let url = '/admin/createCoupon';
+                let method = 'POST';
+                
+                // If editing an existing coupon
+                if (couponId) {
+                    url = `/admin/updateCoupon/${couponId}`;
+                    data.couponId = couponId;
+                }
+                
+                // Show loading state
+                Swal.fire({
+                    title: 'Processing...',
+                    text: 'Please wait',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.redirected) {
+                    window.location.href = response.url;
+                } else if (response.ok) {
+                    resetForm();
+                    
+                    // Success alert
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: couponId ? 'Coupon updated successfully!' : 'Coupon added successfully!',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    const errorData = await response.json();
+                    
+                    // Error alert
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: errorData.message || 'An error occurred'
+                    });
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                
+                // Error alert
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to process request'
+                });
+            }
+        }     
+        
+        // Function to edit a coupon
+        async function editCoupon(couponId) {
+            try {
+                // Show loading state
+                Swal.fire({
+                    title: 'Loading...',
+                    text: 'Fetching coupon details',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+                
+                // Fetch the coupon data
+                const response = await fetch(`/admin/getCoupon/${couponId}`);
+                
+                // Close loading indicator
+                Swal.close();
+                
+                if (response.ok) {
+                    const coupon = await response.json();
+                    
+                    // Fill the form with coupon data
+                    document.getElementById('name').value = coupon.name;
+                    document.getElementById('createdOn').valueAsDate = new Date(coupon.createdOn);
+                    document.getElementById('expireOn').valueAsDate = new Date(coupon.expireOn);
+                    document.getElementById('offerPrice').value = coupon.offerPrice;
+                    document.getElementById('minimumPrice').value = coupon.minimumPrice;
+                    document.getElementById('isList').checked = coupon.isList;
+                    document.getElementById('couponId').value = coupon._id;
+                    
+                    // Update toggle switch text
+                    const statusText = document.querySelector('.toggle-container span');
+                    if (statusText) {
+                        statusText.textContent = coupon.isList ? 'Active' : 'Inactive';
+                    }
+                    
+                    // Change button text
+                    document.querySelector('#couponForm button[type="submit"]').textContent = 'Update Coupon';
+                    
+                    // Scroll to form
+                    document.querySelector('.card').scrollIntoView({ behavior: 'smooth' });
+                    
+                    // Show toast notification
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Editing Coupon',
+                        text: `Now editing: ${coupon.name}`,
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to load coupon details'
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching coupon details:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to load coupon details'
+                });
+            }
+        }
+        
+        // Function to delete a coupon
+        async function deleteCoupon(couponId) {
+            // Confirmation dialog
+            const result = await Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            });
+            
+            if (result.isConfirmed) {
+                try {
+                    // Show loading state
+                    Swal.fire({
+                        title: 'Deleting...',
+                        text: 'Please wait',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    
+                    const response = await fetch(`/admin/deleteCoupon/${couponId}`, {
+                        method: 'DELETE'
+                    });
+                    
+                    if (response.ok) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Deleted!',
+                            text: 'Coupon deleted successfully',
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        const errorData = await response.json();
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: errorData.message || 'Failed to delete coupon'
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error deleting coupon:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to delete coupon'
+                    });
+                }
+            }
+        }
+        
+        // Function to reset the form
+        function resetForm() {
+            document.getElementById('couponForm').reset();
+            document.getElementById('createdOn').valueAsDate = today;
+            document.getElementById('expireOn').valueAsDate = nextMonth;
+            document.getElementById('couponId').value = '';
+            document.querySelector('#couponForm button[type="submit"]').textContent = 'Add Coupon';
+            
+            const statusText = document.querySelector('.toggle-container span');
+            if (statusText) {
+                statusText.textContent = 'Active';
+            }
+        }
+        
+        // Function to show alert messages - replaced with SweetAlert
+        function showAlert(message, type) {
+            Swal.fire({
+                icon: type === 'danger' ? 'error' : 
+                      type === 'success' ? 'success' : 
+                      type === 'info' ? 'info' : 'warning',
+                title: type.charAt(0).toUpperCase() + type.slice(1),
+                text: message,
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000
+            });
+        }
+    });
+
+    // Improved function to toggle coupon status
+    async function toggleCouponStatus(couponId, isActive) {
+        try {
+            console.log('Toggling coupon:', couponId, 'Active:', isActive);
+            
+            // Show loading state
+            Swal.fire({
+                title: 'Updating status...',
+                text: 'Please wait',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            
+            const response = await fetch(`/admin/toggleCouponStatus/${couponId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ isList: isActive })
+            });
+            
+            console.log('Response status:', response.status);
+            
+            if (response.ok) {
+                const result = await response.json();
+                console.log('Server response:', result);
+                
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: result.message || 'Status updated successfully!',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+                
+                // Update the status badge directly
+                const statusBadge = document.querySelector(`tr[data-coupon-id="${couponId}"] .badge`);
+                if (statusBadge) {
+                    if (isActive) {
+                        statusBadge.textContent = 'Active';
+                        statusBadge.className = 'badge badge-success';
+                    } else {
+                        statusBadge.textContent = 'Inactive';
+                        statusBadge.className = 'badge badge-warning';
+                    }
+                } else {
+                    console.error('Status badge not found');
+                }
+            } else {
+                const errorData = await response.json();
+                console.error('Server error:', errorData);
+                
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: errorData.message || 'Failed to update status'
+                });
+                
+                // Reset the toggle to its previous state since the update failed
+                const toggle = document.querySelector(`.coupon-status-toggle[data-id="${couponId}"]`);
+                if (toggle) {
+                    toggle.checked = !isActive;
+                }
+            }
+        } catch (error) {
+            console.error('Error toggling coupon status:', error);
+            
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to update status'
+            });
+            
+            // Reset the toggle on error
+            const toggle = document.querySelector(`.coupon-status-toggle[data-id="${couponId}"]`);
+            if (toggle) {
+                toggle.checked = !isActive;
+            }
+        }
+    }
+</script>

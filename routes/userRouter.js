@@ -6,6 +6,7 @@ const productController = require("../controllers/user/productController");
 const wishlistController = require("../controllers/user/wishlistController");
 const cartController = require("../controllers/user/cartController");
 const checkOutController = require("../controllers/user/checkOutController");
+const userCouponController = require("../controllers/user/userCouponController");
 const {userAuth} = require("../middlewares/auth");
 const passport = require("passport");
 
@@ -81,7 +82,10 @@ router.delete("/removeFromCart", userAuth, cartController.removeFromCart);
 router.get("/checkout", userAuth, checkOutController.loadCheckOut);
 router.post("/place-order", userAuth, checkOutController.placeOrder);
 router.get("/order-confirmation/:orderId", userAuth, checkOutController.orderConfirmation);
-
+// coupon management
+router.get('/getActiveCoupons', userAuth, userCouponController.getActiveCoupons);
+router.post('/applyCoupon', userAuth, userCouponController.applyCoupon);
+router.post('/removeCoupon', userAuth, userCouponController.removeCoupon);
 
 
 module.exports = router;

@@ -73,14 +73,15 @@
                 </div>
                 <select class="category-select">
                     <option value="all">All Categories</option>
-                    <% // Assuming you have access to categories from backend const uniqueCategories=[...new
-                        Set(wishlist.map(product=> product.category.name))];
+                    <% 
+                        // Assuming you have access to categories from backend 
+                        const uniqueCategories = [...new Set(wishlist.map(product => product.category.name))];
                         uniqueCategories.forEach(category => {
-                        %>
+                    %>
                         <option value="<%= category.toLowerCase() %>">
                             <%= category %>
                         </option>
-                        <% }); %>
+                    <% }); %>
                 </select>
                 <select class="filter-select">
                     <option value="all">All Prices</option>
@@ -126,6 +127,7 @@
                                 <span class="original-price">₹<%= product.regularPrice %></span>
                             </div>
                             <button class="add-cart-button" data-product-id="<%= product._id %>">Add to Cart</button>
+                            
                         </div>
                     </div>
                     <% } %>

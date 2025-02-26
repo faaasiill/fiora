@@ -303,6 +303,12 @@
                                                 <% if (order.status==="Pending" || order.status==="Processing" ) { %>
                                                     <button class="cancel">Cancel Order</button>
                                                     <% } %>
+                                                        <% if(order.status==="Delivered" ){ %>
+                                                            <button class="return"
+                                                                onclick="openReturnModal('<%= order._id %>')">Return
+                                                                Request</button>
+                                                            <% } %>
+
                             </div>
 
                             <!-- Modal for this order -->
@@ -348,12 +354,12 @@
                                         <div class="otrack_price_row">
                                             <span class="otrack_price_label">Total Price:</span>
                                             <span class="otrack_price_value">₹<%= order.totalPrice.toLocaleString() %>
-                                                    </span>
+                                            </span>
                                         </div>
                                         <div class="otrack_price_row">
                                             <span class="otrack_price_label">Discount:</span>
                                             <span class="otrack_price_value">₹<%= order.discount.toLocaleString() %>
-                                                    </span>
+                                            </span>
                                         </div>
                                         <div class="otrack_price_row">
                                             <span class="otrack_price_label">Tax:</span>

@@ -842,6 +842,7 @@ body {
 
 .otrack_view_order_btn {
   background: linear-gradient(135deg, #3a7bd5, #2c82c9);
+  margin-bottom: 10px;
   color: white;
   border: none;
   padding: 12px 22px;
@@ -1354,3 +1355,4 @@ body {
   margin-bottom: 20px;
   font-size: 14px;
 }
+

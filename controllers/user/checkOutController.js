@@ -126,7 +126,6 @@ const placeOrder = async (req, res) => {
       });
     }
 
-
     // Validate stock before placing order
     const stockValidation = await validateCartStock(cart.items);
     if (!stockValidation.isValid) {
@@ -167,7 +166,7 @@ const placeOrder = async (req, res) => {
     // Ensure cart totals are up to date
     cart.calculateTotals();
 
-    // Create new order with address details
+    // Create new order with address details and coupon information
     const newOrder = new Order({
       userId: userId,
       orderItems,
@@ -179,6 +178,9 @@ const placeOrder = async (req, res) => {
       paymentStatus: paymentMethod === "cod" ? "pending" : "pending",
       status: "Pending",
       invoiceDate: new Date(),
+
+      couponApplied: cart.coupon && cart.coupon.couponId ? true : false,
+      couponDetails: cart.coupon && cart.coupon.couponId ? cart.coupon : null,
     });
 
     // Save order

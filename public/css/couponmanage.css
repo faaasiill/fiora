@@ -1,0 +1,376 @@
+:root {
+  --primary: #4361ee;
+  --secondary: #3f37c9;
+  --success: #4bb543;
+  --danger: #dc3545;
+  --warning: #ffc107;
+  --light: #f8f9fa;
+  --dark: #212529;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "poppins", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #f5f8fa;
+  color: #333;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  margin-top: 80px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+.header h1 {
+  color: var(--dark);
+  font-size: 24px;
+}
+
+.card {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.card-header {
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--dark);
+}
+
+/* Form Styles */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #555;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+.form-control:focus {
+  border-color: var(--primary);
+  outline: none;
+}
+
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--secondary);
+}
+
+.btn-success {
+  background-color: var(--success);
+  color: white;
+}
+
+.btn-danger {
+  background-color: var(--danger);
+  color: white;
+}
+
+/* Table Styles */
+.table-responsive {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.table th,
+.table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #555;
+}
+
+.table tbody tr:hover {
+  background-color: #f5f8fa;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.badge-success {
+  background-color: rgba(75, 181, 67, 0.1);
+  color: var(--success);
+}
+
+.badge-warning {
+  background-color: rgba(255, 193, 7, 0.1);
+  color: #ff9800;
+}
+
+.badge-danger {
+  background-color: rgba(220, 53, 69, 0.1);
+  color: var(--danger);
+}
+
+.action-buttons {
+  display: flex;
+  gap: 5px;
+}
+
+.action-btn {
+  padding: 5px 10px;
+  font-size: 12px;
+}
+
+/* Tooltip */
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltip-text {
+  visibility: hidden;
+  width: 120px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 12px;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Message Alert */
+.alert {
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  display: none;
+}
+
+.alert-success {
+  background-color: rgba(75, 181, 67, 0.1);
+  border: 1px solid rgba(75, 181, 67, 0.3);
+  color: var(--success);
+}
+
+.alert-danger {
+  background-color: rgba(220, 53, 69, 0.1);
+  border: 1px solid rgba(220, 53, 69, 0.3);
+  color: var(--danger);
+}
+
+.toggle-container {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+  margin-right: 10px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 24px;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+  background-color: var(--primary);
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(26px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+}
+
+
+/* Add this to your couponmanage.css file */
+
+/* Toggle switch styling */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 30px;
+    margin-right: 10px;
+}
+
+.toggle-switch.small {
+    width: 40px;
+    height: 22px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+.toggle-switch.small .toggle-slider:before {
+    height: 16px;
+    width: 16px;
+    left: 3px;
+    bottom: 3px;
+}
+
+input:checked + .toggle-slider {
+    background-color: #2196F3;
+}
+
+input:focus + .toggle-slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .toggle-slider:before {
+    transform: translateX(26px);
+}
+
+.toggle-switch.small input:checked + .toggle-slider:before {
+    transform: translateX(18px);
+}
+
+.table-toggle {
+    display: inline-block;
+    margin-left: 10px;
+    vertical-align: middle;
+}

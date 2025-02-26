@@ -3,727 +3,606 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Management</title>
+    <title>Coupon Management - Admin Dashboard</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-        *{
-            font-family: "poppins", sans-serif;
-            font-weight: 300;
-            font-size: small;
-            box-sizing: border-box;
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4bb543;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --light: #f8f9fa;
+            --dark: #212529;
         }
-        /* orderList.css */
-        .admin-card {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin: 20px;
-        }
-
-        .admin-card-header {
-            padding: 20px;
-            border-bottom: 1px solid #eee;
-            background-color: #780909;
-        }
-
-        .admin-card-header h2 {
+        
+        * {
             margin: 0;
-            color: #f2f2f2;
-            font-size: 1.5rem;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
-        .admin-card-body {
-            padding: 20px;
-        }
-
-        .table-container {
-            overflow-x: auto;
-        }
-
-        .admin-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .admin-table th, 
-        .admin-table td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-
-        .admin-table th {
-            background-color: #f8f9fa;
-            color: #495057;
-            font-weight: 600;
-        }
-
-        .admin-table tr:hover {
-            background-color: #f8f9fa;
-        }
-
-        /* Status Button Styles */
-        .status-dropdown {
-            position: relative;
-            display: inline-block;
-        }
-
-        .status-btn {
-            padding: 8px 15px;
-            /* border: 1px sol; */
-            border-radius: 5px;
-            color: white;
-            cursor: pointer;
-            width: 150px;
-            text-align: left;
-        }
-
-        .status-pending { border:1px solid #ffc107; }
-        .status-processing { border:1px solid #17a3b8; }
-        .status-shipped { border:1px solid #6710f2; }
-        .status-delivered { border:1px solid #28a746; }
-        .status-cancelled { border:1px solid #dc3546; }
-        .status-return { border:1px solid #fd7d14; }
-        .status-returned { border:1px solid #6c757d; }
-
-        .status-pending { background-color:#ffc1077c; }
-        .status-processing { background-color: #17a3b87b; }
-        .status-shipped { background-color: #6710f27d; }
-        .status-delivered { background-color: #28a7467a; }
-        .status-cancelled { background-color: #dc35467b; }
-        .status-return { background-color: #fd7d147c; }
-        .status-returned { background-color: #6c757d7e; }
-
-        .status-dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: white;
-            min-width: 150px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            z-index: 1;
-            border-radius: 5px;
-            overflow: hidden;
-        }
-
-        .status-dropdown-content a {
+        
+        body {
+            background-color: #f5f8fa;
             color: #333;
-            padding: 10px 15px;
-            text-decoration: none;
-            display: block;
+            line-height: 1.6;
         }
-
-        .status-dropdown-content a:hover {
-            background-color: #f1f1f1;
-        }
-
-        /* Payment Badge Styles */
-        .payment-badge {
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-
-        .payment-badge.paid {
-            background-color: #d4edda;
-            color: #155724;
-        }
-
-        .payment-badge.pending {
-            background-color: #fff3cd;
-            color: #856404;
-        }
-
-        /* View Button Styles */
-        .view-btn {
-            padding: 8px 15px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .view-btn:hover {
-            background-color: #0056b3;
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            z-index: 1000;
-        }
-
-        .modal-content {
-            background-color: white;
-            margin: 5% auto;
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
             padding: 20px;
-            width: 80%;
-            max-width: 800px;
-            border-radius: 10px;
-            position: relative;
         }
-
-        .modal-header {
+        
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #eee;
+            margin-bottom: 30px;
             padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
-
-        .close-modal {
-            font-size: 24px;
-            cursor: pointer;
-            color: #666;
-        }
-
-        .close-modal:hover {
-            color: #333;
-        }
-
-        .modal-body {
-            max-height: 70vh;
-            overflow-y: auto;
+            border-bottom: 1px solid #ddd;
         }
         
-        /* Added styles for order details */
-        .order-detail-grid {
+        .header h1 {
+            color: var(--dark);
+            font-size: 24px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card-header {
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        /* Form Styles */
+        .form-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
         }
         
-        .detail-section {
+        .form-group {
             margin-bottom: 20px;
         }
         
-        .detail-section h4 {
-            margin-top: 0;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 8px;
-            margin-bottom: 12px;
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
         }
         
-        .full-width {
-            grid-column: 1 / -1;
+        .form-control {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.3s;
         }
         
-        .detail-table {
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary);
+        }
+        
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        /* Table Styles */
+        .table-responsive {
+            overflow-x: auto;
+        }
+        
+        .table {
             width: 100%;
             border-collapse: collapse;
+            font-size: 14px;
         }
         
-        .detail-table th, .detail-table td {
-            padding: 10px;
-            border-bottom: 1px solid #eee;
+        .table th, .table td {
+            padding: 12px 15px;
             text-align: left;
+            border-bottom: 1px solid #eee;
         }
         
-        .detail-table tfoot td {
-            border-top: 2px solid #ddd;
-            font-weight: bold;
-        }
-        
-        .text-right {
-            text-align: right;
-        }
-        
-        .container-fluid {
-            width: 100%;
-            padding-right: 15px;
-            padding-left: 15px;
-            margin-right: auto;
-            margin-left: auto;
-        }
-        
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-            margin-right: -15px;
-            margin-left: -15px;
-        }
-        
-        .col-12 {
-            flex: 0 0 100%;
-            max-width: 100%;
-            padding-right: 15px;
-            padding-left: 15px;
-        }
-
-        /* New styles for cancellation info */
-        .cancellation-section {
-            margin-top: 15px;
-            padding: 15px;
-            background-color: #fff9f9;
-            border-left: 4px solid #dc3546;
-            border-radius: 0 5px 5px 0;
-        }
-
-        .cancellation-badge {
-            display: inline-block;
-            padding: 3px 8px;
-            background-color: #dc35467b;
-            color: #721c24;
-            border-radius: 4px;
-            margin-left: 10px;
-            font-size: 0.8rem;
-        }
-
-        .cancellation-details {
-            margin-top: 10px;
-            padding: 10px;
+        .table th {
             background-color: #f8f9fa;
-            border-radius: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .table tbody tr:hover {
+            background-color: #f5f8fa;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .badge-success {
+            background-color: rgba(75, 181, 67, 0.1);
+            color: var(--success);
+        }
+        
+        .badge-warning {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: #ff9800;
+        }
+        
+        .badge-danger {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--danger);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .action-btn {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 120px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+        }
+        
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
         }
 
-        .no-cancellation-info {
-            color: #6c757d;
-            font-style: italic;
+        /* Message Alert */
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .alert-success {
+            background-color: rgba(75, 181, 67, 0.1);
+            border: 1px solid rgba(75, 181, 67, 0.3);
+            color: var(--success);
+        }
+        
+        .alert-danger {
+            background-color: rgba(220, 53, 69, 0.1);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            color: var(--danger);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-12">
-                <div class="admin-card">
-                    <div class="admin-card-header">
-                        <h2>Order Management</h2>
-                    </div>
-                    <div class="admin-card-body">
-                        <div class="table-container">
-                            <table class="admin-table">
-                                <thead>
-                                    <tr>
-                                        <th>Order ID</th>
-                                        <th>Customer</th>
-                                        <th>Order Date</th>
-                                        <th>Status</th>
-                                        <th>Total Amount</th>
-                                        <th>Payment</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="orderTableBody">
-                                    <!-- Table rows will be populated by JavaScript -->
-                                </tbody>
-                            </table>
+    <div class="container">
+        <div class="header">
+            <h1>Coupon Management</h1>
+        </div>
+        
+        <div id="messageAlert" class="alert"></div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Create New Coupon</h2>
+            </div>
+            <div class="card-body">
+                <form id="couponForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="couponName">Coupon Name</label>
+                            <input type="text" id="couponName" class="form-control" placeholder="e.g. SUMMER2025" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="startDate">Start Date</label>
+                            <input type="date" id="startDate" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="endDate">End Date</label>
+                            <input type="date" id="endDate" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="offerPrice">Discount Amount</label>
+                            <input type="number" id="offerPrice" class="form-control" placeholder="e.g. 20" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="discountType">Discount Type</label>
+                            <select id="discountType" class="form-control" required>
+                                <option value="percentage">Percentage (%)</option>
+                                <option value="fixed">Fixed Amount</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="minPurchase">Minimum Purchase Amount</label>
+                            <input type="number" id="minPurchase" class="form-control" placeholder="e.g. 100" required>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label for="couponDescription">Description (Optional)</label>
+                        <textarea id="couponDescription" class="form-control" rows="3" placeholder="Coupon description"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Coupon</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Coupon List</h2>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table" id="couponTable">
+                        <thead>
+                            <tr>
+                                <th>Coupon Name</th>
+                                <th>Discount</th>
+                                <th>Min. Purchase</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Example rows - these will be populated dynamically with JavaScript -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Order Details Modal -->
-    <div id="orderModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Order Details</h3>
-                <span class="close-modal">&times;</span>
-            </div>
-            <div id="modalContent" class="modal-body">
-                <!-- Content will be loaded dynamically -->
-            </div>
-        </div>
-    </div>
-
-    <!-- SweetAlert2 CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
     <script>
-        // Sample orders data (to replace EJS template data)
-        const orders = [
-            {
-                _id: '1',
-                orderId: 'ORD123456789',
-                address: {
-                    fullName: 'John Doe',
-                    address: '123 Main St',
-                    city: 'New York',
-                    state: 'NY',
-                    pincode: '10001',
-                    mobile: '555-123-4567'
-                },
-                createdOn: '2025-02-10T10:30:00',
-                status: 'Pending',
-                finalAmount: 1299,
-                paymentDone: false,
-                paymentMethod: 'cod',
-                totalPrice: 1499,
-                discount: 200,
-                orderItems: [
-                    {
-                        product: { name: 'Smartphone Slim Case' },
-                        quantity: 1,
-                        price: 499
-                    },
-                    {
-                        product: { name: 'Wireless Earbuds' },
-                        quantity: 1,
-                        price: 1000
-                    }
-                ]
-            },
-            {
-                _id: '2',
-                orderId: 'ORD987654321',
-                address: {
-                    fullName: 'Jane Smith',
-                    address: '456 Oak Avenue',
-                    city: 'San Francisco',
-                    state: 'CA',
-                    pincode: '94101',
-                    mobile: '555-987-6543'
-                },
-                createdOn: '2025-02-15T14:45:00',
-                status: 'Shipped',
-                finalAmount: 3499,
-                paymentDone: true,
-                paymentMethod: 'card',
-                totalPrice: 3699,
-                discount: 200,
-                orderItems: [
-                    {
-                        product: { name: 'Premium Headphones' },
-                        quantity: 1,
-                        price: 2499
-                    },
-                    {
-                        product: { name: 'Phone Stand' },
-                        quantity: 2,
-                        price: 600
-                    }
-                ]
-            },
-            {
-                _id: '3',
-                orderId: 'ORD456789123',
-                address: {
-                    fullName: 'Robert Johnson',
-                    address: '789 Pine Street',
-                    city: 'Chicago',
-                    state: 'IL',
-                    pincode: '60601',
-                    mobile: '555-456-7890'
-                },
-                createdOn: '2025-02-18T09:15:00',
-                status: 'Delivered',
-                finalAmount: 5099,
-                paymentDone: true,
-                paymentMethod: 'card',
-                totalPrice: 5499,
-                discount: 400,
-                orderItems: [
-                    {
-                        product: { name: 'Laptop Backpack' },
-                        quantity: 1,
-                        price: 1499
-                    },
-                    {
-                        product: { name: 'Wireless Mouse' },
-                        quantity: 1,
-                        price: 899
-                    },
-                    {
-                        product: { name: 'External SSD' },
-                        quantity: 1,
-                        price: 3101
-                    }
-                ]
-            },
-            {
-                _id: '4',
-                orderId: 'ORD321654987',
-                address: {
-                    fullName: 'Emily Williams',
-                    address: '321 Maple Drive',
-                    city: 'Austin',
-                    state: 'TX',
-                    pincode: '73301',
-                    mobile: '555-321-6549'
-                },
-                createdOn: '2025-02-19T16:30:00',
-                status: 'Cancelled',
-                finalAmount: 2199,
-                paymentDone: false,
-                paymentMethod: 'cod',
-                totalPrice: 2399,
-                discount: 200,
-                orderItems: [
-                    {
-                        product: { name: 'Smart Watch' },
-                        quantity: 1,
-                        price: 2399
-                    }
-                ],
-                cancellation: {
-                    cancelledAt: '2025-02-20T10:45:00',
-                    reason: 'Changed mind',
-                    comments: 'Found a better deal elsewhere'
-                }
-            }
-        ];
-
-        // Helper function to get status class
-        function getStatusClass(status) {
-            status = status.toLowerCase().replace(' ', '');
-            switch(status) {
-                case 'pending': return 'status-pending';
-                case 'processing': return 'status-processing';
-                case 'shipped': return 'status-shipped';
-                case 'delivered': return 'status-delivered';
-                case 'cancelled': return 'status-cancelled';
-                case 'returnrequest': return 'status-return';
-                case 'returned': return 'status-returned';
-                default: return 'status-pending';
-            }
-        }
-
-        // Format date and time
-        function formatDateTime(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        }
-
-        // Populate the table with order data
-        function populateOrderTable() {
-            const tableBody = document.getElementById('orderTableBody');
-            tableBody.innerHTML = '';
-            
-            orders.forEach(order => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${order.orderId.substring(0, 8)}${order.status === 'Cancelled' ? ' <span class="cancellation-badge">Cancelled</span>' : ''}</td>
-                    <td>${order.address.fullName}</td>
-                    <td>${new Date(order.createdOn).toLocaleDateString()}</td>
-                    <td>
-                        <div class="status-dropdown">
-                            <button class="status-btn ${getStatusClass(order.status)}" 
-                                    type="button" 
-                                    onclick="toggleDropdown(this)">
-                                ${order.status}▼
-                            </button>
-                            <div class="status-dropdown-content">
-                                <a href="#" onclick="updateOrderStatus('${order._id}', 'Pending')">Pending</a>
-                                <a href="#" onclick="updateOrderStatus('${order._id}', 'Processing')">Processing</a>
-                                <a href="#" onclick="updateOrderStatus('${order._id}', 'Shipped')">Shipped</a>
-                                <a href="#" onclick="updateOrderStatus('${order._id}', 'Delivered')">Delivered</a>
-                                <a href="#" onclick="updateOrderStatus('${order._id}', 'Cancelled')">Cancelled</a>
-                                <a href="#" onclick="updateOrderStatus('${order._id}', 'Return Request')">Return Request</a>
-                                <a href="#" onclick="updateOrderStatus('${order._id}', 'Returned')">Returned</a>
-                            </div>
-                        </div>
-                    </td>
-                    <td>₹${order.finalAmount.toLocaleString()}</td>
-                    <td>
-                        <span class="payment-badge ${order.paymentDone ? 'paid' : 'pending'}">
-                            ${order.paymentMethod.toUpperCase()}
-                        </span>
-                    </td>
-                    <td>
-                        <button class="view-btn" onclick="viewOrderDetails('${order._id}')">
-                            View Details
-                        </button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-        }
-
-        // Toggle status dropdown
-        function toggleDropdown(button) {
-            const dropdown = button.nextElementSibling;
-            const allDropdowns = document.querySelectorAll('.status-dropdown-content');
-            
-            // Close all other dropdowns
-            allDropdowns.forEach(d => {
-                if (d !== dropdown) d.style.display = 'none';
-            });
-            
-            // Toggle current dropdown
-            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-        }
-
-        // Close dropdowns when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!e.target.matches('.status-btn')) {
-                const dropdowns = document.querySelectorAll('.status-dropdown-content');
-                dropdowns.forEach(d => d.style.display = 'none');
-            }
-        });
-
-        // Update order status
-        function updateOrderStatus(orderId, newStatus) {
-            const order = orders.find(o => o._id === orderId);
-            const oldStatus = order ? order.status : '';
-            
-            // Standard status update confirmation for all statuses
-            Swal.fire({
-                title: 'Update Status',
-                text: `Change order status to ${newStatus}?`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, update it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const orderIndex = orders.findIndex(order => order._id === orderId);
-                    if (orderIndex !== -1) {
-                        // If this is a new cancellation (not previously cancelled)
-                        if (newStatus === 'Cancelled' && oldStatus !== 'Cancelled') {
-                            // Simply mark as cancelled with system note
-                            orders[orderIndex].status = newStatus;
-                            orders[orderIndex].cancellation = {
-                                cancelledAt: new Date().toISOString(),
-                                reason: 'Admin cancelled',
-                                comments: 'Cancelled by administrator'
-                            };
-                        } else {
-                            // Regular status update
-                            orders[orderIndex].status = newStatus;
-                            
-                            // If changing from cancelled, remove cancellation info
-                            if (oldStatus === 'Cancelled' && newStatus !== 'Cancelled') {
-                                delete orders[orderIndex].cancellation;
-                            }
-                        }
-                        
-                        Swal.fire('Updated!', 'Order status has been updated.', 'success')
-                        .then(() => {
-                            populateOrderTable();
-                        });
-                    } else {
-                        Swal.fire('Error!', 'Order not found', 'error');
-                    }
-                }
-            });
-        }
-
-        // View order details
-        function viewOrderDetails(orderId) {
-            const modal = document.getElementById('orderModal');
-            const modalContent = document.getElementById('modalContent');
-            
-            // In a real application, you would fetch this from an API
-            const order = orders.find(order => order._id === orderId);
-            
-            if (order) {
-                modalContent.innerHTML = generateOrderDetailHTML(order);
-                modal.style.display = 'block';
-            } else {
-                Swal.fire('Error', 'Order not found', 'error');
-            }
-        }
-
-        // Close modal when clicking the X
-        document.querySelector('.close-modal').onclick = function() {
-            document.getElementById('orderModal').style.display = 'none';
-        }
-
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            const modal = document.getElementById('orderModal');
-            if (event.target == modal) {
-                modal.style.display = 'none';
-            }
-        }
-
-        // Generate order detail HTML
-        function generateOrderDetailHTML(order) {
-            // Format the order details for the modal
-            return `
-                <div class="order-detail-grid">
-                    <div class="detail-section">
-                        <h4>Order Information</h4>
-                        <p><strong>Order ID:</strong> ${order.orderId}</p>
-                        <p><strong>Date:</strong> ${formatDateTime(order.createdOn)}</p>
-                        <p><strong>Status:</strong> <span class="${getStatusClass(order.status)}" style="padding: 3px 8px; border-radius: 4px;">${order.status}</span></p>
-                        <p><strong>Payment:</strong> ${order.paymentMethod.toUpperCase()}</p>
-                        <p><strong>Payment Status:</strong> <span class="payment-badge ${order.paymentDone ? 'paid' : 'pending'}">${order.paymentDone ? 'Paid' : 'Pending'}</span></p>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <h4>Shipping Address</h4>
-                        <p>${order.address.fullName}</p>
-                        <p>${order.address.address}</p>
-                        <p>${order.address.city}, ${order.address.state} - ${order.address.pincode}</p>
-                        <p>Phone: ${order.address.mobile}</p>
-                    </div>
-                    
-                    <div class="detail-section full-width">
-                        <h4>Order Items</h4>
-                        <table class="detail-table">
-                            <thead>
-                                <tr>
-                                    <th>Product</th>
-                                    <th>Quantity</th>
-                                    <th>Price</th>
-                                    <th>Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${order.orderItems.map(item => `
-                                    <tr>
-                                        <td>${item.product.name || 'Product'}</td>
-                                        <td>${item.quantity}</td>
-                                        <td>₹${item.price.toLocaleString()}</td>
-                                        <td>₹${(item.price * item.quantity).toLocaleString()}</td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="3" class="text-right"><strong>Subtotal:</strong></td>
-                                    <td>₹${order.totalPrice.toLocaleString()}</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3" class="text-right"><strong>Discount:</strong></td>
-                                    <td>₹${order.discount.toLocaleString()}</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3" class="text-right"><strong>Final Amount:</strong></td>
-                                    <td>₹${order.finalAmount.toLocaleString()}</td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                    
-                    <div class="detail-section full-width">
-                        <h4>Cancellation Information</h4>
-                        ${order.cancellation ? `
-                            <div class="cancellation-section">
-                                <p><strong>Cancelled On:</strong> ${formatDateTime(order.cancellation.cancelledAt)}</p>
-                                <p><strong>Reason:</strong> ${order.cancellation.reason}</p>
-                                ${order.cancellation.otherReason ? `<p><strong>Other Reason:</strong> ${order.cancellation.otherReason}</p>` : ''}
-                                ${order.cancellation.comments ? `
-                                    <div class="cancellation-details">
-                                        <strong>Comments:</strong>
-                                        <p>${order.cancellation.comments}</p>
-                                    </div>
-                                ` : ''}
-                            </div>
-                        ` : `
-                            <p class="no-cancellation-info">This order has not been cancelled.</p>
-                        `}
-                    </div>
-                </div>
-            `;
-        }
-
-        // Initialize the page
         document.addEventListener('DOMContentLoaded', function() {
-            populateOrderTable();
+            // Set default dates
+            const today = new Date();
+            const nextMonth = new Date();
+            nextMonth.setMonth(today.getMonth() + 1);
+            
+            document.getElementById('startDate').valueAsDate = today;
+            document.getElementById('endDate').valueAsDate = nextMonth;
+            
+            // Sample coupons for demonstration - in a real app this would come from your backend
+            let coupons = [
+                {
+                    id: 1,
+                    name: 'WELCOME20',
+                    discount: 20,
+                    discountType: 'percentage',
+                    minPurchase: 100,
+                    startDate: '2025-02-15',
+                    endDate: '2025-03-15',
+                    description: 'Welcome offer for new customers'
+                },
+                {
+                    id: 2,
+                    name: 'FREESHIP',
+                    discount: 15,
+                    discountType: 'fixed',
+                    minPurchase: 75,
+                    startDate: '2025-02-01',
+                    endDate: '2025-02-28',
+                    description: 'Free shipping on orders'
+                }
+            ];
+            
+            // Initialize the table with sample data
+            renderCouponTable();
+            
+            // Coupon Form Submission
+            document.getElementById('couponForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form values
+                const couponName = document.getElementById('couponName').value;
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+                const offerPrice = document.getElementById('offerPrice').value;
+                const discountType = document.getElementById('discountType').value;
+                const minPurchase = document.getElementById('minPurchase').value;
+                const description = document.getElementById('couponDescription').value;
+                
+                // Validate dates
+                if (new Date(endDate) <= new Date(startDate)) {
+                    showAlert('End date must be after start date', 'danger');
+                    return;
+                }
+                
+                // Create new coupon object
+                const newCoupon = {
+                    id: coupons.length + 1,
+                    name: couponName,
+                    discount: offerPrice,
+                    discountType: discountType,
+                    minPurchase: minPurchase,
+                    startDate: startDate,
+                    endDate: endDate,
+                    description: description
+                };
+                
+                // Add to coupons array (in a real app, you would send this to your backend)
+                coupons.push(newCoupon);
+                
+                // Update the table
+                renderCouponTable();
+                
+                // Show success message
+                showAlert('Coupon added successfully!', 'success');
+                
+                // Reset form
+                this.reset();
+                document.getElementById('startDate').valueAsDate = today;
+                document.getElementById('endDate').valueAsDate = nextMonth;
+            });
+            
+            // Function to render the coupon table
+            function renderCouponTable() {
+                const tableBody = document.querySelector('#couponTable tbody');
+                tableBody.innerHTML = '';
+                
+                coupons.forEach(coupon => {
+                    const row = document.createElement('tr');
+                    
+                    // Determine coupon status
+                    const today = new Date();
+                    const startDate = new Date(coupon.startDate);
+                    const endDate = new Date(coupon.endDate);
+                    let status = '';
+                    let statusClass = '';
+                    
+                    if (today < startDate) {
+                        status = 'Scheduled';
+                        statusClass = 'badge-warning';
+                    } else if (today > endDate) {
+                        status = 'Expired';
+                        statusClass = 'badge-danger';
+                    } else {
+                        status = 'Active';
+                        statusClass = 'badge-success';
+                    }
+                    
+                    // Format discount display
+                    const discountDisplay = coupon.discountType === 'percentage' 
+                        ? `${coupon.discount}%` 
+                        : `$${coupon.discount}`;
+                    
+                    row.innerHTML = `
+                        <td>${coupon.name}</td>
+                        <td>${discountDisplay}</td>
+                        <td>$${coupon.minPurchase}</td>
+                        <td>${formatDate(coupon.startDate)}</td>
+                        <td>${formatDate(coupon.endDate)}</td>
+                        <td><span class="badge ${statusClass}">${status}</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-primary action-btn edit-btn" data-id="${coupon.id}">Edit</button>
+                                <button class="btn btn-danger action-btn delete-btn" data-id="${coupon.id}">Delete</button>
+                            </div>
+                        </td>
+                    `;
+                    
+                    tableBody.appendChild(row);
+                });
+                
+                // Add event listeners to the action buttons
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const couponId = parseInt(this.getAttribute('data-id'));
+                        deleteCoupon(couponId);
+                    });
+                });
+                
+                document.querySelectorAll('.edit-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const couponId = parseInt(this.getAttribute('data-id'));
+                        editCoupon(couponId);
+                    });
+                });
+            }
+            
+            // Function to format date for display
+            function formatDate(dateString) {
+                const options = { year: 'numeric', month: 'short', day: 'numeric' };
+                return new Date(dateString).toLocaleDateString(undefined, options);
+            }
+            
+            // Function to delete a coupon
+            function deleteCoupon(id) {
+                if (confirm('Are you sure you want to delete this coupon?')) {
+                    coupons = coupons.filter(coupon => coupon.id !== id);
+                    renderCouponTable();
+                    showAlert('Coupon deleted successfully!', 'success');
+                }
+            }
+            
+            // Function to edit a coupon
+            function editCoupon(id) {
+                const coupon = coupons.find(c => c.id === id);
+                
+                if (coupon) {
+                    // Fill the form with coupon data for editing
+                    document.getElementById('couponName').value = coupon.name;
+                    document.getElementById('startDate').value = coupon.startDate;
+                    document.getElementById('endDate').value = coupon.endDate;
+                    document.getElementById('offerPrice').value = coupon.discount;
+                    document.getElementById('discountType').value = coupon.discountType;
+                    document.getElementById('minPurchase').value = coupon.minPurchase;
+                    document.getElementById('couponDescription').value = coupon.description || '';
+                    
+                    // Change form submit button to update
+                    const submitButton = document.querySelector('#couponForm button[type="submit"]');
+                    submitButton.textContent = 'Update Coupon';
+                    
+                    // Remove existing event listeners from form and add new one for updating
+                    const form = document.getElementById('couponForm');
+                    const newForm = form.cloneNode(true);
+                    form.parentNode.replaceChild(newForm, form);
+                    
+                    newForm.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        
+                        // Update coupon with new values
+                        coupon.name = document.getElementById('couponName').value;
+                        coupon.startDate = document.getElementById('startDate').value;
+                        coupon.endDate = document.getElementById('endDate').value;
+                        coupon.discount = document.getElementById('offerPrice').value;
+                        coupon.discountType = document.getElementById('discountType').value;
+                        coupon.minPurchase = document.getElementById('minPurchase').value;
+                        coupon.description = document.getElementById('couponDescription').value;
+                        
+                        // Update table
+                        renderCouponTable();
+                        
+                        // Reset form and button text
+                        this.reset();
+                        document.getElementById('startDate').valueAsDate = today;
+                        document.getElementById('endDate').valueAsDate = nextMonth;
+                        
+                        submitButton.textContent = 'Add Coupon';
+                        
+                        // Re-add the original event listener
+                        this.removeEventListener('submit', arguments.callee);
+                        this.addEventListener('submit', originalSubmitHandler);
+                        
+                        showAlert('Coupon updated successfully!', 'success');
+                    });
+                    
+                    // Scroll to form
+                    document.querySelector('.card').scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+            
+            // Store original submit handler
+            function originalSubmitHandler(e) {
+                e.preventDefault();
+                
+                const couponName = document.getElementById('couponName').value;
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+                const offerPrice = document.getElementById('offerPrice').value;
+                const discountType = document.getElementById('discountType').value;
+                const minPurchase = document.getElementById('minPurchase').value;
+                const description = document.getElementById('couponDescription').value;
+                
+                if (new Date(endDate) <= new Date(startDate)) {
+                    showAlert('End date must be after start date', 'danger');
+                    return;
+                }
+                
+                const newCoupon = {
+                    id: coupons.length + 1,
+                    name: couponName,
+                    discount: offerPrice,
+                    discountType: discountType,
+                    minPurchase: minPurchase,
+                    startDate: startDate,
+                    endDate: endDate,
+                    description: description
+                };
+                
+                coupons.push(newCoupon);
+                renderCouponTable();
+                showAlert('Coupon added successfully!', 'success');
+                
+                this.reset();
+                document.getElementById('startDate').valueAsDate = today;
+                document.getElementById('endDate').valueAsDate = nextMonth;
+            }
+            
+            // Function to show alert message
+            function showAlert(message, type) {
+                const alertElement = document.getElementById('messageAlert');
+                alertElement.textContent = message;
+                alertElement.className = `alert alert-${type}`;
+                alertElement.style.display = 'block';
+                
+                // Hide after 3 seconds
+                setTimeout(() => {
+                    alertElement.style.display = 'none';
+                }, 3000);
+            }
         });
     </script>
 </body>
