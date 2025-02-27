@@ -57,6 +57,7 @@ router.get("/deleteBanner", adminAuth, bannerController.deleteBanner);
 router.get("/orderList", adminAuth, orderController.getOrders);
 router.post("/orders/updateStatus", adminAuth, orderController.updateOrderStatus);
 router.get("/orders/:id", adminAuth, orderController.getOrderById);
+router.post("/orders/updateReturn", adminAuth, orderController.updateReturnRequest);
 // coupon management
 router.get("/coupon", adminAuth, couponController.loadCoupon);
 router.post("/createCoupon", adminAuth, couponController.createCoupon);

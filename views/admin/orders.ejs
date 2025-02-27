@@ -8,6 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Order Management</title>
         <link rel="stylesheet" href="/css/order.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     </head>
 
     <body>
@@ -121,7 +122,35 @@
 
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
+            document.querySelectorAll('.status-btn').forEach(btn => {
+                const statusText = btn.textContent.trim().replace(' ▼', '');
 
+                // Remove any existing status classes
+                btn.classList.forEach(cls => {
+                    if (cls.startsWith('status-') && cls !== 'status-btn') {
+                        btn.classList.remove(cls);
+                    }
+                });
+
+                // Add the correct class based on status text
+                if (statusText === 'Pending') {
+                    btn.classList.add('status-pending');
+                } else if (statusText === 'Processing') {
+                    btn.classList.add('status-processing');
+                } else if (statusText === 'Shipped') {
+                    btn.classList.add('status-shipped');
+                } else if (statusText === 'Delivered') {
+                    btn.classList.add('status-delivered');
+                } else if (statusText === 'Cancelled') {
+                    btn.classList.add('status-cancelled');
+                } else if (statusText === 'Return Request') {
+                    btn.classList.add('status-return'); // This is the issue - status text is "Return Request" but class is "status-return"
+                } else if (statusText === 'Returned') {
+                    btn.classList.add('status-returned');
+                } else if (statusText === 'Return Request') {
+                    btn.classList.add('status-return-request');
+                }
+            });
             document.addEventListener('DOMContentLoaded', () => {
                 initializeEventListeners();
             });
@@ -271,10 +300,10 @@
                 </table>
             </div>
             ${order.cancellation ? generateCancellationHTML(order.cancellation) : ''}
+            ${order.return && order.return.isRequested ? generateReturnRequestHTML(order.return, order._id) : ''}
         </div>
     `;
             }
-
             function closeModal() {
                 document.getElementById('orderModal').style.display = 'none';
             }
@@ -435,6 +464,201 @@
                 searchInput.addEventListener('input', debounce(filterAndSortOrders, 300));
                 statusFilter.addEventListener('change', filterAndSortOrders);
                 sortBy.addEventListener('change', filterAndSortOrders);
+
+
+
+                document.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('approve-return-btn')) {
+                        const orderId = e.target.dataset.orderId;
+                        handleReturnAction(orderId, 'approve');
+                    } else if (e.target.classList.contains('reject-return-btn')) {
+                        const orderId = e.target.dataset.orderId;
+                        handleReturnAction(orderId, 'reject');
+                    }
+                });
+            });
+
+            // Add this to the initializeEventListeners function
+            document.addEventListener('click', (e) => {
+                // Event delegation for dynamically added return buttons
+                if (e.target.classList.contains('approve-return-btn')) {
+                    const orderId = e.target.dataset.orderId;
+                    handleReturnAction(orderId, 'approve');
+                } else if (e.target.classList.contains('reject-return-btn')) {
+                    const orderId = e.target.dataset.orderId;
+                    handleReturnAction(orderId, 'reject');
+                }
+            });
+
+            function generateReturnRequestHTML(returnData, orderId) {
+                // If no return data or request, return empty string
+                if (!returnData || !returnData.isRequested) {
+                    return '';
+                }
+
+                // Format return status with appropriate styling
+                const getReturnStatusClass = (status) => {
+                    const statusClasses = {
+                        'Pending Approval': 'status-pending',
+                        'Approved': 'status-processing',
+                        'Rejected': 'status-cancelled',
+                        'Completed': 'status-delivered'
+                    };
+                    return statusClasses[status] || 'status-pending';
+                };
+
+                // Generate HTML for proof images if they exist
+                const proofImagesHTML = returnData.proofImages && returnData.proofImages.length > 0
+                    ? `
+        <div class="proof-images">
+            <strong>Proof Images:</strong>
+            <div class="image-gallery">
+                ${returnData.proofImages.map((imgUrl, index) =>
+                        `<div class="proof-image-container">
+                        <img src="${imgUrl}" alt="Return Proof ${index + 1}" class="proof-image" onclick="openImageZoom('${imgUrl}')">
+                        <div class="zoom-icon"><i class="fas fa-search-plus"></i></div>
+                    </div>`
+                    ).join('')}
+            </div>
+        </div>
+        `
+                    : '';
+
+                return `
+        <div class="detail-section full-width return-section">
+            <h4>Return Request Information</h4>
+            <div class="return-details">
+                <div class="return-info">
+                    <p><strong>Request Date:</strong> ${formatDateTime(returnData.requestedAt)}</p>
+                    <p><strong>Reason:</strong> ${returnData.reason}</p>
+                    ${returnData.otherReason ? `<p><strong>Other Reason:</strong> ${returnData.otherReason}</p>` : ''}
+                    ${returnData.comments ? `
+                        <div class="return-comments">
+                            <strong>Customer Comments:</strong>
+                            <p>${returnData.comments}</p>
+                        </div>
+                    ` : ''}
+                    ${proofImagesHTML}
+                </div>
+                
+                <div class="return-status">
+                    <p><strong>Status:</strong> <span class="${getReturnStatusClass(returnData.status)}">${returnData.status}</span></p>
+                    ${returnData.adminComments ? `
+                        <div class="admin-comments">
+                            <strong>Admin Response:</strong>
+                            <p>${returnData.adminComments}</p>
+                        </div>
+                    ` : ''}
+                </div>
+                
+                ${returnData.status === 'Pending Approval' ? `
+                    <div class="return-actions">
+                        <button class="approve-return-btn" data-order-id="${orderId}">Approve Return</button>
+                        <button class="reject-return-btn" data-order-id="${orderId}">Reject Return</button>
+                        <div class="admin-comment-field">
+                            <textarea id="returnAdminComment" placeholder="Add comment (optional)"></textarea>
+                        </div>
+                    </div>
+                ` : ''}
+                
+                ${returnData.status === 'Approved' || returnData.status === 'Completed' ? `
+                    <div class="return-shipment">
+                        <p><strong>Return Shipment Status:</strong> ${returnData.returnShipmentStatus || 'Pending'}</p>
+                        ${returnData.returnTrackingId ? `<p><strong>Tracking ID:</strong> ${returnData.returnTrackingId}</p>` : ''}
+                        ${returnData.refundStatus ? `<p><strong>Refund Status:</strong> ${returnData.refundStatus}</p>` : ''}
+                        ${returnData.refundAmount ? `<p><strong>Refund Amount:</strong> ₹${returnData.refundAmount.toLocaleString()}</p>` : ''}
+                    </div>
+                ` : ''}
+            </div>
+        </div>
+        
+        <!-- Image Zoom Modal -->
+        <div id="imageZoomModal" class="image-zoom-modal">
+            <span class="close-zoom">&times;</span>
+            <img class="zoom-modal-content" id="zoomedImage">
+        </div>
+    `;
+            }
+
+            async function handleReturnAction(orderId, action) {
+                const adminComment = document.getElementById('returnAdminComment').value;
+                const actionText = action === 'approve' ? 'approve' : 'reject';
+
+                try {
+                    const result = await Swal.fire({
+                        title: `Confirm Return ${action === 'approve' ? 'Approval' : 'Rejection'}`,
+                        text: `Are you sure you want to ${actionText} this return request?`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: action === 'approve' ? '#3085d6' : '#d33',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: `Yes, ${actionText} it!`
+                    });
+
+                    if (result.isConfirmed) {
+                        const response = await fetch('/admin/orders/updateReturn', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                orderId,
+                                action,
+                                adminComment
+                            })
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            await Swal.fire({
+                                title: 'Success',
+                                text: `Return request ${actionText}d successfully`,
+                                icon: 'success'
+                            });
+                            closeModal();
+                            location.reload();
+                        } else {
+                            throw new Error(data.message || `Failed to ${actionText} return request`);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        title: 'Error',
+                        text: error.message || `Failed to ${actionText} return request`,
+                        icon: 'error'
+                    });
+                }
+            }
+
+            // Add this function to handle the image zoom
+            function openImageZoom(imgUrl) {
+                const modal = document.getElementById('imageZoomModal');
+                const modalImg = document.getElementById('zoomedImage');
+
+                modal.style.display = "block";
+                modalImg.src = imgUrl;
+
+                // Prevent body scrolling when modal is open
+                document.body.style.overflow = 'hidden';
+            }
+
+            // Close the zoom modal when clicking the × button
+            document.addEventListener('DOMContentLoaded', function () {
+                // Since the modal might not exist on page load, we use event delegation
+                document.addEventListener('click', function (event) {
+                    if (event.target.classList.contains('close-zoom')) {
+                        document.getElementById('imageZoomModal').style.display = "none";
+                        document.body.style.overflow = 'auto';
+                    }
+
+                    // Also close when clicking outside the image
+                    if (event.target.classList.contains('image-zoom-modal')) {
+                        document.getElementById('imageZoomModal').style.display = "none";
+                        document.body.style.overflow = 'auto';
+                    }
+                });
             });
         </script>
     </body>

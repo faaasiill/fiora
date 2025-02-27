@@ -62,12 +62,13 @@
 
 .status-btn {
   padding: 8px 15px;
-  /* border: 1px sol; */
   border-radius: 5px;
   color: white;
+  background-color: #5f9ea091;
   cursor: pointer;
   width: 150px;
   text-align: left;
+  border: 1px solid #5f9ea0;
 }
 
 .status-pending {
@@ -86,10 +87,14 @@
   border: 1px solid #dc3546;
 }
 .status-return {
-  border: 1px solid #fd7d14;
+  border: 1px solid #9c27b0;
 }
 .status-returned {
-  border: 1px solid #6c757d;
+  border: 1px solid #bebebe;
+}
+
+.status-return-request {
+  background-color: #9c27b07d;
 }
 
 .status-pending {
@@ -108,7 +113,7 @@
   background-color: #dc35467b;
 }
 .status-return {
-  background-color: #fd7d147c;
+  background-color: #9c27b07d;
 }
 .status-returned {
   background-color: #6c757d7e;
@@ -377,4 +382,241 @@
 .highlight {
   background-color: #fff3cd;
   transition: background-color 0.3s;
+}
+
+.return-section {
+  margin-top: 20px;
+  border-top: 1px solid #eee;
+  padding-top: 15px;
+}
+
+.return-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.return-info {
+  flex: 1;
+  min-width: 250px;
+}
+
+.return-status {
+  flex: 1;
+  min-width: 250px;
+}
+
+.return-comments,
+.admin-comments {
+  background-color: #f9f9f9;
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.return-actions {
+  width: 100%;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px dashed #ddd;
+}
+
+.approve-return-btn,
+.reject-return-btn {
+  padding: 8px 15px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-right: 10px;
+  border: none;
+}
+
+.approve-return-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.reject-return-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.admin-comment-field {
+  margin-top: 15px;
+}
+
+.admin-comment-field textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  min-height: 80px;
+  resize: vertical;
+}
+
+.return-shipment {
+  width: 100%;
+  margin-top: 15px;
+  background-color: #f0f8ff;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+/* Status classes */
+.Pending-Approval {
+  background-color: #ffc107;
+  color: #212529;
+  padding: 3px 6px;
+  border-radius: 3px;
+}
+
+.Approved {
+  background-color: #28a745;
+  color: white;
+  padding: 3px 6px;
+  border-radius: 3px;
+}
+
+.Rejected {
+  background-color: #dc3545;
+  color: white;
+  padding: 3px 6px;
+  border-radius: 3px;
+}
+
+.Completed {
+  background-color: #6c757d;
+  color: white;
+  padding: 3px 6px;
+  border-radius: 3px;
+}
+
+/* Add this to your CSS file or as a style tag */
+.proof-images {
+  margin-top: 15px;
+}
+
+.image-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.proof-image {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.return-actions {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.approve-return-btn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.reject-return-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.admin-comment-field {
+  margin-top: 10px;
+}
+
+#returnAdminComment {
+  width: 100%;
+  min-height: 80px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+/* Add these styles to your CSS */
+.proof-image-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  overflow: hidden;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.proof-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.proof-image-container:hover .proof-image {
+  transform: scale(1.05);
+}
+
+.zoom-icon {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 4px;
+  border-radius: 50%;
+  font-size: 12px;
+}
+
+/* Image Zoom Modal */
+.image-zoom-modal {
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  padding-top: 50px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
+.zoom-modal-content {
+  margin: auto;
+  display: block;
+  max-width: 90%;
+  max-height: 80%;
+  object-fit: contain;
+}
+
+.close-zoom {
+  position: absolute;
+  top: 15px;
+  right: 35px;
+  color: #f1f1f1;
+  font-size: 40px;
+  font-weight: bold;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.close-zoom:hover,
+.close-zoom:focus {
+  color: #bbb;
+  text-decoration: none;
 }

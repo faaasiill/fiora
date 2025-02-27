@@ -24,7 +24,7 @@ const getOrders = async (req, res) => {
           });
         },
         getStatusClass: (status) => {
-          status = status.toLowerCase().replace(" ", "");
+          status = status.toLowerCase().replace(/\s+/g, "");
           const statusClasses = {
             pending: "status-pending",
             processing: "status-processing",
@@ -32,6 +32,7 @@ const getOrders = async (req, res) => {
             delivered: "status-delivered",
             cancelled: "status-cancelled",
             returnrequest: "status-return",
+            returnrequested: "status-return",
             returned: "status-returned",
           };
           return statusClasses[status] || "status-pending";
@@ -97,8 +98,75 @@ const getOrderById = async (req, res) => {
   }
 };
 
+const updateReturnRequest = async (req, res) => {
+  try {
+    const { orderId, action, adminComment } = req.body;
+
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Order not found" });
+    }
+
+    // Check if return request exists
+    if (!order.return || !order.return.isRequested) {
+      return res
+        .status(400)
+        .json({
+          success: false,
+          message: "No return request found for this order",
+        });
+    }
+
+    // Update return status based on action
+    if (action === "approve") {
+      order.return.status = "Approved";
+      order.status = "Return Approved"; // Update main order status
+
+      // Initialize refund process if order was paid
+      if (order.paymentDone && order.paymentMethod !== "cod") {
+        order.return.refundStatus = "Processing";
+        order.return.refundAmount = order.finalAmount; // Default to full refund
+      }
+    } else if (action === "reject") {
+      order.return.status = "Rejected";
+      order.status = "Return Rejected"; // Update main order status
+    } else {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid action" });
+    }
+
+    // Add admin comment if provided
+    if (adminComment) {
+      order.return.adminComments = adminComment;
+    }
+
+    // Record update time
+    order.return.updatedAt = new Date();
+
+    await order.save();
+
+    res.json({
+      success: true,
+      message: `Return request ${
+        action === "approve" ? "approved" : "rejected"
+      } successfully`,
+    });
+  } catch (error) {
+    console.error("Error updating return request:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error updating return request",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   getOrders,
   updateOrderStatus,
   getOrderById,
+  updateReturnRequest,
 };

@@ -558,6 +558,101 @@ const cancelOrder = async (req, res) => {
   }
 };
 
+const returnOrder = async (req, res) => {
+  try {
+    const { orderId, returnReason, otherReason, comments } = req.body;
+    
+    // Find the order and validate ownership
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    // Verify that the order belongs to the logged-in user
+    if (order.userId.toString() !== req.session.user) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized access",
+      });
+    }
+
+    // Check if order is eligible for return (only delivered orders)
+    if (order.status !== "Delivered") {
+      return res.status(400).json({
+        success: false,
+        message: "Only delivered orders can be returned",
+      });
+    }
+    
+    // Check if the return window is still open (14 days from delivery)
+    const deliveryDate = new Date(order.deliveredAt);
+    const currentDate = new Date();
+    const daysDifference = Math.floor((currentDate - deliveryDate) / (1000 * 60 * 60 * 24));
+    
+    if (daysDifference > 14) {
+      return res.status(400).json({
+        success: false,
+        message: "Return window has expired (14 days from delivery date)",
+      });
+    }
+
+    // Process uploaded images if any
+    let proofImages = [];
+    if (req.files && req.files.length > 0) {
+      proofImages = req.files.map(file => file.path);
+    }
+
+    // Get user's address as pickup address (can be modified later)
+    const user = await User.findById(req.session.user);
+    const pickupAddress = user.address || order.address;
+
+    // Update order status and return details
+    const updateResult = await Order.findByIdAndUpdate(
+      orderId,
+      {
+        status: "Return Requested",
+        return: {
+          isRequested: true,
+          requestedAt: new Date(),
+          reason: returnReason === "Other" ? "Other" : returnReason,
+          otherReason: returnReason === "Other" ? otherReason : null,
+          comments: comments,
+          status: 'Pending Approval',
+          proofImages: proofImages,
+          returnPickupAddress: pickupAddress
+        },
+      },
+      { new: true }
+    );
+
+    if (!updateResult) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to update order status",
+      });
+    }
+
+    // Send notification/email to admin about return request
+    // sendReturnRequestNotification(updateResult); // Implement this function as needed
+
+    return res.status(200).json({
+      success: true,
+      message: "Return request submitted successfully",
+      order: updateResult,
+    });
+  } catch (error) {
+    console.error("Error in order return process:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
 module.exports = {
   getForgotPassPage,
   forgotEmailValid,
@@ -574,4 +669,5 @@ module.exports = {
   deleteAddress,
   setDefaultAddress,
   cancelOrder,
+  returnOrder
 };

@@ -431,6 +431,77 @@
                             </div>
 
 
+                            <div class="otrack_modal_wrapper" id="returnOrderModal_<%= order._id %>">
+                                <div class="otrack_modal_content_box">
+                                    <div class="otrack_modal_header">
+                                        <h2 class="otrack_modal_title">Return Request</h2>
+                                        <button class="otrack_close_modal_btn"
+                                            onclick="closeReturnModal('<%= order._id %>')">&times;</button>
+                                    </div>
+                                    <div class="otrack_return_container">
+                                        <p class="otrack_return_info">Submit a return request for order #<%=
+                                                order.orderId.substring(0, 8) %>
+                                        </p>
+
+                                        <form id="returnOrderForm_<%= order._id %>" class="otrack_return_form"
+                                            enctype="multipart/form-data">
+                                            <input type="hidden" name="orderId" value="<%= order._id %>">
+
+                                            <div class="otrack_form_group">
+                                                <label class="otrack_form_label">Reason for Return</label>
+                                                <select name="returnReason" class="otrack_select_input" required>
+                                                    <option value="" disabled selected>Select a reason</option>
+                                                    <option value="Defective/Damaged Product">Defective/Damaged Product
+                                                    </option>
+                                                    <option value="Wrong Item Received">Wrong Item Received</option>
+                                                    <option value="Size/Fit Issue">Size/Fit Issue</option>
+                                                    <option value="Quality Issue">Quality Issue</option>
+                                                    <option value="Not as Described">Not as Described</option>
+                                                    <option value="Other">Other</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="otrack_form_group" id="returnOtherReasonGroup_<%= order._id %>"
+                                                style="display: none;">
+                                                <label class="otrack_form_label">Please specify</label>
+                                                <textarea name="otherReason" class="otrack_textarea" rows="3"
+                                                    placeholder="Please provide details..."></textarea>
+                                            </div>
+
+                                            <div class="otrack_form_group" id="returnProofImages_<%= order._id %>">
+                                                <label class="otrack_form_label">Upload Images (Optional)</label>
+                                                <p class="otrack_help_text">Upload photos showing the issue with the
+                                                    product (max 3 images)</p>
+                                                <input type="file" name="proofImages" class="return_image_upload"
+                                                    multiple accept="image/*" max="3">
+                                                <div class="return_image_preview_container"></div>
+                                            </div>
+
+                                            <div class="otrack_form_group">
+                                                <label class="otrack_form_label">Additional comments</label>
+                                                <textarea name="comments" class="otrack_textarea" rows="3"
+                                                    placeholder="Any additional information..."></textarea>
+                                            </div>
+
+                                            <div class="otrack_return_notice">
+                                                <p><strong>Note:</strong> Once your return request is approved, we'll
+                                                    arrange for pickup of the item from your delivery address. Please
+                                                    ensure the product is in its original packaging with all
+                                                    accessories.</p>
+                                            </div>
+
+                                            <div class="otrack_return_actions">
+                                                <button type="button" class="otrack_return_btn_secondary"
+                                                    onclick="closeReturnModal('<%= order._id %>')">Cancel</button>
+                                                <button type="submit" class="otrack_return_btn_primary">Submit Return
+                                                    Request</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+
                             <% }); %>
                                 <% } else { %>
                                     <div class="otrack_empty_state">
@@ -1320,6 +1391,166 @@
                     modal.style.display = 'none';
                 }, 300);
             }
+        }
+
+
+        // Return Order Modal Function
+        function openReturnModal(orderId) {
+            const modal = document.getElementById(`returnOrderModal_${orderId}`);
+            if (modal) {
+                modal.style.display = 'flex';
+                setTimeout(() => {
+                    modal.classList.add('otrack_modal_active');
+                }, 10);
+            }
+        }
+
+        // Function to close the return order modal
+        function closeReturnModal(orderId) {
+            const modal = document.getElementById(`returnOrderModal_${orderId}`);
+            if (modal) {
+                modal.classList.remove('otrack_modal_active');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 300);
+            }
+        }
+
+        // JavaScript for Return Order functionality
+        document.addEventListener('DOMContentLoaded', function () {
+            // Add event listeners to all return buttons
+            const returnButtons = document.querySelectorAll('.return');
+            returnButtons.forEach(button => {
+                // Get the order id from the onclick attribute
+                const orderId = button.getAttribute('onclick').match(/'([^']+)'/)[1];
+
+                button.addEventListener('click', function () {
+                    openReturnModal(orderId);
+                });
+            });
+
+            // Set up reason dropdown change handlers for all return forms
+            document.querySelectorAll('[id^=returnOrderForm_]').forEach(form => {
+                const orderId = form.id.replace('returnOrderForm_', '');
+                const reasonSelect = form.querySelector('select[name="returnReason"]');
+                const otherReasonGroup = document.getElementById(`returnOtherReasonGroup_${orderId}`);
+                const uploadGroup = document.getElementById(`returnProofImages_${orderId}`);
+
+                reasonSelect.addEventListener('change', function () {
+                    if (this.value === 'Other') {
+                        otherReasonGroup.style.display = 'block';
+                        otherReasonGroup.querySelector('textarea').setAttribute('required', true);
+                    } else {
+                        otherReasonGroup.style.display = 'none';
+                        otherReasonGroup.querySelector('textarea').removeAttribute('required');
+                    }
+                });
+
+                // Set up form submission
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    submitReturnRequest(orderId, form);
+                });
+            });
+
+            // Setup image preview functionality
+            document.querySelectorAll('.return_image_upload').forEach(input => {
+                input.addEventListener('change', function (e) {
+                    const previewContainer = this.nextElementSibling;
+                    previewContainer.innerHTML = '';
+
+                    if (this.files) {
+                        for (let i = 0; i < this.files.length; i++) {
+                            const file = this.files[i];
+                            if (!file.type.match('image.*')) continue;
+
+                            const reader = new FileReader();
+                            reader.onload = function (e) {
+                                const img = document.createElement('img');
+                                img.src = e.target.result;
+                                img.className = 'return_image_preview';
+                                previewContainer.appendChild(img);
+                            }
+                            reader.readAsDataURL(file);
+                        }
+                    }
+                });
+            });
+        });
+
+        // Function to handle the return order form submission
+        function submitReturnRequest(orderId, form) {
+            // Show loading animation
+            const modalContent = form.closest('.otrack_modal_content_box');
+            modalContent.classList.add('return_confirm_animation');
+
+            // Create FormData object for file uploads
+            const formData = new FormData(form);
+
+            // Make sure orderId is included in the form data
+            if (!formData.has('orderId')) {
+                formData.append('orderId', orderId);
+            }
+
+            // Send return request to server
+            fetch('/orders/return', {
+                method: 'POST',
+                body: formData,
+                credentials: 'same-origin' // Include cookies for authentication
+            })
+                .then(response => {
+                    // Check if the response is valid JSON before parsing
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        return response.json().then(data => ({
+                            ok: response.ok,
+                            data: data
+                        }));
+                    } else {
+                        // If not JSON, handle as error
+                        return response.text().then(text => {
+                            console.error('Received non-JSON response:', text.substring(0, 100) + '...');
+                            throw new Error('Received invalid response from server');
+                        });
+                    }
+                })
+                .then(result => {
+                    // Remove animation class
+                    modalContent.classList.remove('return_confirm_animation');
+
+                    if (result.ok && result.data.success) {
+                        // Show success message
+                        form.innerHTML = `
+                <div class="otrack_success_message">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="otrack_success_icon">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    <h3>Return Request Submitted</h3>
+                    <p>Your return request has been submitted successfully. We'll review it and get back to you soon.</p>
+                    <button type="button" class="otrack_done_btn" onclick="window.location.reload()">Done</button>
+                </div>
+            `;
+                    } else {
+                        // Show error message
+                        const errorDiv = document.createElement('div');
+                        errorDiv.className = 'otrack_error_message';
+                        errorDiv.textContent = (result.data && result.data.message) || 'Failed to submit return request. Please try again.';
+                        form.prepend(errorDiv);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error submitting return request:', error);
+
+                    // Remove animation class
+                    modalContent.classList.remove('return_confirm_animation');
+
+                    // Show error message
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'otrack_error_message';
+                    errorDiv.textContent = 'Network error. Please try again later. If this persists, please try refreshing the page.';
+                    form.prepend(errorDiv);
+                });
         }
 
     </script>

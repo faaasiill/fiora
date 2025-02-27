@@ -8,6 +8,7 @@ const cartController = require("../controllers/user/cartController");
 const checkOutController = require("../controllers/user/checkOutController");
 const userCouponController = require("../controllers/user/userCouponController");
 const {userAuth} = require("../middlewares/auth");
+const upload = require("../middlewares/multerConfig");
 const passport = require("passport");
 
 router.get("/", userController.loadHomepage);
@@ -68,6 +69,7 @@ router.post("/addOrEditAddress", userAuth, profileController.addOrEditAddress);
 router.delete("/deleteAddress/:addressId", userAuth, profileController.deleteAddress);
 router.post("/setDefaultAddress", userAuth, profileController.setDefaultAddress);
 router.post("/orders/cancel", userAuth, profileController.cancelOrder);
+router.post("/orders/return", userAuth, upload.array('proofImages', 3), profileController.returnOrder);
 // wishlist management
 router.get("/wishlist", userAuth, wishlistController.loadWishlist);
 router.post("/addToWishlist", userAuth, wishlistController.addToWishlist);
