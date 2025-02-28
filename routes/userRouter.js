@@ -84,6 +84,9 @@ router.delete("/removeFromCart", userAuth, cartController.removeFromCart);
 router.get("/checkout", userAuth, checkOutController.loadCheckOut);
 router.post("/place-order", userAuth, checkOutController.placeOrder);
 router.get("/order-confirmation/:orderId", userAuth, checkOutController.orderConfirmation);
+// Razorpay routes
+router.post('/create-razorpay-order', checkOutController.createRazorpayOrder);
+router.post('/verify-razorpay-payment', checkOutController.verifyRazorpayPayment);
 // coupon management
 router.get('/getActiveCoupons', userAuth, userCouponController.getActiveCoupons);
 router.post('/applyCoupon', userAuth, userCouponController.applyCoupon);

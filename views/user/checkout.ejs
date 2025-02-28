@@ -76,21 +76,74 @@
                     <span class="toggle">▼</span>
                 </div>
                 <div class="section-content">
-                    <div class="payment-method">
-                        <input type="radio" name="payment" id="cod">
-                        <label for="cod">Cash on Delivery</label>
-                    </div>
-                    <div class="payment-method">
-                        <input type="radio" name="payment" id="razorpay">
-                        <label for="razorpay">Razorpay</label>
-                    </div>
-                    <div class="payment-method">
-                        <input type="radio" name="payment" id="paypal">
-                        <label for="paypal">PayPal</label>
-                    </div>
-                    <div class="payment-method">
-                        <input type="radio" name="payment" id="upi">
-                        <label for="upi">UPI Payment</label>
+                    <div class="payment-section">
+                        <!-- Cash on Delivery -->
+                        <div class="payment-method">
+                            <input type="radio" name="payment" id="cod">
+                            <label class="payment-card" for="cod">
+                                <div class="payment-icon">
+                                    <span class="material-symbols-outlined">payments</span>
+                                </div>
+                                <div class="payment-details">
+                                    <div class="payment-title">Cash on Delivery</div>
+                                    <div class="payment-description">Pay with cash when your order is delivered</div>
+                                </div>
+                                <div class="payment-indicator"></div>
+                            </label>
+                        </div>
+
+                        <!-- Razorpay -->
+                        <div class="payment-method">
+                            <input type="radio" name="payment" id="razorpay">
+                            <label class="payment-card" for="razorpay">
+                                <div class="payment-icon">
+                                    <span class="material-symbols-outlined">credit_card</span>
+                                </div>
+                                <div class="payment-details">
+                                    <div class="payment-title">Razorpay</div>
+                                    <div class="payment-description">Pay securely with credit/debit card via Razorpay
+                                    </div>
+                                </div>
+                                <div class="payment-indicator"></div>
+                            </label>
+                        </div>
+
+                        <!-- PayPal -->
+                        <div class="payment-method">
+                            <input type="radio" name="payment" id="paypal">
+                            <label class="payment-card" for="paypal">
+                                <div class="payment-icon">
+                                    <span class="material-symbols-outlined">account_balance</span>
+                                </div>
+                                <div class="payment-details">
+                                    <div class="payment-title">PayPal</div>
+                                    <div class="payment-description">Fast, secure payment with your PayPal account</div>
+                                </div>
+                                <div class="payment-indicator"></div>
+                            </label>
+                        </div>
+
+                        <!-- UPI Payment -->
+                        <div class="payment-method">
+                            <input type="radio" name="payment" id="upi">
+                            <label class="payment-card" for="upi">
+                                <div class="payment-icon">
+                                    <span class="material-symbols-outlined">smartphone</span>
+                                </div>
+                                <div class="payment-details">
+                                    <div class="payment-title">UPI Payment</div>
+                                    <div class="payment-description">Pay instantly using UPI apps like Google Pay,
+                                        PhonePe</div>
+                                </div>
+                                <div class="payment-indicator"></div>
+                            </label>
+                        </div>
+
+                        <!-- Secure payment message -->
+                        <div class="secure-badge">
+                            <span class="material-symbols-outlined">lock</span>
+                            <span>All transactions are secure and encrypted</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -110,7 +163,8 @@
                             <h3>
                                 <%= item.name %>
                             </h3>
-                            <p>Qty: <%= item.quantity %> × ₹<%= item.price.toFixed(2) %></p>
+                            <p>Qty: <%= item.quantity %> × ₹<%= item.price.toFixed(2) %>
+                            </p>
                             </p>
                         </div>
                     </div>
@@ -174,8 +228,79 @@
         </div>
     </div>
     <img style="width: 100vw;" src="/images/54815E6F-C058-446C-AD70-DF26744C9EFB.jpeg" alt="">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <%- include('../partials/user/footer.ejs') %>
         <script>
+            // Enhanced payment method selection
+            document.addEventListener('DOMContentLoaded', function () {
+                const paymentMethods = document.querySelectorAll('.payment-method');
+
+                // Set default selection if none is selected
+                function setDefaultPayment() {
+                    const hasSelected = Array.from(paymentMethods).some(method =>
+                        method.classList.contains('selected'));
+
+                    if (!hasSelected && paymentMethods.length > 0) {
+                        const firstMethod = paymentMethods[0];
+                        firstMethod.classList.add('selected');
+                        const radio = firstMethod.querySelector('input[type="radio"]');
+                        if (radio) radio.checked = true;
+                    }
+                }
+
+                // Handle payment method selection
+                paymentMethods.forEach(method => {
+                    method.addEventListener('click', function () {
+                        // Clear all selections
+                        paymentMethods.forEach(m => {
+                            m.classList.remove('selected');
+                            const radio = m.querySelector('input[type="radio"]');
+                            if (radio) radio.checked = false;
+                        });
+
+                        // Set current selection
+                        method.classList.add('selected');
+                        const radio = method.querySelector('input[type="radio"]');
+                        if (radio) radio.checked = true;
+
+                        // Optional: Smooth scroll to next section if this is last input
+                        const isLastPaymentMethod = Array.from(paymentMethods).indexOf(method) === paymentMethods.length - 1;
+                        if (isLastPaymentMethod) {
+                            setTimeout(() => {
+                                const nextSection = method.closest('.checkout-section').nextElementSibling;
+                                if (nextSection) {
+                                    nextSection.scrollIntoView({ behavior: 'smooth' });
+
+                                    // Optionally open the next section
+                                    const nextSectionContent = nextSection.querySelector('.section-content');
+                                    const nextSectionToggle = nextSection.querySelector('.toggle');
+                                    if (nextSectionContent && !nextSectionContent.classList.contains('active')) {
+                                        nextSectionContent.classList.add('active');
+                                        if (nextSectionToggle) nextSectionToggle.textContent = '▲';
+                                    }
+                                }
+                            }, 300);
+                        }
+                    });
+                });
+
+                // Focus effects for accessibility
+                paymentMethods.forEach(method => {
+                    const radio = method.querySelector('input[type="radio"]');
+                    if (radio) {
+                        radio.addEventListener('focus', () => {
+                            method.classList.add('focus');
+                        });
+
+                        radio.addEventListener('blur', () => {
+                            method.classList.remove('focus');
+                        });
+                    }
+                });
+
+                // Initialize default selection
+                setDefaultPayment();
+            });
             // DOM Elements
             const aside = document.querySelector('aside');
             const addressContainer = document.getElementById('addressContainer');
@@ -377,7 +502,6 @@
                         throw new Error('Please select a payment method');
                     }
 
-
                     const addressDetails = {
                         fullName: selectedAddress.querySelector('h3').textContent,
                         address: selectedAddress.querySelector('p:nth-child(2)').textContent, // landMark
@@ -392,10 +516,6 @@
                         addressDetails: addressDetails,
                         paymentMethod: selectedPayment.id
                     };
-
-
-                    const addressId = selectedAddress.dataset.id;
-                    const paymentMethod = selectedPayment.id;
 
                     // Show loading state
                     Swal.fire({
@@ -427,16 +547,13 @@
                                 showConfirmButton: true
                             });
                             window.location.href = `/order-confirmation/${data.orderId}`;
-
-
-                        } else if (paymentMethod === 'razorpay') {
+                        } else if (selectedPayment.id === 'razorpay') {
                             // Handle Razorpay payment initiation
-                            // You'll need to implement this based on your Razorpay integration
                             handleRazorpayPayment(data.orderId);
-                        } else if (paymentMethod === 'paypal') {
+                        } else if (selectedPayment.id === 'paypal') {
                             // Handle PayPal payment initiation
                             handlePaypalPayment(data.orderId);
-                        } else if (paymentMethod === 'upi') {
+                        } else if (selectedPayment.id === 'upi') {
                             // Handle UPI payment initiation
                             handleUPIPayment(data.orderId);
                         }
@@ -453,47 +570,188 @@
                 }
             }
 
+            // Add the Razorpay payment handling function
+            async function handleRazorpayPayment(orderId) {
+                try {
+                    // Create Razorpay order
+                    const response = await fetch('/create-razorpay-order', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ orderId })
+                    });
 
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.message || 'Failed to create payment order');
+                    }
+
+                    // Configure Razorpay options
+                    const options = {
+                        key: data.key,
+                        amount: data.order.amount,
+                        currency: data.order.currency,
+                        name: "Fiora",
+                        description: "Payment for your order",
+                        order_id: data.order.id,
+                        prefill: {
+                            name: data.user.name,
+                            email: data.user.email,
+                            contact: data.user.contact
+                        },
+                        theme: {
+                            color: "#3399cc"
+                        },
+                        modal: {
+                            ondismiss: function () {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Payment Cancelled',
+                                    text: 'Your payment was cancelled. You can try again.'
+                                });
+                            }
+                        },
+                        handler: function (response) {
+                            verifyPayment(response, data.orderData.orderId);
+                        }
+                    };
+
+                    // Initialize Razorpay
+                    const rzp = new Razorpay(options);
+                    rzp.open();
+
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Payment Error',
+                        text: error.message || 'Failed to initiate payment'
+                    });
+                }
+            }
             document.querySelector('.continue-btn').addEventListener('click', placeOrder);
-
-            // Continue button handling
-            document.querySelector('.continue-btn')?.addEventListener('click', () => {
-                const selectedAddress = document.querySelector('.address-card.selected');
-                const selectedPayment = document.querySelector('input[name="payment"]:checked');
-
-                if (!selectedAddress) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Please select a delivery address!'
-                    });
-                    return;
-                }
-
-                if (!selectedPayment) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Please select a payment method!'
-                    });
-                    return;
-                }
-
-
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Order Placed!',
-                    text: 'Your order has been placed successfully.',
-                    showConfirmButton: false,
-                    timer: 2000
-                });
-            });
 
             // Initialize page
             document.addEventListener('DOMContentLoaded', () => {
                 document.querySelector('.section-content').classList.add('active');
                 document.querySelector('.toggle').textContent = '▲';
             });
+
+
+            // Add this function to handle Razorpay payments
+            async function handleRazorpayPayment(orderId) {
+                try {
+                    // Create Razorpay order
+                    const response = await fetch('/create-razorpay-order', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ orderId })
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.message || 'Failed to create payment order');
+                    }
+
+                    // Configure Razorpay options
+                    const options = {
+                        key: data.key,
+                        amount: data.order.amount,
+                        currency: data.order.currency,
+                        name: "Fiora",
+                        description: "Payment for your order",
+                        order_id: data.order.id,
+                        prefill: {
+                            name: data.user.name,
+                            email: data.user.email,
+                            contact: data.user.contact
+                        },
+                        theme: {
+                            color: "#3399cc"
+                        },
+                        modal: {
+                            ondismiss: function () {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Payment Cancelled',
+                                    text: 'Your payment was cancelled. You can try again.'
+                                });
+                            }
+                        },
+                        handler: function (response) {
+                            verifyPayment(response, data.orderData.orderId);
+                        }
+                    };
+
+                    // Initialize Razorpay
+                    const rzp = new Razorpay(options);
+                    rzp.open();
+
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Payment Error',
+                        text: error.message || 'Failed to initiate payment'
+                    });
+                }
+            }
+
+            // Add this function to verify the payment
+            async function verifyPayment(response, orderId) {
+                try {
+                    // Show loading state
+                    Swal.fire({
+                        title: 'Verifying Payment',
+                        text: 'Please wait...',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        willOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    // Verify payment with server
+                    const verifyResponse = await fetch('/verify-razorpay-payment', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature,
+                            order_id: orderId
+                        })
+                    });
+
+                    const verifyData = await verifyResponse.json();
+
+                    if (verifyResponse.ok && verifyData.status) {
+                        await Swal.fire({
+                            icon: 'success',
+                            title: 'Payment Successful!',
+                            text: 'Your order has been placed successfully',
+                            showConfirmButton: true
+                        });
+
+                        // Redirect to order confirmation
+                        window.location.href = `/order-confirmation/${verifyData.orderId}`;
+                    } else {
+                        throw new Error(verifyData.message || 'Payment verification failed');
+                    }
+
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Payment Verification Failed',
+                        text: error.message || 'There was an error verifying your payment'
+                    });
+                }
+            }
         </script>
 </body>
 

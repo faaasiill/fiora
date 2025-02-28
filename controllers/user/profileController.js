@@ -491,13 +491,18 @@ const cancelOrder = async (req, res) => {
       });
     }
 
-    // Verify that the order belongs to the logged-in user
-    if (order.userId.toString() !== req.session.user) {
-      return res.status(403).json({
-        success: false,
-        message: "Unauthorized access",
-      });
-    }
+
+
+const sessionUserId = typeof req.session.user === 'object' ? 
+                      (req.session.user.id || req.session.user._id).toString() : 
+                      req.session.user.toString();
+
+if (order.userId.toString() !== sessionUserId) {
+  return res.status(403).json({
+    success: false,
+    message: "Unauthorized access",
+  });
+}
 
     // Check if order is eligible for cancellation
     const cancelableStatuses = ["Pending", "Processing"];
@@ -572,13 +577,16 @@ const returnOrder = async (req, res) => {
       });
     }
 
-    // Verify that the order belongs to the logged-in user
-    if (order.userId.toString() !== req.session.user) {
-      return res.status(403).json({
-        success: false,
-        message: "Unauthorized access",
-      });
-    }
+    const sessionUserId = typeof req.session.user === 'object' ? 
+                      (req.session.user.id || req.session.user._id).toString() : 
+                      req.session.user.toString();
+
+if (order.userId.toString() !== sessionUserId) {
+  return res.status(403).json({
+    success: false,
+    message: "Unauthorized access",
+  });
+}
 
     // Check if order is eligible for return (only delivered orders)
     if (order.status !== "Delivered") {

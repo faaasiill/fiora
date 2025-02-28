@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
-/* orderList.css */
+/* Base styles */
 .admin-card {
   background: white;
   border-radius: 10px;
@@ -16,7 +16,6 @@
   padding: 20px;
   border-bottom: 1px solid #eee;
   background-color: #780909;
-  /* margin-top: 100px; */
 }
 
 .admin-card-header h2 {
@@ -68,55 +67,48 @@
   cursor: pointer;
   width: 150px;
   text-align: left;
-  border: 1px solid #5f9ea0;
+  border: none;
 }
 
+/* Status Classes */
 .status-pending {
+  background-color: #ffc1077c;
   border: 1px solid #ffc107;
 }
+
 .status-processing {
+  background-color: #17a3b87b;
   border: 1px solid #17a3b8;
 }
+
 .status-shipped {
+  background-color: #6710f27d;
   border: 1px solid #6710f2;
 }
+
 .status-delivered {
+  background-color: #28a7467a;
   border: 1px solid #28a746;
 }
+
 .status-cancelled {
+  background-color: #dc35467b;
   border: 1px solid #dc3546;
 }
+
 .status-return {
+  background-color: #9c27b07d;
   border: 1px solid #9c27b0;
 }
+
 .status-returned {
+  background-color: #6c757d7e;
   border: 1px solid #bebebe;
 }
 
 .status-return-request {
   background-color: #9c27b07d;
-}
-
-.status-pending {
-  background-color: #ffc1077c;
-}
-.status-processing {
-  background-color: #17a3b87b;
-}
-.status-shipped {
-  background-color: #6710f27d;
-}
-.status-delivered {
-  background-color: #28a7467a;
-}
-.status-cancelled {
-  background-color: #dc35467b;
-}
-.status-return {
-  background-color: #9c27b07d;
-}
-.status-returned {
-  background-color: #6c757d7e;
+  border: 1px solid #9c27b0;
 }
 
 .status-dropdown-content {
@@ -159,7 +151,7 @@
   color: #856404;
 }
 
-/* View Button Styles */
+/* Button Styles */
 .view-btn {
   padding: 8px 15px;
   background-color: #007bff;
@@ -220,7 +212,7 @@
   overflow-y: auto;
 }
 
-/* Added styles for order details */
+/* Order details styles */
 .order-detail-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -263,6 +255,7 @@
   text-align: right;
 }
 
+/* Layout styles */
 .container-fluid {
   width: 100%;
   padding-right: 15px;
@@ -285,7 +278,7 @@
   padding-left: 15px;
 }
 
-/* New styles for cancellation info */
+/* Cancellation section styles */
 .cancellation-section {
   margin-top: 15px;
   padding: 15px;
@@ -316,6 +309,7 @@
   font-style: italic;
 }
 
+/* Filter and search styles */
 .admin-card-filters {
   padding: 20px;
   background-color: #ffffff;
@@ -326,6 +320,7 @@
   gap: 20px;
   margin-top: 100px;
 }
+
 .search-section {
   flex: 1;
   min-width: 300px;
@@ -366,24 +361,13 @@
   outline: none;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .admin-card-filters {
-    flex-direction: column;
-  }
-
-  .search-section,
-  .filter-section {
-    width: 100%;
-  }
-}
-
-/* Add a highlight class for search results */
+/* Highlight for search results */
 .highlight {
   background-color: #fff3cd;
   transition: background-color 0.3s;
 }
 
+/* Return section styles */
 .return-section {
   margin-top: 20px;
   border-top: 1px solid #eee;
@@ -462,7 +446,7 @@
   border-radius: 4px;
 }
 
-/* Status classes */
+/* Status classes for return requests */
 .Pending-Approval {
   background-color: #ffc107;
   color: #212529;
@@ -491,7 +475,7 @@
   border-radius: 3px;
 }
 
-/* Add this to your CSS file or as a style tag */
+/* Proof images styling */
 .proof-images {
   margin-top: 15px;
 }
@@ -503,52 +487,6 @@
   margin-top: 8px;
 }
 
-.proof-image {
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
-  border-radius: 4px;
-  border: 1px solid #ddd;
-}
-
-.return-actions {
-  margin-top: 15px;
-  padding-top: 15px;
-  border-top: 1px solid #eee;
-}
-
-.approve-return-btn {
-  background-color: #28a745;
-  color: white;
-  border: none;
-  padding: 8px 15px;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-right: 10px;
-}
-
-.reject-return-btn {
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  padding: 8px 15px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.admin-comment-field {
-  margin-top: 10px;
-}
-
-#returnAdminComment {
-  width: 100%;
-  min-height: 80px;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-/* Add these styles to your CSS */
 .proof-image-container {
   position: relative;
   width: 120px;
@@ -619,4 +557,16 @@
 .close-zoom:focus {
   color: #bbb;
   text-decoration: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .admin-card-filters {
+    flex-direction: column;
+  }
+
+  .search-section,
+  .filter-section {
+    width: 100%;
+  }
 }

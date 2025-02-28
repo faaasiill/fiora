@@ -69,14 +69,24 @@ const updateOrderStatus = async (req, res) => {
       order.cancellation = undefined;
     }
 
+    // When status is changed to "Delivered"
+    if (status === "Delivered" && order.status !== "Delivered") {
+      // Set payment status to true
+      order.paymentDone = true;
+      // Record delivery date
+      order.deliveredAt = new Date();
+    }
+
     order.status = status;
     await order.save();
 
     res.json({ success: true, message: "Order status updated successfully" });
   } catch (error) {
+    console.error("Error updating order status:", error);
     res.status(500).json({
       success: false,
       message: "Error updating order status",
+      error: error.message
     });
   }
 };
