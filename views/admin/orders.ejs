@@ -11,35 +11,34 @@
     </head>
 
     <body>
+        <div class="admin-card-filters">
+            <div class="search-section">
+                <input type="text" id="searchInput" placeholder="Search by Order ID or Customer Name..."
+                    class="search-input">
+            </div>
+            <div class="filter-section">
+                <select id="statusFilter" class="filter-select">
+                    <option value="">Filter by Status</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Processing">Processing</option>
+                    <option value="Shipped">Shipped</option>
+                    <option value="Delivered">Delivered</option>
+                    <option value="Cancelled">Cancelled</option>
+                    <option value="Return Request">Return Request</option>
+                    <option value="Returned">Returned</option>
+                </select>
+                <select id="sortBy" class="filter-select">
+                    <option value="">Sort by</option>
+                    <option value="date-new">Date (Newest First)</option>
+                    <option value="date-old">Date (Oldest First)</option>
+                    <option value="amount-high">Amount (High to Low)</option>
+                    <option value="amount-low">Amount (Low to High)</option>
+                </select>
+            </div>
+        </div>
         <div class="container-fluid">
             <div class="admin-card">
-                <div class="admin-card-filters">
-                    <div class="search-section">
-                        <input type="text" id="searchInput" placeholder="Search by Order ID or Customer Name..."
-                            class="search-input">
-                    </div>
-                    <div class="filter-section">
-                        <select id="statusFilter" class="filter-select">
-                            <option value="">Filter by Status</option>
-                            <option value="Pending">Pending</option>
-                            <option value="Processing">Processing</option>
-                            <option value="Shipped">Shipped</option>
-                            <option value="Delivered">Delivered</option>
-                            <option value="Cancelled">Cancelled</option>
-                            <option value="Return Request">Return Request</option>
-                            <option value="Returned">Returned</option>
-                        </select>
-                        <select id="sortBy" class="filter-select">
-                            <option value="">Sort by</option>
-                            <option value="date-new">Date (Newest First)</option>
-                            <option value="date-old">Date (Oldest First)</option>
-                            <option value="amount-high">Amount (High to Low)</option>
-                            <option value="amount-low">Amount (Low to High)</option>
-                        </select>
-                    </div>
-                </div>
                 <div class="admin-card-header">
-                    <!-- Add this right after the admin-card-header div -->
                     <h2>Order Management</h2>
                 </div>
                 <div class="admin-card-body">

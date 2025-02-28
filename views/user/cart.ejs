@@ -96,21 +96,11 @@
                 </div>
 
                 <div class="coupon-section">
-                  <% if (appliedCoupon) { %>
-                    <div class="applied-coupon">
-                      <span class="applied-coupon-name"><%= appliedCoupon.name %></span>
-                      <span class="applied-coupon-value">-₹<%= (appliedCoupon.discount || 0).toFixed(2) %></span>
-                      <button class="remove-coupon" onclick="removeCoupon()">
-                        Remove Coupon
-                      </button>
-                    </div>
-                  <% } else { %>
-                    <div class="coupon-input-group">
-                      <input type="text" id="couponInput" class="coupon-input" placeholder="Enter coupon code">
-                      <button class="apply-coupon" onclick="applyCoupon()">Apply</button>
-                    </div>
-                    <a href="#" onclick="showAvailableCoupons(event)" class="show-coupons">View available coupons</a>
-                  <% } %>
+                  <div class="coupon-input-group">
+                    <input type="text" id="couponInput" class="coupon-input" placeholder="Coupon code">
+                    <button class="apply-coupon" onclick="applyCoupon()">Apply coupon</button>
+                  </div>
+                  <a href="#" onclick="showAvailableCoupons(event)" class="show-coupons">View available coupons</a>
                 </div>
                 <p id="couponMessage" class="coupon-message"></p>
 
@@ -148,7 +138,7 @@
     <span id="shipping">₹<%= cartTotal.shipping.toFixed(2) %></span>
   </div>
   <div class="total-row coupon-discount <%= appliedCoupon ? 'has-coupon' : '' %>">
-    <span>Coupon Discount <% if (appliedCoupon) { %><strong>(<%= appliedCoupon.name %>)</strong><% } %></span>
+    <span>Coupon Discount <% if (appliedCoupon) { %><% } %></span>
     <span id="discount">-₹<%= cartTotal.discount.toFixed(2) %></span>
   </div>
   <div class="total-row final">
@@ -165,7 +155,87 @@
             // Add this to the JavaScript in cart.ejs
 let appliedCoupon = null;
 
+function renderCouponSection() {
+  const couponSection = document.querySelector('.coupon-section');
+  
+  if (appliedCoupon) {
+    // Show applied coupon view
+    couponSection.innerHTML = `
+      <div class="applied-coupon">
+        <span class="applied-coupon-name">${appliedCoupon.name}</span>
+        <span class="applied-coupon-value">-₹${appliedCoupon.discount.toFixed(2)}</span>
+        <button class="remove-coupon" onclick="removeCoupon()">Remove Coupon</button>
+      </div>
+    `;
+  } else {
+    // Show default coupon input view
+    couponSection.innerHTML = `
+     <input type="text" id="couponInput" class="coupon-input" placeholder="Coupon code">
+        <button class="apply-coupon" onclick="applyCoupon()">Apply coupon</button>
+        <a href="#" onclick="showAvailableCoupons(event)" class="show-coupons">View available coupons</a>
+    `;
+    
+    // Add event listeners to the newly created input field
+    const couponInput = document.getElementById('couponInput');
+    if (couponInput) {
+      couponInput.addEventListener('focus', function() {
+        this.parentElement.classList.add('focused');
+      });
+      
+      couponInput.addEventListener('blur', function() {
+        this.parentElement.classList.remove('focused');
+      });
+      
+      couponInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          applyCoupon();
+        }
+      });
+    }
+  }
+}
+
+
 // Enhanced Coupon Functionality
+document.addEventListener('DOMContentLoaded', function() {
+  // Check if there's an applied coupon from the server
+  const appliedCouponElement = document.querySelector('.applied-coupon-name');
+  if (appliedCouponElement) {
+    const couponName = appliedCouponElement.textContent;
+    const discountValue = parseFloat(document.querySelector('.applied-coupon-value').textContent.replace('-₹', ''));
+    
+    appliedCoupon = {
+      name: couponName,
+      discount: discountValue
+    };
+  }
+  
+  // Initialize coupon section
+  renderCouponSection();
+  
+  // Enhanced modal close functionality
+  const modal = document.getElementById('couponModal');
+  const closeModal = document.querySelector('.close-modal');
+  
+  if (closeModal) {
+    closeModal.onclick = function() {
+      modal.style.display = 'none';
+    }
+  }
+  
+  window.onclick = function(event) {
+    if (event.target == modal) {
+      modal.style.display = 'none';
+    }
+  }
+  
+  // Add escape key functionality to close modal
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && modal.style.display === 'block') {
+      modal.style.display = 'none';
+    }
+  });
+})
 
 document.addEventListener('DOMContentLoaded', function() {
   // Check if there's an applied coupon from the server
@@ -324,7 +394,6 @@ function copyCouponCode(code) {
   });
 }
 
-// Apply coupon from modal with animated transition
 function applyThisCoupon(couponName) {
   document.getElementById('couponInput').value = couponName;
   
@@ -394,14 +463,8 @@ async function applyCoupon() {
       couponMessage.textContent = data.message;
       couponMessage.className = 'coupon-message success';
       
-      // Replace input with applied coupon UI
-      document.querySelector('.coupon-section').innerHTML = `
-        <div class="applied-coupon">
-          <span class="applied-coupon-name">${couponName}</span>
-          <span class="applied-coupon-value">-₹${data.cartTotal.discount.toFixed(2)}</span>
-          <button class="remove-coupon" onclick="removeCoupon()">Remove Coupon</button>
-        </div>
-      `;
+      // Update coupon section to show applied coupon
+      renderCouponSection();
       
       // Show confirmation toast
       Swal.fire({
@@ -418,7 +481,7 @@ async function applyCoupon() {
       setTimeout(() => couponInput.classList.remove('error-flash'), 500);
       
       // Reset button and input
-      applyButton.textContent = 'Apply';
+      applyButton.textContent = 'Apply coupon';
       applyButton.disabled = false;
       couponInput.disabled = false;
       
@@ -430,7 +493,7 @@ async function applyCoupon() {
     console.error('Error applying coupon:', error);
     
     // Reset states
-    applyButton.textContent = 'Apply';
+    applyButton.textContent = 'Apply coupon';
     applyButton.disabled = false;
     couponInput.disabled = false;
     
@@ -438,7 +501,6 @@ async function applyCoupon() {
     couponMessage.className = 'coupon-message error';
   }
 }
-
 // Enhanced remove coupon with confirmation
 async function removeCoupon() {
   Swal.fire({
@@ -480,13 +542,9 @@ async function removeCoupon() {
           couponSection.classList.add('fade-out');
           
           setTimeout(() => {
-            couponSection.innerHTML = `
-              <div class="coupon-input-group">
-                <input type="text" id="couponInput" class="coupon-input" placeholder="Enter coupon code">
-                <button class="apply-coupon" onclick="applyCoupon()">Apply</button>
-              </div>
-              <a href="#" onclick="showAvailableCoupons(event)" class="show-coupons">View available coupons</a>
-            `;
+            // Update coupon section to show input
+            renderCouponSection();
+            
             couponSection.classList.remove('fade-out');
             couponSection.classList.add('fade-in');
             
@@ -556,20 +614,12 @@ function updateAllTotals(cartTotal, animate = false) {
   
   // Update coupon discount row visibility
   const couponDiscountRow = document.querySelector('.coupon-discount');
-  if (cartTotal.discount > 0) {
+  if (cartTotal.discount > 0 && appliedCoupon) {
     couponDiscountRow.classList.add('has-coupon');
-    
-    // Update coupon name in the discount row if needed
-    const couponNameElement = couponDiscountRow.querySelector('strong');
-    if (couponNameElement && appliedCoupon) {
-      couponNameElement.textContent = `(${appliedCoupon.name})`;
-    }
   } else {
     couponDiscountRow.classList.remove('has-coupon');
   }
 }
-
-
 document.addEventListener('DOMContentLoaded', function() {
   // Check if there's an applied coupon from the server
   const appliedCouponElement = document.querySelector('.applied-coupon-name');

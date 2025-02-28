@@ -182,13 +182,18 @@
                             <span>₹<%= cartTotal.shipping %></span>
                         </div>
                         <div class="summary-row">
-                            <span>Discount</span>
+                            <span>Coupon Discount</span>
+                            <span>- ₹<%= cartTotal.discount.toFixed(2) %></span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Total Discount</span>
                             <span>-₹<%= cartTotal.discount %></span>
                         </div>
                         <div class="summary-row total">
                             <span>Total</span>
                             <span>₹<%= cartTotal.final %></span>
                         </div>
+                        
                         <button class="continue-btn">PLACE ORDER</button>
             </div>
         </aside>
