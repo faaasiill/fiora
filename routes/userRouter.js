@@ -91,6 +91,11 @@ router.post('/verify-razorpay-payment', checkOutController.verifyRazorpayPayment
 router.get('/getActiveCoupons', userAuth, userCouponController.getActiveCoupons);
 router.post('/applyCoupon', userAuth, userCouponController.applyCoupon);
 router.post('/removeCoupon', userAuth, userCouponController.removeCoupon);
+// wallet management
+router.post('/add-money', userAuth, profileController.createWalletAddMoneyOrder);
+router.post('/verify-wallet-payment', userAuth, profileController.verifyWalletPayment);
+router.get('/balance', userAuth, profileController.getWalletBalance);
+router.get('/transactions', userAuth, profileController.getWalletTransactions);
 
 
 module.exports = router;

@@ -45,7 +45,7 @@
                 </li>
                 <li class="nav-item" data-section="history">
                     <span class="material-symbols-outlined">history</span>Wallet History
-                </li>
+                </li>                
                 <li class="nav-item" data-section="referrals">
                     <span class="material-symbols-outlined">group_add</span>Referrals
                 </li>
@@ -525,14 +525,23 @@
             <div id="history" class="content-section">
                 <h2 class="section-title">Wallet History</h2>
                 <ul class="transaction-list">
-                    <li class="transaction-item">
-                        <span><i class="fas fa-plus-circle"></i> Added Money</span>
-                        <span style="color: #27ae60">+$500.00</span>
-                    </li>
-                    <li class="transaction-item">
-                        <span><i class="fas fa-minus-circle"></i> Purchase</span>
-                        <span style="color: #e74c3c">-$250.00</span>
-                    </li>
+                    <% if (locals.wallet && wallet.transactions && wallet.transactions.length > 0) { %>
+                        <% wallet.transactions.forEach(transaction => { %>
+                            <li class="transaction-item">
+                                <% if (transaction.type === 'credit') { %>
+                                    <span><i class="fas fa-plus-circle"></i> <%= transaction.source === 'admin_credit' ? 'Added Money' : transaction.description %></span>
+                                    <span style="color: #27ae60">+₹<%= transaction.amount.toFixed(2) %></span>
+                                <% } else { %>
+                                    <span><i class="fas fa-minus-circle"></i> <%= transaction.source === 'wallet_payment' ? 'Purchase' : transaction.description %></span>
+                                    <span style="color: #e74c3c">-₹<%= transaction.amount.toFixed(2) %></span>
+                                <% } %>
+                            </li>
+                        <% }); %>
+                    <% } else { %>
+                        <li class="transaction-item">
+                            <span>No transactions found</span>
+                        </li>
+                    <% } %>
                 </ul>
             </div>
 
@@ -547,7 +556,7 @@
             </div>
         </div>
     </div>
-
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
 
         document.addEventListener('DOMContentLoaded', function () {
@@ -1553,6 +1562,190 @@
                 });
         }
 
+
+        document.addEventListener('DOMContentLoaded', () => {
+    // Get the Add Money button and add event listener
+    const addMoneyBtn = document.querySelector('#wallet .btn');
+    if (addMoneyBtn) {
+        addMoneyBtn.addEventListener('click', initiateAddMoney);
+    }
+    
+    // Fetch and display current wallet balance
+    fetchWalletBalance();
+});
+
+// Fetch wallet balance
+async function fetchWalletBalance() {
+    try {
+        const response = await fetch('/wallet/balance');
+        const data = await response.json();
+        
+        if (response.ok && data.status) {
+            // Update the wallet balance display
+            const walletAmountElement = document.querySelector('.wallet-amount');
+            if (walletAmountElement) {
+                walletAmountElement.textContent = `₹${data.balance.toFixed(2)}`;
+            }
+        } else {
+            console.error('Failed to fetch wallet balance:', data.message);
+        }
+    } catch (error) {
+        console.error('Error fetching wallet balance:', error);
+    }
+}
+
+async function initiateAddMoney() {
+    // Use SweetAlert2 to get the amount from user
+    const { value: amount } = await Swal.fire({
+        title: 'Add Money to Wallet',
+        input: 'number',
+        inputLabel: 'Enter amount (₹)',
+        inputPlaceholder: 'Enter amount',
+        inputAttributes: {
+            min: '1',
+            step: '1'
+        },
+        showCancelButton: true,
+        inputValidator: (value) => {
+            if (!value || value <= 0) {
+                return 'Please enter a valid amount!';
+            }
+        }
+    });
+    
+    if (amount) {
+        // Proceed with payment
+        handleWalletPayment(amount);
+    }
+}
+
+async function handleWalletPayment(amount) {
+    try {
+        // Show loading state
+        Swal.fire({
+            title: 'Processing',
+            text: 'Please wait...',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            willOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        
+        // Create Razorpay order for wallet
+        const response = await fetch('/wallet/add-money', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ amount })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Failed to create payment order');
+        }
+        
+        // Close loading dialog
+        Swal.close();
+
+        // Configure Razorpay options
+        const options = {
+            key: data.key,
+            amount: data.order.amount,
+            currency: data.order.currency,
+            name: "Fiora",
+            description: "Add money to wallet",
+            order_id: data.order.id,
+            prefill: {
+                name: data.user.name,
+                email: data.user.email,
+                contact: data.user.contact
+            },
+            theme: {
+                color: "#3399cc"
+            },
+            modal: {
+                ondismiss: function () {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Payment Cancelled',
+                        text: 'Your payment was cancelled. You can try again.'
+                    });
+                }
+            },
+            handler: function (response) {
+                verifyWalletPayment(response, data.walletData.amount, data.walletData.receiptId);
+            }
+        };
+
+        // Initialize Razorpay
+        const rzp = new Razorpay(options);
+        rzp.open();
+
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Payment Error',
+            text: error.message || 'Failed to initiate payment'
+        });
+    }
+}
+
+// Verify wallet payment
+async function verifyWalletPayment(response, amount, receiptId) {
+    try {
+        // Show loading state
+        Swal.fire({
+            title: 'Verifying Payment',
+            text: 'Please wait...',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            willOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        // Verify payment with server
+        const verifyResponse = await fetch('/wallet/verify-wallet-payment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                amount: amount,
+                receiptId: receiptId
+            })
+        });
+
+        const verifyData = await verifyResponse.json();
+
+        if (verifyResponse.ok && verifyData.status) {
+            await Swal.fire({
+                icon: 'success',
+                title: 'Payment Successful!',
+                text: `₹${amount} has been added to your wallet`,
+                showConfirmButton: true
+            });
+
+            // Update wallet balance display
+            fetchWalletBalance();
+        } else {
+            throw new Error(verifyData.message || 'Payment verification failed');
+        }
+
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Payment Verification Failed',
+            text: error.message || 'There was an error verifying your payment'
+        });
+    }
+}
     </script>
 </body>
 

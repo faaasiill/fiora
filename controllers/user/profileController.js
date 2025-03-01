@@ -2,6 +2,7 @@ const User = require("../../models/userSchema");
 const Order = require("../../models/orderSchema");
 const Address = require("../../models/addressSchema");
 const Wallet = require("../../models/walletSchema");
+const razorpayHelper = require("../../helpers/razorpayHelper");
 const nodeMailer = require("nodemailer");
 const bcrypt = require("bcrypt");
 const { v4: uuidv4 } = require("uuid");
@@ -196,6 +197,7 @@ const userProfile = async (req, res) => {
     const userId = req.session.user;
     const userData = await User.findById(userId);
     const addressData = await Address.findOne({ userId: userId });
+    const wallet = await Wallet.findOne({ userId: userId });
 
     const orders = await Order.find({ userId: userId })
       .populate("orderItems.product")
@@ -221,6 +223,7 @@ const userProfile = async (req, res) => {
       user: userData,
       address: addressData,
       orders: formattedOrders,
+      wallet: wallet || { transactions: [] }
     });
   } catch (error) {
     console.error("Error retrieving profile data", error);
@@ -729,6 +732,219 @@ if (order.userId.toString() !== sessionUserId) {
   }
 };
 
+
+const getWalletBalance = async (req, res) => {
+  try {
+    // Change from req.user._id to req.session.user
+    const userId = req.session.user;
+    
+    // Find or create wallet for the user
+    let wallet = await Wallet.findOne({ userId });
+    
+    if (!wallet) {
+      wallet = await new Wallet({
+        userId,
+        balance: 0,
+        transactions: []
+      }).save();
+    }
+    
+    res.status(200).json({
+      status: true,
+      balance: wallet.balance
+    });
+  } catch (error) {
+    console.error('Error fetching wallet balance:', error);
+    res.status(500).json({
+      status: false,
+      message: error.message || 'Failed to fetch wallet balance'
+    });
+  }
+};
+
+const getWalletTransactions = async (req, res) => {
+  try {
+    // Change from req.user._id to req.session.user
+    const userId = req.session.user;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    
+    const wallet = await Wallet.findOne({ userId });
+    
+    if (!wallet) {
+      return res.status(404).json({
+        status: false,
+        message: 'Wallet not found for this user'
+      });
+    }
+    
+    // Sort transactions by date (newest first) and paginate
+    const transactions = wallet.transactions
+      .sort((a, b) => b.createdAt - a.createdAt)
+      .slice(skip, skip + limit);
+    
+    const totalTransactions = wallet.transactions.length;
+    const totalPages = Math.ceil(totalTransactions / limit);
+    
+    res.status(200).json({
+      status: true,
+      transactions,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalTransactions,
+        hasNext: page < totalPages,
+        hasPrev: page > 1
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching wallet transactions:', error);
+    res.status(500).json({
+      status: false,
+      message: error.message || 'Failed to fetch wallet transactions'
+    });
+  }
+};
+
+const createWalletAddMoneyOrder = async (req, res) => {
+  try {
+    const { amount } = req.body;
+    // Change from req.user._id to req.session.user
+    const userId = req.session.user;
+    
+    if (!amount || amount <= 0) {
+      return res.status(400).json({
+        status: false,
+        message: 'Please provide a valid amount'
+      });
+    }
+    
+    // Generate a unique receipt ID for the transaction
+    const receiptId = `w-${Math.random().toString(36).substring(2, 10)}-${Date.now().toString().substr(-8)}`;    
+    // Create Razorpay order
+    const options = {
+      amount: Math.round(amount * 100), // Convert to paise
+      currency: 'INR',
+      receipt: receiptId,
+      payment_capture: 1
+    };
+    
+    const razorpayOrder = await razorpayHelper.createOrder(options);
+    
+    if (!razorpayOrder.success) {
+      return res.status(500).json({
+        status: false,
+        message: 'Failed to create payment order',
+        error: razorpayOrder.error
+      });
+    }
+    
+    // Get user details
+    const user = await User.findById(userId);
+    
+    // Return order details for client-side processing
+    res.status(200).json({
+      status: true,
+      order: razorpayOrder.order,
+      key: process.env.RAZORPAY_API_KEY,
+      user: {
+        name: user.name || '',
+        email: user.email || '',
+        contact: user.mobile || ''
+      },
+      walletData: {
+        amount: amount,
+        receiptId: receiptId
+      }
+    });
+    
+  } catch (error) {
+    console.error('Wallet add money error:', error);
+    res.status(500).json({
+      status: false,
+      message: error.message || 'Failed to create payment order'
+    });
+  }
+};
+
+const verifyWalletPayment = async (req, res) => {
+  try {
+    const { 
+      razorpay_order_id, 
+      razorpay_payment_id, 
+      razorpay_signature,
+      amount,
+      receiptId
+    } = req.body;
+    
+    // Change from req.user._id to req.session.user
+    const userId = req.session.user;
+    
+    // Verify payment signature
+    const isValid = razorpayHelper.verifyPayment({
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature
+    });
+    
+    if (!isValid) {
+      return res.status(400).json({
+        status: false,
+        message: 'Payment verification failed'
+      });
+    }
+    
+    // Find or create wallet for the user
+    let wallet = await Wallet.findOne({ userId });
+    
+    if (!wallet) {
+      wallet = new Wallet({
+        userId,
+        balance: 0,
+        transactions: []
+      });
+    }
+    
+    // Create transaction for the wallet
+    const transaction = {
+      transactionId: razorpay_payment_id,
+      amount: parseFloat(amount),
+      type: "credit",
+      status: "completed",
+      source: "admin_credit", // Using admin_credit for adding money to wallet
+      description: "Added money to wallet",
+      metadata: {
+        paymentDetails: {
+          method: "razorpay",
+          referenceId: razorpay_order_id
+        }
+      },
+      completedAt: Date.now()
+    };
+    
+    wallet.transactions.push(transaction);
+    wallet.calculateBalance();
+    wallet.lastUpdated = Date.now();
+    
+    await wallet.save();
+    
+    res.status(200).json({
+      status: true,
+      message: 'Money added to wallet successfully',
+      balance: wallet.balance,
+      transaction: transaction
+    });
+    
+  } catch (error) {
+    console.error('Wallet payment verification error:', error);
+    res.status(500).json({
+      status: false,
+      message: error.message || 'Failed to verify payment'
+    });
+  }
+};
+
 module.exports = {
   getForgotPassPage,
   forgotEmailValid,
@@ -745,5 +961,9 @@ module.exports = {
   deleteAddress,
   setDefaultAddress,
   cancelOrder,
-  returnOrder
+  returnOrder,
+  getWalletBalance,
+  getWalletTransactions,
+  createWalletAddMoneyOrder,
+  verifyWalletPayment
 };

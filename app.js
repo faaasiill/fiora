@@ -6,6 +6,7 @@ const db = require("./config/db");
 const userRoutes = require("./routes/userRouter");
 const { passport, sessionMiddleware } = require("./config/passport");
 const adminRouter = require("./routes/adminRouter");
+const walletRoutes = require('./routes/userRouter');
 
 
 db();
@@ -48,6 +49,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", userRoutes);
 app.use("/admin", adminRouter);
+app.use('/wallet', walletRoutes);
 
 
 app.listen(process.env.PORT || 3002, () => {
