@@ -1,4 +1,5 @@
 const Order = require("../../models/orderSchema");
+const Wallet = require("../../models/walletSchema");
 
 // for get all orders
 const getOrders = async (req, res) => {
@@ -111,41 +112,69 @@ const getOrderById = async (req, res) => {
 const updateReturnRequest = async (req, res) => {
   try {
     const { orderId, action, adminComment } = req.body;
-
+    
+    // Find the order
     const order = await Order.findById(orderId);
     if (!order) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Order not found" });
+      return res.status(404).json({ 
+        success: false, 
+        message: "Order not found" 
+      });
     }
 
     // Check if return request exists
     if (!order.return || !order.return.isRequested) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "No return request found for this order",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "No return request found for this order",
+      });
     }
+    
 
     // Update return status based on action
     if (action === "approve") {
       order.return.status = "Approved";
       order.status = "Return Approved"; // Update main order status
 
-      // Initialize refund process if order was paid
-      if (order.paymentDone && order.paymentMethod !== "cod") {
+      // Process refund to wallet if payment was made
+      if (order.paymentDone) {
+        // Initialize refund process
         order.return.refundStatus = "Processing";
         order.return.refundAmount = order.finalAmount; // Default to full refund
+
+        try {
+          // Check if wallet exists, create if not
+          let wallet = await Wallet.findOne({ userId: order.userId });
+          if (!wallet) {
+            wallet = new Wallet({
+              userId: order.userId,
+              balance: 0,
+              transactions: []
+            });
+          }
+
+          // Add refund transaction to wallet
+          await Wallet.processOrderRefund(
+            order.userId,
+            order,
+            "return",
+            order.finalAmount,
+            order.return.reason || "Return approved by admin"
+          );
+
+          // Update refund status in order
+          order.return.refundStatus = "Completed";
+        } catch (walletError) {
+          console.error("Error processing wallet refund:", walletError);
+          order.return.refundStatus = "Failed";
+          // Still continue with the return approval process
+        }
       }
     } else if (action === "reject") {
       order.return.status = "Rejected";
       order.status = "Return Rejected"; // Update main order status
     } else {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid action" });
+      return res.status(400).json({ success: false, message: "Invalid action" });
     }
 
     // Add admin comment if provided

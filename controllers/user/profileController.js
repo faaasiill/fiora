@@ -1,8 +1,10 @@
 const User = require("../../models/userSchema");
 const Order = require("../../models/orderSchema");
 const Address = require("../../models/addressSchema");
+const Wallet = require("../../models/walletSchema");
 const nodeMailer = require("nodemailer");
 const bcrypt = require("bcrypt");
+const { v4: uuidv4 } = require("uuid");
 const env = require("dotenv").config();
 const session = require("express-session");
 const { response } = require("express");
@@ -491,18 +493,16 @@ const cancelOrder = async (req, res) => {
       });
     }
 
-
-
-const sessionUserId = typeof req.session.user === 'object' ? 
+    const sessionUserId = typeof req.session.user === 'object' ? 
                       (req.session.user.id || req.session.user._id).toString() : 
                       req.session.user.toString();
 
-if (order.userId.toString() !== sessionUserId) {
-  return res.status(403).json({
-    success: false,
-    message: "Unauthorized access",
-  });
-}
+    if (order.userId.toString() !== sessionUserId) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized access",
+      });
+    }
 
     // Check if order is eligible for cancellation
     const cancelableStatuses = ["Pending", "Processing"];
@@ -513,12 +513,69 @@ if (order.userId.toString() !== sessionUserId) {
       });
     }
 
-    // If payment is already done, we might need to initiate refund process
+    // If payment is already done, we need to process refund to wallet
     let refundInitiated = false;
+    let walletRefundResult = null;
+    
     if (order.paymentDone && order.paymentMethod !== "cod") {
       // Flag for refund initiation
       refundInitiated = true;
-      // Note: Implement actual refund logic here based on payment method
+      
+      try {
+        // Find user wallet
+        let wallet = await Wallet.findOne({ userId: order.userId });
+        
+        // If wallet doesn't exist, create one
+        if (!wallet) {
+          wallet = new Wallet({
+            userId: order.userId,
+            balance: 0,
+            transactions: []
+          });
+          await wallet.save(); // Make sure to save the newly created wallet
+        }
+        
+        // Create transaction data
+        const transactionData = {
+          transactionId: uuidv4(), // Generate a new UUID
+          orderId: order._id,
+          amount: order.finalAmount,
+          type: "credit",
+          status: "completed",
+          source: "order_cancellation",
+          description: `Refund for cancelled order #${order.orderId}`,
+          metadata: {
+            orderDetails: {
+              orderNumber: order.orderId,
+              items: order.orderItems.map(item => ({
+                productId: item.product,
+                quantity: item.quantity,
+                price: item.price
+              })),
+              cancelReason: reason === "Other" ? additionalComments : reason
+            },
+            paymentDetails: {
+              method: order.paymentMethod,
+              referenceId: order.razorpay?.paymentId || null
+            }
+          },
+          createdAt: new Date(),
+          completedAt: new Date()
+        };
+        
+        // Add transaction and update wallet balance
+        wallet.transactions.push(transactionData);
+        const newBalance = wallet.calculateBalance();
+        wallet.lastUpdated = new Date();
+        
+        // Save the updated wallet
+        walletRefundResult = await wallet.save();
+        
+        console.log("Wallet refund processed successfully:", walletRefundResult);
+      } catch (walletError) {
+        console.error("Error processing wallet refund:", walletError);
+        // Continue with cancellation even if wallet processing fails
+      }
     }
 
     // Update order status and cancellation details
@@ -546,22 +603,33 @@ if (order.userId.toString() !== sessionUserId) {
     // Send success response with appropriate message
     let responseMessage = "Order cancelled successfully";
     if (refundInitiated) {
-      responseMessage += ". Refund process has been initiated";
+      if (walletRefundResult) {
+        responseMessage += `. Amount ₹${order.finalAmount} has been credited to your wallet.`;
+      } else {
+        responseMessage += ". Wallet refund process failed, please contact support.";
+      }
     }
 
     return res.status(200).json({
       success: true,
       message: responseMessage,
       order: updateResult,
+      walletRefund: walletRefundResult ? {
+        success: true,
+        amount: order.finalAmount,
+        walletBalance: walletRefundResult.balance
+      } : null
     });
   } catch (error) {
     console.error("Error in order cancellation:", error);
     return res.status(500).json({
       success: false,
       message: "Internal server error",
+      details: error.message
     });
   }
 };
+
 
 const returnOrder = async (req, res) => {
   try {
