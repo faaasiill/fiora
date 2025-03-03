@@ -1,272 +1,624 @@
 <%- include("../../views/partials/admin/header") %>
 
-  <head>
-    <style>
-      /* Main Container Styles */
-      .container-fluid {
-        padding: 20px;
-        background-color: #f8f9fa;
-      }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    <div class="dashboard-header">
+      <h1 class="dashboard-title">Admin Dashboard</h1>
+      <div>
+        <select class="btn btn-primary" id="timeRangeSelect">
+          <option>Last 7 days</option>
+          <option>Last 30 days</option>
+          <option>This month</option>
+          <option>This year</option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- Key Metrics Row -->
+    <div class="row">
+      <div class="col-3">
+        <div class="card">
+          <div class="stat-card">
+            <i class="fas fa-shopping-cart stat-icon"></i>
+            <div class="stat-label">Total Orders</div>
+            <div class="stat-value"><%= totalOrders %></div>
+            <div class="stat-trend <%= orderGrowth >= 0 ? 'trend-up' : 'trend-down' %>">
+              <i class="fas fa-arrow-<%= orderGrowth >= 0 ? 'up' : 'down' %>"></i> <%= Math.abs(orderGrowth) %>% from last period
+            </div>
+            <div class="progress">
+              <div class="progress-bar" style="width: 75%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-3">
+        <div class="card">
+          <div class="stat-card">
+            <i class="fas fa-users stat-icon"></i>
+            <div class="stat-label">Total Users</div>
+            <div class="stat-value"><%= totalUsers.toLocaleString() %></div>
+            <div class="stat-trend <%= userGrowth >= 0 ? 'trend-up' : 'trend-down' %>">
+              <i class="fas fa-arrow-<%= userGrowth >= 0 ? 'up' : 'down' %>"></i> <%= Math.abs(userGrowth) %>% from last period
+            </div>
+            <div class="progress">
+              <div class="progress-bar" style="width: 65%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-3">
+        <div class="card">
+          <div class="stat-card">
+            <i class="fas fa-dollar-sign stat-icon"></i>
+            <div class="stat-label">Revenue</div>
+            <div class="stat-value">₹<%= totalRevenue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) %></div>
+            <div class="stat-trend <%= revenueGrowth >= 0 ? 'trend-up' : 'trend-down' %>">
+              <i class="fas fa-arrow-<%= revenueGrowth >= 0 ? 'up' : 'down' %>"></i> <%= Math.abs(revenueGrowth) %>% from last period
+            </div>
+            <div class="progress">
+              <div class="progress-bar" style="width: 80%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-3">
+        <div class="card">
+          <div class="stat-card">
+            <i class="fas fa-box-open stat-icon"></i>
+            <div class="stat-label">Products</div>
+            <div class="stat-value"><%= totalProducts %></div>
+            <div class="stat-trend <%= productGrowth >= 0 ? 'trend-up' : 'trend-down' %>">
+              <i class="fas fa-arrow-<%= productGrowth >= 0 ? 'up' : 'down' %>"></i> <%= Math.abs(productGrowth) %>% from last period
+            </div>
+            <div class="progress">
+              <div class="progress-bar" style="width: 60%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-      .dashboard-main {
-        background-color: #ffffff;
-        padding: 30px;
-        border-radius: 15px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-      }
-
-      /* Headings */
-      h1 {
-        color: #6E0B21;
-        font-size: 2rem;
-        font-weight: 400;
-        border-bottom: 2px solid #6E0B21;
-        display: inline-block;
-        letter-spacing: -1px;
-      }
-
-      h2 {
-        color: #34495e;
-        font-size: 1.8rem;
-        font-weight: 500;
-        margin: 30px 0 20px;
-      }
-
-      h5 {
-        color: #6E0B21;
-        font-weight: 600;
-        font-size: 1.1rem;
-        margin-bottom: 10px;
-      }
-
-      /* Card Styles */
-      .card {
-        background-color: #ffffff;
-        border: none;
-        border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        margin-bottom: 25px;
-      }
-
-      .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-      }
-
-      .card-body {
-        padding: 25px;
-        text-align: center;
-      }
-
-      .card-body p {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: #6E0B21;
-        margin: 10px 0 0;
-      }
-
-      /* Stats Box Styles */
-      .stat-box {
-        background: linear-gradient(145deg, #ffffff, #f8f9fa);
-        padding: 25px 20px;
-        border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        margin-bottom: 25px;
-        text-align: center;
-        transition: transform 0.3s ease;
-      }
-
-      .stat-box:hover {
-        transform: translateY(-5px);
-      }
-
-      .stat-box h5 {
-        color: #6E0B21;
-        margin-bottom: 15px;
-      }
-
-      .stat-box p {
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: #2c3e50;
-        margin: 0;
-      }
-
-      /* Recent Activity Section */
-      .recent-activity {
-        background-color: #ffffff;
-        padding: 25px;
-        border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        margin: 30px 0;
-      }
-
-      .recent-activity ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
-
-      .recent-activity li {
-        padding: 15px 20px;
-        border-left: 4px solid #6E0B21;
-        background-color: #f8f9fa;
-        margin-bottom: 10px;
-        border-radius: 0 8px 8px 0;
-        transition: transform 0.3s ease;
-      }
-
-      .recent-activity li:hover {
-        transform: translateX(10px);
-        background-color: #f0f2f5;
-      }
-
-      /* Sales Chart Section */
-      .sales-stats {
-        background-color: #ffffff;
-        padding: 25px;
-        border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        margin-top: 30px;
-      }
-
-      canvas#salesChart {
-        min-height: 300px;
-        width: 100% !important;
-      }
-
-      /* Responsive Adjustments */
-      @media (max-width: 768px) {
-        .container-fluid {
-          padding-top: 100px;
-        }
-
-        h1 {
-          font-size: 2rem;
-        }
-
-        .card-body p {
-          font-size: 1.5rem;
-        }
-
-        .stat-box p {
-          font-size: 1.3rem;
-        }
-      }
-    </style>
-  </head>
-  <div class="container-fluid" style="padding-top: 150px; display: flex; justify-content: center;">
-    <div class="row" style="width: 100%; padding-left: 50px;">
-
-      <div class="col-md-9">
-        <!-- Main Content -->
-        <div class="dashboard-main">
-          <h1 class="mb-4">Admin Dashboard</h1>
-
-          <!-- Welcome/Overview Section -->
-          <div class="overview">
-            <h2>Overview</h2>
-            <div class="row">
-              <div class="col-md-4">
-                <div class="card">
-                  <div class="card-body">
-                    <h5>Total Sales</h5>
-                    <p>$50,000</p>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="card">
-                  <div class="card-body">
-                    <h5>New Users</h5>
-                    <p>150</p>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="card">
-                  <div class="card-body">
-                    <h5>Total Orders</h5>
-                    <p>500</p>
-                  </div>
-                </div>
+    <div class="row" style="margin-top: 20px;">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title">Generate Sales Reports</h5>
+      </div>
+      <div class="card-body">
+        <div class="report-generator">
+          <div class="report-filters">
+            <div class="report-period">
+              <label for="reportPeriod">Time Period:</label>
+              <select id="reportPeriod" class="form-control">
+                <option value="day">Last 24 Hours</option>
+                <option value="week" selected>Last 7 Days</option>
+                <option value="month">Last 30 Days</option>
+                <option value="year">Last 12 Months</option>
+              </select>
+            </div>
+            
+            <div class="report-types">
+              <div class="report-type-label">Export Format:</div>
+              <div class="report-type-buttons">
+                <button class="btn btn-primary report-btn" data-type="pdf">
+                  <i class="fas fa-file-pdf"></i> PDF
+                </button>
+                <button class="btn btn-success report-btn" data-type="excel">
+                  <i class="fas fa-file-excel"></i> Excel
+                </button>
+                <button class="btn btn-info report-btn" data-type="csv">
+                  <i class="fas fa-file-csv"></i> CSV
+                </button>
               </div>
             </div>
           </div>
-
-          <!-- Recent Activity Section -->
-          <div class="recent-activity">
-            <h2>Recent Activity</h2>
-            <ul>
-              <li>User1 logged in</li>
-              <li>User2 placed an order</li>
-              <li>Product3 updated</li>
-            </ul>
-          </div>
-
-          <!-- Quick Stats Section -->
-          <div class="quick-stats">
-            <h2>Quick Stats</h2>
-            <div class="row">
-              <div class="col-md-3">
-                <div class="stat-box">
-                  <h5>Total Revenue</h5>
-                  <p>$100,000</p>
-                </div>
-              </div>
-              <div class="col-md-3">
-                <div class="stat-box">
-                  <h5>Active Users</h5>
-                  <p>1,000</p>
-                </div>
-              </div>
-              <div class="col-md-3">
-                <div class="stat-box">
-                  <h5>Open Tickets</h5>
-                  <p>10</p>
-                </div>
-              </div>
-              <div class="col-md-3">
-                <div class="stat-box">
-                  <h5>New Signups</h5>
-                  <p>50</p>
-                </div>
+          
+          <div class="report-description">
+            <div class="card" style="background-color: #f8f9fa; border-left: 4px solid #3498db;">
+              <div class="card-body">
+                <h6><i class="fas fa-info-circle"></i> Report Contents</h6>
+                <ul>
+                  <li>Sales summary and key metrics</li>
+                  <li>Top selling products</li>
+                  <li>Payment method distribution</li>
+                  <li>Daily sales breakdown</li>
+                  <li>Order status statistics</li>
+                </ul>
               </div>
             </div>
           </div>
-
-          <!-- Sales/Order Statistics Section -->
-          <div class="sales-stats">
-            <h2>Sales/Order Statistics</h2>
-            <canvas id="salesChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    <!-- Order Status Overview & Sales Chart -->
+    <div class="row">
+      <div class="col-8">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Sales Performance</h5>
+            <div>
+              <button class="btn btn-sm btn-primary">Daily</button>
+              <button class="btn btn-sm btn-primary" style="opacity: 0.7;">Weekly</button>
+              <button class="btn btn-sm btn-primary" style="opacity: 0.7;">Monthly</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas id="salesChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-4">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Order Status</h5>
+          </div>
+          <div class="card-body">
+            <div style="margin-bottom: 1rem;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span>Pending</span>
+                <span><%= pendingOrders %></span>
+              </div>
+              <div class="progress">
+                <div class="progress-bar" style="width: <%= (pendingOrders / totalOrders * 100) || 0 %>%; background-color: #f39c12;"></div>
+              </div>
+            </div>
+            
+            <div style="margin-bottom: 1rem;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span>Processing</span>
+                <span><%= processingOrders %></span>
+              </div>
+              <div class="progress">
+                <div class="progress-bar" style="width: <%= (processingOrders / totalOrders * 100) || 0 %>%; background-color: #3498db;"></div>
+              </div>
+            </div>
+            
+            <div style="margin-bottom: 1rem;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span>Shipped</span>
+                <span><%= shippedOrders %></span>
+              </div>
+              <div class="progress">
+                <div class="progress-bar" style="width: <%= (shippedOrders / totalOrders * 100) || 0 %>%; background-color: #9b59b6;"></div>
+              </div>
+            </div>
+            
+            <div style="margin-bottom: 1rem;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span>Delivered</span>
+                <span><%= deliveredOrders %></span>
+              </div>
+              <div class="progress">
+                <div class="progress-bar" style="width: <%= (deliveredOrders / totalOrders * 100) || 0 %>%; background-color: #2ecc71;"></div>
+              </div>
+            </div>
+            
+            <div style="margin-bottom: 1rem;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span>Cancelled</span>
+                <span><%= cancelledOrders %></span>
+              </div>
+              <div class="progress">
+                <div class="progress-bar" style="width: <%= (cancelledOrders / totalOrders * 100) || 0 %>%; background-color: #e74c3c;"></div>
+              </div>
+            </div>
+            
+            <div>
+              <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span>Returns</span>
+                <span><%= returnedOrders %></span>
+              </div>
+              <div class="progress">
+                <div class="progress-bar" style="width: <%= (returnedOrders / totalOrders * 100) || 0 %>%; background-color: #f1c40f;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Recent Orders -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Recent Orders</h5>
+            <button class="btn btn-sm btn-primary">View All</button>
+          </div>
+          <div class="card-body">
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Payment</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (recentOrders && recentOrders.length > 0) { %>
+                    <% recentOrders.forEach(order => { %>
+                      <tr>
+                        <td>#<%= order.orderId.substring(0, 8).toUpperCase() %></td>
+                        <td><%= order.userId ? order.userId.name : 'Unknown User' %></td>
+                        <td><%= order.formattedDate %></td>
+                        <td>₹<%= order.finalAmount.toFixed(2) %></td>
+                        <td>
+                          <% let paymentIcon = 'credit-card'; %>
+                          <% if (order.paymentMethod === 'cod') paymentIcon = 'money-bill'; %>
+                          <% if (order.paymentMethod === 'wallet') paymentIcon = 'wallet'; %>
+                          <% if (order.paymentMethod === 'upi') paymentIcon = 'mobile-alt'; %>
+                          <% if (order.paymentMethod === 'paypal') paymentIcon = 'paypal'; %>
+                          <i class="fas fa-<%= paymentIcon %>"></i> 
+                          <%= order.paymentMethod === 'razorpay' ? 'Razorpay' : 
+                             order.paymentMethod === 'cod' ? 'Cash on Delivery' :
+                             order.paymentMethod === 'paypal' ? 'PayPal' :
+                             order.paymentMethod === 'upi' ? 'UPI' : 'Wallet' %>
+                        </td>
+                        <td>
+                          <% let statusClass = ''; %>
+                          <% if (order.status === 'Delivered') statusClass = 'status-delivered'; %>
+                          <% if (order.status === 'Shipped') statusClass = 'status-shipped'; %>
+                          <% if (order.status === 'Processing') statusClass = 'status-processing'; %>
+                          <% if (order.status === 'Pending') statusClass = 'status-pending'; %>
+                          <% if (order.status === 'Cancelled') statusClass = 'status-cancelled'; %>
+                          <% if (order.status.includes('Return')) statusClass = 'status-returned'; %>
+                          <span class="status-badge <%= statusClass %>"><%= order.status %></span>
+                        </td>
+                      </tr>
+                    <% }); %>
+                  <% } else { %>
+                    <tr>
+                      <td colspan="7" class="text-center">No recent orders found</td>
+                    </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Product & User Stats -->
+    <div class="row">
+      <div class="col-6">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Top Products</h5>
+          </div>
+          <div class="card-body">
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Product Name</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Status</th>
+                    <th>Views</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (topProducts && topProducts.length > 0) { %>
+                    <% topProducts.forEach(product => { %>
+                      <tr>
+                        <td><%= product.productName %></td>
+                        <td>₹<%= product.salePrice.toFixed(2) %></td>
+                        <td><%= product.quantity %></td>
+                        <td>
+                          <% let statusClass = ''; %>
+                          <% if (product.status === 'Available') statusClass = 'status-delivered'; %>
+                          <% if (product.status === 'Out of Stock') statusClass = 'status-cancelled'; %>
+                          <% if (product.status === 'Discontinued') statusClass = 'status-pending'; %>
+                          <span class="status-badge <%= statusClass %>"><%= product.status %></span>
+                        </td>
+                        <td><%= product.viewCount %></td>
+                      </tr>
+                    <% }); %>
+                  <% } else { %>
+                    <tr>
+                      <td colspan="5" class="text-center">No products found</td>
+                    </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-6">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Recently Registered Users</h5>
+          </div>
+          <div class="card-body">
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Joined</th>
+                    <th>Orders</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (recentUsers && recentUsers.length > 0) { %>
+                    <% recentUsers.forEach(user => { %>
+                      <tr>
+                        <td><%= user.name %></td>
+                        <td><%= user.email %></td>
+                        <td><%= user.formattedDate %></td>
+                        <td><%= user.orderCount %></td>
+                        <td>
+                          <span class="status-badge <%= user.isBlocked ? 'status-cancelled' : 'status-delivered' %>">
+                            <%= user.isBlocked ? 'Blocked' : 'Active' %>
+                          </span>
+                        </td>
+                      </tr>
+                    <% }); %>
+                  <% } else { %>
+                    <tr>
+                      <td colspan="5" class="text-center">No recent users found</td>
+                    </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Payment Method Distribution -->
+    <div class="row">
+      <div class="col-6">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Payment Methods</h5>
+          </div>
+          <div class="card-body">
+            <div class="chart-container" style="height: 250px;">
+              <canvas id="paymentMethodChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-6">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Return Reasons</h5>
+          </div>
+          <div class="card-body">
+            <div class="chart-container" style="height: 250px;">
+              <canvas id="returnReasonsChart"></canvas>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    var ctx = document.getElementById('salesChart').getContext('2d');
-    var salesChart = new Chart(ctx, {
+    // Sales Chart
+    const salesCtx = document.getElementById('salesChart').getContext('2d');
+    const monthlySalesData = <%- JSON.stringify(monthlySales) %>;
+    const salesChart = new Chart(salesCtx, {
       type: 'line',
       data: {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         datasets: [{
           label: 'Sales',
-          data: [12000, 15000, 10000, 17000, 14000, 19000, 22000],
-          borderColor: 'rgba(75, 192, 192, 1)',
-          backgroundColor: 'rgba(75, 192, 192, 0.2)'
+          data: monthlySalesData,
+          borderColor: '#3498db',
+          backgroundColor: 'rgba(52, 152, 219, 0.1)',
+          tension: 0.4,
+          fill: true
         }]
       },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: function(value) {
+                return '₹' + value.toLocaleString();
+              }
+            }
+          }
+        }
+      }
     });
+    
+    // Payment Method Chart
+    const paymentCtx = document.getElementById('paymentMethodChart').getContext('2d');
+    const paymentMethodsData = <%- JSON.stringify(paymentMethods.map(method => method.count)) %>;
+    const paymentMethodsLabels = <%- JSON.stringify(paymentMethods.map(method => method.name)) %>;
+    
+    const paymentChart = new Chart(paymentCtx, {
+      type: 'doughnut',
+      data: {
+        labels: paymentMethodsLabels,
+        datasets: [{
+          data: paymentMethodsData,
+          backgroundColor: [
+            '#3498db',
+            '#9b59b6',
+            '#e67e22',
+            '#2ecc71',
+            '#f1c40f'
+          ],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'right'
+          }
+        }
+      }
+    });
+    
+    // Return Reasons Chart
+    const returnsCtx = document.getElementById('returnReasonsChart').getContext('2d');
+    
+    // Default data if no return reasons exist
+    let returnReasonsData = [35, 20, 15, 12, 10, 8];
+    let returnReasonsLabels = [
+      'Defective/Damaged', 
+      'Wrong Item', 
+      'Size/Fit Issue', 
+      'Quality Issue', 
+      'Not as Described', 
+      'Other'
+    ];
+    
+    <% if (returnReasons && returnReasons.length > 0) { %>
+      returnReasonsData = <%- JSON.stringify(returnReasons.map(reason => reason.count)) %>;
+      returnReasonsLabels = <%- JSON.stringify(returnReasons.map(reason => reason._id || 'Other')) %>;
+    <% } %>
+    
+    const returnsChart = new Chart(returnsCtx, {
+      type: 'pie',
+      data: {
+        labels: returnReasonsLabels,
+        datasets: [{
+          data: returnReasonsData,
+          backgroundColor: [
+            '#e74c3c',
+            '#f39c12',
+            '#3498db',
+            '#2ecc71',
+            '#9b59b6',
+            '#95a5a6'
+          ],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'right'
+          }
+        }
+      }
+    });
+    
+    // Time range selector functionality
+    document.getElementById('timeRangeSelect').addEventListener('change', function() {
+      // This would normally trigger an AJAX request to fetch data for the selected time range
+      // For demonstration purposes, we'll just show an alert
+      alert('Time range changed to: ' + this.value + '\nIn a real application, this would refresh the dashboard data.');
+    });
+
+  // Report Generation Handlers
+  document.addEventListener('DOMContentLoaded', function() {
+      const reportButtons = document.querySelectorAll('.report-btn');
+      const reportPeriodSelect = document.getElementById('reportPeriod');
+      
+      reportButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const reportType = this.getAttribute('data-type');
+          const period = reportPeriodSelect.value;
+          
+          // Show toast notification
+          showToast(`Generating ${reportType.toUpperCase()} report...`);
+          
+          // Download the report
+          window.location.href = `/admin/reports/${reportType}/${period}`;
+        });
+      });
+      
+      // Toast notification function
+      function showToast(message) {
+        // Check if we already have a toast container
+        let toastContainer = document.querySelector('.toast-container');
+        
+        if (!toastContainer) {
+          toastContainer = document.createElement('div');
+          toastContainer.className = 'toast-container';
+          document.body.appendChild(toastContainer);
+          
+          // Add styling for toast container if not already in CSS
+          toastContainer.style.position = 'fixed';
+          toastContainer.style.bottom = '20px';
+          toastContainer.style.right = '20px';
+          toastContainer.style.zIndex = '9999';
+        }
+        
+        // Create toast element
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = `
+          <div style="background-color: #333; color: white; padding: 12px 20px; border-radius: 4px; margin-top: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 10px;">
+            <div style="width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: white; animation: spin 1s linear infinite;"></div>
+            <div>${message}</div>
+          </div>
+        `;
+        
+        toastContainer.appendChild(toast);
+        
+        // Remove toast after 5 seconds
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          toast.style.transition = 'opacity 0.5s ease';
+          
+          setTimeout(() => {
+            toastContainer.removeChild(toast);
+          }, 500);
+        }, 5000);
+      }
+    });
+
+    // Add keyframes for spinner if not in your CSS
+    const styleSheet = document.createElement('style');
+    styleSheet.innerHTML = `
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+    `;
+    document.head.appendChild(styleSheet);
+
   </script>
+</body>
+</html>
 
-
-
-
-
-
-  <%- include("../../views/partials/admin/footer") %>
+<%- include("../../views/partials/admin/footer") %>

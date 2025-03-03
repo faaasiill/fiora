@@ -108,6 +108,22 @@
                             </label>
                         </div>
 
+                        <!-- Wallet Payment -->
+                        <div class="payment-method">
+                            <input type="radio" name="payment" id="wallet">
+                            <label class="payment-card" for="wallet">
+                                <div class="payment-icon">
+                                    <span class="material-symbols-outlined">account_balance_wallet</span>
+                                </div>
+                                <div class="payment-details">
+                                    <div class="payment-title">Wallet Payment</div>
+                                    <div class="payment-description">Pay using your wallet balance: ₹<span
+                                            id="wallet-balance"><%= Wb %></span></div>
+                                </div>
+                                <div class="payment-indicator"></div>
+                            </label>
+                        </div>
+
                         <!-- PayPal -->
                         <div class="payment-method">
                             <input type="radio" name="payment" id="paypal">
@@ -193,7 +209,7 @@
                             <span>Total</span>
                             <span>₹<%= cartTotal.final %></span>
                         </div>
-                        
+
                         <button class="continue-btn">PLACE ORDER</button>
             </div>
         </aside>
@@ -305,6 +321,24 @@
 
                 // Initialize default selection
                 setDefaultPayment();
+
+
+                // Disable wallet option if balance is insufficient
+                const walletBalance = parseFloat(document.getElementById('wallet-balance').textContent);
+                const orderTotal = parseFloat(document.querySelector('.order-total-value').textContent.replace('₹', ''));
+
+                if (walletBalance < orderTotal) {
+                    const walletMethod = document.querySelector('#wallet');
+                    if (walletMethod) {
+                        walletMethod.disabled = true;
+                        walletMethod.closest('.payment-method').classList.add('disabled');
+                        walletMethod.closest('.payment-card').setAttribute('title', 'Insufficient wallet balance');
+
+                        // Add insufficient balance message
+                        const walletDesc = walletMethod.closest('.payment-method').querySelector('.payment-description');
+                        walletDesc.innerHTML += '<span class="text-danger"> (Insufficient balance)</span>';
+                    }
+                }
             });
             // DOM Elements
             const aside = document.querySelector('aside');
@@ -561,6 +595,9 @@
                         } else if (selectedPayment.id === 'upi') {
                             // Handle UPI payment initiation
                             handleUPIPayment(data.orderId);
+                        } else if (selectedPayment.id === 'wallet') {
+                            // Handle wallet payment
+                            handleWalletPayment(data.orderId);
                         }
                     } else {
                         throw new Error(data.message || 'Failed to place order');
@@ -757,7 +794,41 @@
                     });
                 }
             }
-            
+
+
+            async function handleWalletPayment(orderId) {
+                try {
+                    // Show loading state
+                    Swal.fire({
+                        title: 'Processing Wallet Payment',
+                        text: 'Please wait...',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        willOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    // We've already processed the payment server-side
+                    // Just need to verify and redirect
+                    await Swal.fire({
+                        icon: 'success',
+                        title: 'Payment Successful!',
+                        text: 'Your order has been placed successfully',
+                        showConfirmButton: true
+                    });
+
+                    // Redirect to order confirmation
+                    window.location.href = `/order-confirmation/${orderId}`;
+
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Payment Error',
+                        text: error.message || 'Failed to process wallet payment'
+                    });
+                }
+            }
         </script>
 </body>
 

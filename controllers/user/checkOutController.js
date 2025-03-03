@@ -1,6 +1,7 @@
 const User = require("../../models/userSchema");
 const Cart = require("../../models/cartSchema");
 const State = require("../../models/stateSchema");
+const Wallet = require("../../models/walletSchema");
 const Order = require("../../models/orderSchema");
 const Product = require("../../models/productSchema");
 const Address = require("../../models/addressSchema");
@@ -43,6 +44,11 @@ const loadCheckOut = async (req, res) => {
     const userId = req.session.user;
     const user = await User.findById(userId).select("name email");
     const addresses = await Address.findOne({ userId });
+    // Fetch user wallet
+    const wallet = await Wallet.findOne({ userId });
+    const walletBalance = wallet ? wallet.balance : 0;
+
+    const Wb = Math.round(walletBalance);
 
     const cart = await Cart.findOne({ userId }).populate({
       path: "items.productId",
@@ -53,7 +59,6 @@ const loadCheckOut = async (req, res) => {
       return res.redirect("/cart");
     }
     
-
     // Check stock availability for all items
     const stockValidation = await validateCartStock(cart.items);
     if (!stockValidation.isValid) {
@@ -63,7 +68,6 @@ const loadCheckOut = async (req, res) => {
         invalidItems: stockValidation.invalidItems
       });
     }
-
 
     const cartItems = cart.items
       .filter((item) => item.status === "placed")
@@ -89,6 +93,7 @@ const loadCheckOut = async (req, res) => {
       cartItems,
       cartTotal: cart.cartTotal,
       states,
+      Wb, 
     });
   } catch (error) {
     console.error("Checkout load error:", error);
@@ -106,7 +111,7 @@ const placeOrder = async (req, res) => {
     const { addressId, addressDetails, paymentMethod } = req.body;
 
     // Validate payment method
-    const validPaymentMethods = ["cod", "razorpay", "paypal", "upi"];
+    const validPaymentMethods = ["cod", "razorpay", "paypal", "upi", "wallet"];
     if (!validPaymentMethods.includes(paymentMethod)) {
       return res.status(400).json({
         status: false,
@@ -197,6 +202,60 @@ const placeOrder = async (req, res) => {
     if (paymentMethod === "cod") {
       await Cart.findOneAndDelete({ userId });
     }
+
+
+
+// Add this code inside the placeOrder function, after validating payment method
+if (paymentMethod === "wallet") {
+  // Get user's wallet
+  const wallet = await Wallet.findOne({ userId });
+  
+  if (!wallet) {
+    return res.status(400).json({
+      status: false,
+      message: "Wallet not found for this user",
+    });
+  }
+  
+  // Check if wallet has sufficient balance
+  if (wallet.balance < cart.cartTotal.final) {
+    return res.status(400).json({
+      status: false,
+      message: "Insufficient wallet balance",
+    });
+  }
+  
+  // Deduct amount from wallet
+  const transaction = {
+    amount: cart.cartTotal.final,
+    type: "debit",
+    status: "completed",
+    source: "wallet_payment",
+    description: `Payment for order #${newOrder.orderId}`,
+    metadata: {
+      orderDetails: {
+        orderNumber: newOrder.orderId,
+        items: orderItems.map(item => ({
+          productId: item.product,
+          quantity: item.quantity,
+          price: item.price
+        }))
+      }
+    },
+    completedAt: Date.now()
+  };
+  
+  // Add transaction to wallet and update balance
+  await Wallet.addTransaction(userId, transaction);
+  
+  // Update order payment status
+  newOrder.paymentStatus = "completed";
+  newOrder.paymentDone = true;
+  await newOrder.save();
+  
+  // Delete cart after successful wallet payment
+  await Cart.findOneAndDelete({ userId });
+}
 
     res.status(200).json({
       status: true,
@@ -429,5 +488,5 @@ module.exports = {
   placeOrder,
   orderConfirmation,
   createRazorpayOrder,
-  verifyRazorpayPayment
+  verifyRazorpayPayment,
 };

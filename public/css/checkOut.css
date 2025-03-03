@@ -663,3 +663,17 @@
   background-color: #28a745;
   color: white;
 }
+
+
+.payment-method.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.payment-method.disabled .payment-card {
+  pointer-events: none;
+}
+
+.text-danger {
+  color: #dc3545;
+}
