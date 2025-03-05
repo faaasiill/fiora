@@ -41,7 +41,15 @@ const walletSchema = new Schema({
       },
       source: {
         type: String,
-        enum: ["order_return", "order_cancellation", "admin_credit", "wallet_payment", "refund", "other"],
+        enum: [
+          "order_return", 
+          "order_cancellation", 
+          "admin_credit", 
+          "wallet_payment", 
+          "refund", 
+          "other", 
+          "referral_bonus" // Add this new value
+        ],
         required: true
       },
       description: {

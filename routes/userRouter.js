@@ -43,6 +43,8 @@ router.get(
     res.redirect("/");
   }
 );
+// routes/userRouter.js
+router.get("/referral", userController.handleReferral);
 
 router.get("/login", userController.loadLogin);
 router.post("/login", userController.login);

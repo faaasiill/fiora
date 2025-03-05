@@ -10,6 +10,14 @@ const env = require("dotenv").config();
 const session = require("express-session");
 const { response } = require("express");
 
+
+const generateReferralLink = (userId) => {
+  const baseUrl = process.env.NODE_ENV === "development" 
+    ? process.env.DEVELOPMENT_FRONTEND_URL 
+    : process.env.PRODUCTION_FRONTEND_URL;
+  return `${baseUrl}/referral?code=${userId}`;
+};
+
 // Function for genarate OTP
 function generateOtp() {
   const digits = "1234567890";
@@ -204,26 +212,33 @@ const userProfile = async (req, res) => {
       .sort({ createdOn: -1 });
 
     const formattedOrders = orders.map((order) => {
-      const formattedDate = new Date(order.createdOn).toLocaleDateString(
-        "en-US",
-        {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        }
-      );
-
-      return {
-        ...order._doc,
-        formattedDate,
-      };
+      const formattedDate = new Date(order.createdOn).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+      return { ...order._doc, formattedDate };
     });
+
+    const referralLink = generateReferralLink(userId);
+
+    // Calculate referral earnings
+    let referralEarnings = 0;
+    if (wallet && wallet.transactions.length > 0) {
+      referralEarnings = wallet.transactions
+        .filter(
+          (txn) => txn.source === "referral_bonus" && txn.status === "completed"
+        )
+        .reduce((sum, txn) => sum + txn.amount, 0);
+    }
 
     res.render("userProfile", {
       user: userData,
       address: addressData,
       orders: formattedOrders,
-      wallet: wallet || { transactions: [] }
+      wallet: wallet || { transactions: [] },
+      referralLink,
+      referralEarnings, // Pass referral earnings to the view
     });
   } catch (error) {
     console.error("Error retrieving profile data", error);

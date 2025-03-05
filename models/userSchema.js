@@ -66,21 +66,32 @@ const userSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-  referalCode: {
+  referralCode: {
     type: String,
-    // required: true
+    unique: true,
+    default: function() {
+      return this._id.toString(); // Use user ID as referral code
+    }
+  },
+  referredBy: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    default: null
   },
   redeemed: {
     type: Boolean,
-    // default: false
+    default: false
   },
   redeemedUsers: [
     {
       type: Schema.Types.ObjectId,
-      ref: "User",
-      // required: true
-    },
+      ref: "User"
+    }
   ],
+  redeemed: {
+    type: Boolean,
+    // default: false
+  },
   searchHistory: [
     {
       catogory: {

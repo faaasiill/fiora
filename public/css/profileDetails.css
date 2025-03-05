@@ -1539,3 +1539,138 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 6px 15px rgba(44, 130, 201, 0.4);
 }
+/* Referral Section Specific Styling */
+.referral-code {
+  background: linear-gradient(
+      135deg,
+      var(--card-bg) 0%,
+      rgba(30, 41, 59, 0.8) 100%
+  );
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--card-shadow);
+  transition: var(--transition);
+}
+
+.referral-code:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.referral-code p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* New input group styling */
+.input-group {
+  position: relative;
+  display: flex;
+  width: 100%;
+}
+
+.referral-code input[type="text"] {
+  padding: 0.8rem 4.5rem 0.8rem 1rem; /* Added right padding for button space */
+  background-color: var(--input-bg);
+  border: 0px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  width: 100%;
+  transition: var(--transition);
+  text-align: center;
+}
+
+.referral-code input[type="text"]:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.referral-code button {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0.5rem 1rem; /* Reduced padding for better fit */
+  background: linear-gradient(
+      90deg,
+      var(--accent) 0%,
+      var(--accent-hover) 100%
+  );
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: var(--transition);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.referral-code button:hover {
+  transform: translateY(-50%) translateY(-2px); /* Adjusted for positioning */
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+}
+
+/* Rest of your existing styles remain unchanged */
+.content-section p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin: 0.5rem 0;
+  text-align: start;
+}
+
+.section-title {
+  margin-bottom: 2rem;
+  font-weight: 600;
+  position: relative;
+  padding-bottom: 0.8rem;
+  color: var(--text-primary);
+  font-size: 1.5rem;
+}
+
+.section-title::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(
+      90deg,
+      var(--accent) 0%,
+      var(--accent-hover) 100%
+  );
+  border-radius: 2px;
+}
+
+/* Updated Responsive Adjustments */
+@media screen and (max-width: 768px) {
+  .referral-code {
+      padding: 1rem;
+  }
+
+  .referral-code input[type="text"] {
+      padding: 0.8rem 4rem 0.8rem 1rem; /* Maintain button space */
+  }
+
+  .referral-code button {
+      right: 0.3rem;
+      padding: 0.4rem 0.8rem; /* Slightly smaller for mobile */
+  }
+}
+
+.gradient-text {
+  background: linear-gradient(to right, #0043bc, #4a7eec);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 500 !important;
+  letter-spacing: -1px !important;
+}
