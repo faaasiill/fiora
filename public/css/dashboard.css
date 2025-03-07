@@ -71,12 +71,11 @@ body {
 /* Card styles */
 .card {
   background: white;
-  border-radius: 10px;
-  border: 1px solid var(--gray-200);
+  border-radius: 0px;
+  border: 0px solid var(--gray-200);
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   height: 100%;
-  box-shadow: var(--card-shadow);
 }
 
 .card:hover {
