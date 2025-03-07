@@ -82,11 +82,12 @@
     </select>
     <select id="filter-category" onchange="filterProducts()">
       <option value="all">All Categories</option>
+      <option value="trending">Trending</option>
       <% for (let i=0; i < cat.length; i++) { %>
         <option value="<%= cat[i]._id %>">
           <%= cat[i].name %>
         </option>
-        <% } %>
+      <% } %>
     </select>
   </div>
 
@@ -497,56 +498,63 @@
       appendProducts(products, true); // Clear existing products and add new ones
     }
 
-    async function fetchProducts() {
-      try {
-        const queryParams = new URLSearchParams({
-          sort: currentSort,
-          category: currentCategory,
-          search: currentSearch,
-          page: currentPage,
-          limit: productsPerPage
-        });
+async function fetchProducts() {
+  try {
+    const queryParams = new URLSearchParams({
+      sort: currentSort,
+      category: currentCategory,
+      search: currentSearch,
+      page: currentPage,
+      limit: productsPerPage
+    });
 
-        const response = await fetch(`/api/products?${queryParams.toString()}`, {
-          headers: { "Accept": "application/json" }
-        });
+    console.log("Fetching products with params:", Object.fromEntries(queryParams)); // Debug log
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+    const response = await fetch(`/api/products?${queryParams.toString()}`, {
+      headers: { "Accept": "application/json" }
+    });
 
-        const data = await response.json();
-        let sortedProducts = [...data.products];
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
 
-        switch (currentSort) {
-          case 'a-to-z':
-            sortedProducts.sort((a, b) => a.productName.localeCompare(b.productName));
-            break;
-          case 'z-to-a':
-            sortedProducts.sort((a, b) => b.productName.localeCompare(a.productName));
-            break;
-          case 'low-to-high':
-            sortedProducts.sort((a, b) => parseFloat(a.salePrice) - parseFloat(b.salePrice));
-            break;
-          case 'high-to-low':
-            sortedProducts.sort((a, b) => parseFloat(b.salePrice) - parseFloat(a.salePrice));
-            break;
-        }
+    const data = await response.json();
+    console.log("Received data:", data); // Debug log
+    
+    let sortedProducts = [...data.products];
 
-        if (currentPage === 1) {
-          updateProductDisplay(sortedProducts); // Clear and update on first page
-        } else {
-          appendProducts(sortedProducts); // Append without clearing for subsequent pages
-        }
-
-        updateLoadMoreButton(data.hasMore);
-        updateURL();
-        toggleNoResultsMessage(sortedProducts.length === 0);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-        showErrorMessage("Failed to fetch products. Please try again.");
+    // Only sort client-side if not already sorted by server
+    if (currentCategory !== 'trending') {
+      switch (currentSort) {
+        case 'a-to-z':
+          sortedProducts.sort((a, b) => a.productName.localeCompare(b.productName));
+          break;
+        case 'z-to-a':
+          sortedProducts.sort((a, b) => b.productName.localeCompare(a.productName));
+          break;
+        case 'low-to-high':
+          sortedProducts.sort((a, b) => parseFloat(a.salePrice) - parseFloat(b.salePrice));
+          break;
+        case 'high-to-low':
+          sortedProducts.sort((a, b) => parseFloat(b.salePrice) - parseFloat(a.salePrice));
+          break;
       }
     }
+
+    if (currentPage === 1) {
+      updateProductDisplay(sortedProducts); // Clear and update on first page
+    } else {
+      appendProducts(sortedProducts); // Append without clearing for subsequent pages
+    }
+
+    updateLoadMoreButton(data.hasMore);
+    updateURL();
+    toggleNoResultsMessage(sortedProducts.length === 0);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    showErrorMessage("Failed to fetch products. Please try again.");
+  }
+}
 
     async function loadMore() {
       currentPage++;
@@ -647,7 +655,8 @@
 
       handleSearch();
       initializeWishlistStates();
-      fetchProducts();
+      // fetchProducts();
+      initializeFiltersFromURL();
 
       document.addEventListener("scroll", function () {
         const scrollToTopBtn = document.getElementById("scrollToTopBtn");
@@ -668,6 +677,28 @@
         }
       });
     });
+
+    function initializeFiltersFromURL() {
+  const urlParams = new URLSearchParams(window.location.search);
+  
+  // Check if category parameter exists in URL
+  if (urlParams.has('category')) {
+    const categoryFromURL = urlParams.get('category');
+    currentCategory = categoryFromURL;
+    
+    // Update the category select dropdown to match the URL parameter
+    const filterSelect = document.getElementById('filter-category');
+    if (filterSelect && filterSelect.querySelector(`option[value="${categoryFromURL}"]`)) {
+      filterSelect.value = categoryFromURL;
+    }
+    
+    // Reset page to 1 when applying a filter from URL
+    currentPage = 1;
+  }
+  
+  // Always call fetchProducts regardless of whether a category parameter exists
+  fetchProducts();
+}
   </script>
 </body>
 

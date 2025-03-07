@@ -109,7 +109,27 @@ const getProducts = async (req, res) => {
       quantity: { $gt: 0 },
     };
 
-    // Add category filter
+    // Handle "trending" category specially
+    if (category === "trending") {
+      // Sort by viewCount for trending items, limit to 5
+      const trendingProducts = await Product.find({ 
+        isBlocked: { $ne: true },
+        quantity: { $gt: 0 },
+        category: { $in: categories.map((cat) => cat._id) }
+      })
+      .sort({ viewCount: -1 })
+      .limit(4)
+      .lean();
+
+      return res.json({
+        products: trendingProducts,
+        hasMore: false, 
+        total: trendingProducts.length,
+        categories: categories,
+      });
+    }
+
+    // Add category filter for non-trending categories
     if (category !== "all") {
       query.category = category;
     } else {
