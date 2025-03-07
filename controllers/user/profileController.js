@@ -12,10 +12,14 @@ const { response } = require("express");
 
 
 const generateReferralLink = (userId) => {
+  // Make sure userId is a string, not an object
+  const referralCode = userId.toString();
+  
   const baseUrl = process.env.NODE_ENV === "development" 
     ? process.env.DEVELOPMENT_FRONTEND_URL 
     : process.env.PRODUCTION_FRONTEND_URL;
-  return `${baseUrl}/referral?code=${userId}`;
+  
+  return `${baseUrl}/referral?code=${referralCode}`;
 };
 
 // Function for genarate OTP

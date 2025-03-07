@@ -15,6 +15,16 @@ const handleReferral = async (req, res) => {
     if (code) {
       // Store referral code in session
       req.session.referralCode = code;
+      
+      // Also store in a global variable for OAuth flows
+      global.pendingReferral = { code: code, timestamp: Date.now() };
+      
+      // Set a timeout to clear the referral after 1 hour (optional)
+      setTimeout(() => {
+        if (global.pendingReferral && global.pendingReferral.timestamp === Date.now()) {
+          delete global.pendingReferral;
+        }
+      }, 3600000); // 1 hour
     }
     res.redirect("/signup");
   } catch (error) {

@@ -21,6 +21,13 @@ router.post("/resend-otp", userController.resendOtp);
 //google Routes
 router.get(
   "/auth/google/",
+  (req, res, next) => {
+    // If there's a referral code in the session, store it temporarily in global state
+    if (req.session.referralCode) {
+      global.pendingReferral = { code: req.session.referralCode, timestamp: Date.now() };
+    }
+    next();
+  },
   passport.authenticate("google", { scope: ["profile", "email"] })
 );
 router.get(
@@ -31,11 +38,20 @@ router.get(
   }
 );
 
+
 // Facebook Routes
 router.get(
   "/auth/facebook",
+  (req, res, next) => {
+    // If there's a referral code in the session, store it temporarily in global state
+    if (req.session.referralCode) {
+      global.pendingReferral = { code: req.session.referralCode, timestamp: Date.now() };
+    }
+    next();
+  },
   passport.authenticate("facebook", { scope: ["email"] })
 );
+
 router.get(
   "/auth/facebook/callback",
   passport.authenticate("facebook", { failureRedirect: "/signup" }),

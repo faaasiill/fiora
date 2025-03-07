@@ -2,6 +2,7 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const FacebookStrategy = require("passport-facebook").Strategy;
 const User = require("../models/userSchema");
+const Wallet = require("../models/walletSchema"); // Import Wallet model
 require("dotenv").config();
 
 // Google Strategy
@@ -24,6 +25,59 @@ passport.use(
           });
 
           await user.save();
+          
+          // Create wallet for new user
+          const newUserWallet = new Wallet({
+            userId: user._id,
+            balance: 0
+          });
+          await newUserWallet.save();
+          
+          // Handle referral if exists in session
+          if (global.pendingReferral && global.pendingReferral.code) {
+            const referrer = await User.findById(global.pendingReferral.code);
+            if (referrer && !referrer.redeemed) {
+              // Update the new user with referral information
+              user.referredBy = referrer._id;
+              await user.save();
+              
+              // Process referral bonus
+              const referralBonus = parseInt(process.env.REFERRAL_BONUS_AMOUNT) || 10;
+              
+              // Credit referrer
+              let referrerWallet = await Wallet.findOne({ userId: referrer._id });
+              if (!referrerWallet) {
+                referrerWallet = new Wallet({ userId: referrer._id, balance: 0 });
+                await referrerWallet.save();
+              }
+              
+              // Add transaction for referrer
+              await Wallet.addTransaction(referrer._id, {
+                amount: referralBonus,
+                type: "credit",
+                status: "completed",
+                source: "referral_bonus",
+                description: `Referral bonus for inviting ${user.email}`
+              });
+              
+              // Credit new user
+              await Wallet.addTransaction(user._id, {
+                amount: referralBonus,
+                type: "credit",
+                status: "completed",
+                source: "referral_bonus",
+                description: "Referral signup bonus"
+              });
+              
+              // Update referrer's redeemed status
+              referrer.redeemed = true;
+              referrer.redeemedUsers.push(user._id);
+              await referrer.save();
+              
+              // Clear the global pending referral
+              delete global.pendingReferral;
+            }
+          }
         }
 
         return done(null, user);
@@ -34,7 +88,7 @@ passport.use(
   )
 );
 
-// Facebook Strategy
+// Facebook Strategy (similar changes)
 passport.use(
   new FacebookStrategy(
     {
@@ -55,6 +109,59 @@ passport.use(
           });
 
           await user.save();
+          
+          // Create wallet for new user
+          const newUserWallet = new Wallet({
+            userId: user._id,
+            balance: 0
+          });
+          await newUserWallet.save();
+          
+          // Handle referral if exists in session
+          if (global.pendingReferral && global.pendingReferral.code) {
+            const referrer = await User.findById(global.pendingReferral.code);
+            if (referrer && !referrer.redeemed) {
+              // Update the new user with referral information
+              user.referredBy = referrer._id;
+              await user.save();
+              
+              // Process referral bonus
+              const referralBonus = parseInt(process.env.REFERRAL_BONUS_AMOUNT) || 10;
+              
+              // Credit referrer
+              let referrerWallet = await Wallet.findOne({ userId: referrer._id });
+              if (!referrerWallet) {
+                referrerWallet = new Wallet({ userId: referrer._id, balance: 0 });
+                await referrerWallet.save();
+              }
+              
+              // Add transaction for referrer
+              await Wallet.addTransaction(referrer._id, {
+                amount: referralBonus,
+                type: "credit",
+                status: "completed",
+                source: "referral_bonus",
+                description: `Referral bonus for inviting ${user.email}`
+              });
+              
+              // Credit new user
+              await Wallet.addTransaction(user._id, {
+                amount: referralBonus,
+                type: "credit",
+                status: "completed",
+                source: "referral_bonus",
+                description: "Referral signup bonus"
+              });
+              
+              // Update referrer's redeemed status
+              referrer.redeemed = true;
+              referrer.redeemedUsers.push(user._id);
+              await referrer.save();
+              
+              // Clear the global pending referral
+              delete global.pendingReferral;
+            }
+          }
         }
 
         return done(null, user);
@@ -82,7 +189,7 @@ passport.deserializeUser(async (id, done) => {
 // Middleware to store user in req.session.user
 const sessionMiddleware = (req, res, next) => {
   if (req.isAuthenticated()) {
-    req.session.user = req.user;
+    req.session.user = req.user._id; // Store only the user ID, not the entire user object
   }
   next();
 };
