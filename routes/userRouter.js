@@ -12,6 +12,7 @@ const upload = require("../middlewares/multerConfig");
 const passport = require("passport");
 
 router.get("/", userController.loadHomepage);
+router.get('/search-products', userController.searchProducts);
 router.get("/pageNotFound", userController.pageNotFound);
 //signup management 
 router.get("/signup", userController.loadSignup);

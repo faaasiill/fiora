@@ -419,6 +419,34 @@ const postContactForm = async (req, res) => {
   }
 };
 
+const searchProducts = async (req, res) => {
+  try {
+    const { q } = req.query;
+    const categories = await Category.find({ isListed: true });
+
+    const products = await Product.find({
+      $and: [
+        {
+          $or: [
+            { productName: { $regex: new RegExp(q, 'i') } }, // Improved regex for partial matches
+            { description: { $regex: new RegExp(q, 'i') } }
+          ]
+        },
+        { isBlocked: false },
+        { category: { $in: categories.map(cat => cat._id) } },
+        { quantity: { $gt: 0 } }
+      ]
+    })
+    .limit(10)
+    .lean();
+
+    res.json(products);
+  } catch (error) {
+    console.error('Search error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
 module.exports = {
   loadHomepage,
   loadSignup,
@@ -432,5 +460,6 @@ module.exports = {
   handleReferral,
   getAboutUs,
   getContactUs,
-  postContactForm
+  postContactForm,
+  searchProducts
 };

@@ -282,3 +282,92 @@ const WishlistManager = {
 // Initialize wishlist functionality
 WishlistManager.initialize();
 
+document.addEventListener('DOMContentLoaded', () => {
+  const searchInput = document.getElementById('searchInput');
+  const searchDropdown = document.getElementById('searchDropdown');
+  const searchContent = document.getElementById('searchContent');
+  
+  let debounceTimer;
+
+  searchInput.addEventListener('input', async (e) => {
+    clearTimeout(debounceTimer);
+    
+    debounceTimer = setTimeout(async () => {
+      const query = e.target.value.trim();
+      
+      if (query.length >= 2) {
+        try {
+          const response = await fetch(`/search-products?q=${encodeURIComponent(query)}`);
+          const products = await response.json();
+          
+          if (products.length > 0) {
+            searchContent.innerHTML = `
+              <div class="product-slider">
+                <button class="nav-arrow prev-arrow">
+                  <span class="material-symbols-outlined">arrow_back_ios</span>
+                </button>
+                <div class="product-grid">
+                  ${products.map(product => `
+                    <div class="product-item">
+                      <div style="position: relative;">
+                        <a href="/productDetails?id=${product._id}">
+                          <img src="${product.productImage[0]}" alt="${product.productName}" class="product-img">
+                        </a>
+                        <button class="favorite-btn" data-product-id="${product._id}"
+                          onclick="WishlistManager.toggleWishlist(event, '${product._id}', this)">
+                          <span class="material-symbols-outlined favorite-icon">favorite</span>
+                        </button>
+                      </div>
+                      <h3 class="product-title">${product.productName}</h3>
+                      <p class="product-cost">
+                        ₹${product.salePrice}
+                        ${product.regularPrice ? `<span class="previous-price">₹${product.regularPrice}</span>` : ''}
+                      </p>
+                    </div>
+                  `).join('')}
+                </div>
+                <button class="nav-arrow next-arrow">
+                  <span class="material-symbols-outlined">arrow_forward_ios</span>
+                </button>
+              </div>
+            `;
+            searchDropdown.classList.add('active');
+            
+            const grid = searchContent.querySelector('.product-grid');
+            const prevArrow = searchContent.querySelector('.prev-arrow');
+            const nextArrow = searchContent.querySelector('.next-arrow');
+            
+            prevArrow.addEventListener('click', () => {
+              grid.scrollBy({ left: -200, behavior: 'smooth' });
+            });
+            
+            nextArrow.addEventListener('click', () => {
+              grid.scrollBy({ left: 200, behavior: 'smooth' });
+            });
+          } else {
+            searchContent.innerHTML = '<p>No products found</p>';
+            searchDropdown.classList.add('active');
+          }
+        } catch (error) {
+          console.error('Search error:', error);
+          searchContent.innerHTML = '<p>Error loading results</p>';
+          searchDropdown.classList.add('active');
+        }
+      } else {
+        searchDropdown.classList.remove('active');
+        searchContent.innerHTML = '';
+      }
+    }, 300);
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!searchInput.contains(e.target) && !searchDropdown.contains(e.target)) {
+      searchDropdown.classList.remove('active');
+      searchContent.innerHTML = '';
+    }
+  });
+
+  searchDropdown.addEventListener('click', (e) => {
+    e.stopPropagation();
+  });
+});
