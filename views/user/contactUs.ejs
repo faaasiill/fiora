@@ -26,7 +26,6 @@
             top: 0;
             z-index: 100;
             background-color: #fff;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .announcement-bar {
@@ -179,11 +178,6 @@
             transition: transform 0.3s ease;
         }
 
-        .contact-section:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
         .contact-section i {
             font-size: 32px;
             margin-bottom: 20px;
@@ -301,11 +295,6 @@
             border-radius: 5px;
             overflow: hidden;
             transition: transform 0.3s ease;
-        }
-
-        .location-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         .location-card img {
@@ -448,7 +437,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             cursor: pointer;
         }
 
@@ -489,6 +477,24 @@
                 flex: 100%;
             }
         }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        
+        .alert-success {
+            background-color: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+        }
+        
+        .alert-danger {
+            background-color: #f2dede;
+            color: #a94442;
+            border: 1px solid #ebccd1;
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -497,7 +503,7 @@
 <body>
     <header>
         <nav class="main-nav">
-            <a href="index.html"><img class="logo" src="/images/Fiora1/2.png" alt="Fiora Logo"></a>
+            <a href="/"><img class="logo" src="/images/Fiora1/2.png" alt="Fiora Logo"></a>
 
             <div class="nav-icons">
                 <a href="/userProfile"><span class="material-symbols-outlined">person</span></a>
@@ -514,7 +520,7 @@
     <h1 class="page-title">CONTACT US</h1>
 
     <div class="zoom-effect">
-        <img src="/api/placeholder/400/320" alt="Fiora Contact Banner" class="hero-image">
+        <img src="/images/contactusbanner1.jpg" alt="Fiora Contact Banner" class="hero-image">
     </div>
 
     <div class="contact-intro">
@@ -534,20 +540,29 @@
             <i class="fa-solid fa-phone"></i>
             <h3>Call Us</h3>
             <p>Monday to Saturday, 10:00 AM - 6:00 PM</p>
-            <a href="tel:+918800112233">+91 8800 112233</a>
+            <a href="tel:+919207928793">+91 9207928793</a>
         </div>
 
         <div class="contact-section">
             <i class="fa-brands fa-whatsapp"></i>
             <h3>WhatsApp</h3>
             <p>For quick assistance</p>
-            <a href="https://wa.me/918800112233">+91 8800 112233</a>
+            <a href="https://wa.me/9207928793">+91 9207928793</a>
         </div>
     </div>
 
     <div class="contact-form-section">
         <h2>SEND US A MESSAGE</h2>
-        <form class="contact-form">
+        
+        <% if (locals.success) { %>
+            <div class="alert alert-success"><%= success %></div>
+        <% } %>
+        
+        <% if (locals.error) { %>
+            <div class="alert alert-danger"><%= error %></div>
+        <% } %>
+        
+        <form class="contact-form" action="/contact-us" method="POST">
             <div class="form-group">
                 <label for="name">Name</label>
                 <input type="text" id="name" name="name" required>
@@ -587,7 +602,7 @@
         <h2>OUR STORE LOCATIONS</h2>
         <div class="locations-grid">
             <div class="location-card">
-                <img src="/api/placeholder/400/320" alt="Delhi Store">
+                <img src="/images/shoppic.jpg" alt="Delhi Store">
                 <div class="location-info">
                     <h3>Delhi Flagship Store</h3>
                     <p>123 Fashion Street, South Extension</p>
@@ -599,7 +614,7 @@
             </div>
             
             <div class="location-card">
-                <img src="/api/placeholder/400/320" alt="Mumbai Store">
+                <img src="/images/shoppic2.jpg" alt="Mumbai Store">
                 <div class="location-info">
                     <h3>Mumbai Store</h3>
                     <p>456 Luxury Mall, Linking Road</p>
@@ -611,7 +626,7 @@
             </div>
             
             <div class="location-card">
-                <img src="/api/placeholder/400/320" alt="Bangalore Store">
+                <img src="/images/shoppic3.jpg" alt="Bangalore Store">
                 <div class="location-info">
                     <h3>Bangalore Store</h3>
                     <p>789 Shopping Avenue, Indiranagar</p>
@@ -634,26 +649,22 @@
         <div class="footer-content">
             <div class="footer-section">
                 <h3>SHOP</h3>
-                <a href="#">New Arrivals</a>
-                <a href="#">Bestsellers</a>
-                <a href="#">Under ₹1999</a>
+                <a href="/products?category=trending">Trending Now</a>
+                <a href="/#newPro">New Arrivals</a>
+                <a href="/products">Under ₹2999</a>
             </div>
 
             <div class="footer-section">
                 <h3>CUSTOMER CARE</h3>
-                <a href="#">Track My Order</a>
-                <a href="#">Return & Exchange</a>
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms Of Service</a>
-                <a href="#">FAQs</a>
+                <a href="/userProfile#orders">Track My Order</a>
+                <a href="/userProfile#orders">Return & Exchange</a>
             </div>
 
             <div class="footer-section">
                 <h3>KNOW US</h3>
-                <a href="#">About Us</a>
-                <a href="#">Product Care</a>
-                <a href="#">Corporate Gifting</a>
-                <a href="#">Fiora Muse</a>
+                <a href="/aboutUs">About Us</a>
+                <a href="/contactUs">Contact Us</a>
+                <a href="/">Fiora Muse</a>
             </div>
 
             <div class="footer-section newsletter">
@@ -674,7 +685,7 @@
     </footer>
 
     <!-- WhatsApp floating button -->
-    <a href="https://wa.me/918800112233" class="whatsapp-button">
+    <a style="text-decoration: none;" href="https://wa.me/9207928793" class="whatsapp-button">
         <i class="fa-brands fa-whatsapp"></i>
     </a>
 </body>

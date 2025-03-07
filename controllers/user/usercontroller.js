@@ -350,6 +350,75 @@ const logout = async (req, res) => {
   }
 };
 
+const getAboutUs = async (req, res) => {
+  try {
+
+    res.render("aboutUs");
+    
+  } catch (error) {
+    res.redirect("/pageNotFound")
+    console.error("getAboutUs error", error);
+  }
+  
+}
+
+const getContactUs = async (req, res) => {
+  try {
+
+    res.render("contactUs");
+    
+  } catch (error) {
+    res.redirect("/pageNotFound")
+    console.error("getAboutUs error", error);
+  }
+  
+}
+
+const postContactForm = async (req, res) => {
+  try {
+    const { name, email, phone, subject, message } = req.body;
+    
+    // Create a transporter object using environment variables
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.NODEMAILER_EMAIL,
+        pass: process.env.NODEMAILER_PASSWORD
+      }
+    });
+    
+    // Setup email data
+    const mailOptions = {
+      from: `Your Website <${process.env.NODEMAILER_EMAIL}>`,
+      to: process.env.NODEMAILER_EMAIL, // Sending to yourself
+      subject: `Contact Form: ${subject}`,
+      html: `
+        <h3>New Contact Form Submission</h3>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Phone:</strong> ${phone || 'Not provided'}</p>
+        <p><strong>Subject:</strong> ${subject}</p>
+        <p><strong>Message:</strong></p>
+        <p>${message}</p>
+      `
+    };
+    
+    // Send mail
+    await transporter.sendMail(mailOptions);
+    
+    // Return success
+    res.render('contactUs', { 
+      success: 'Thank you for your message. We will get back to you soon!' 
+    });
+    
+  } catch (error) {
+    console.error("postContactForm error", error);
+    res.render('contactUs', { 
+      error: 'Sorry, there was an error sending your message. Please try again later.' 
+    });
+  }
+};
+
 module.exports = {
   loadHomepage,
   loadSignup,
@@ -360,5 +429,8 @@ module.exports = {
   loadLogin,
   login,
   logout,
-  handleReferral
+  handleReferral,
+  getAboutUs,
+  getContactUs,
+  postContactForm
 };

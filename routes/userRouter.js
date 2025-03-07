@@ -61,10 +61,12 @@ router.get(
 );
 // routes/userRouter.js
 router.get("/referral", userController.handleReferral);
-
 router.get("/login", userController.loadLogin);
 router.post("/login", userController.login);
 router.get("/logout", userController.logout);
+router.get("/aboutUs", userController.getAboutUs);
+router.get("/contactUs", userController.getContactUs);
+router.post('/contact-us', userController.postContactForm);
 //Profile Management
 router.get("/forgot-password", profileController.getForgotPassPage);
 router.post("/forgot-email-valid", profileController.forgotEmailValid);
