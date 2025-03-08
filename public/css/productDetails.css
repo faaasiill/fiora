@@ -226,26 +226,24 @@ nav {
   color: #666;
   transition: color 0.2s ease;
 }
-/* Add these media queries at the end of your existing CSS */
 
 @media screen and (max-width: 768px) {
-  /* Navigation adjustments */
   nav {
     padding: 1rem;
   }
 
   .nav-links {
-    display: none; /* Hide nav links on mobile */
+    display: none; 
   }
 
   .logo {
-    width: 5em; /* Slightly smaller logo */
+    width: 5em; 
     margin: -15px;
   }
 
   /* Product container layout */
   .product-container {
-    grid-template-columns: 1fr; /* Stack content vertically */
+    grid-template-columns: 1fr; 
     gap: 1rem;
     margin: 1rem auto;
     padding: 0 15px;

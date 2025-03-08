@@ -156,7 +156,6 @@ const signup = async (req, res) => {
     
     req.session.userOtp = otp;
     req.session.userData = { name, phone, email, password };
-    // Store referral code if exists
     if (req.session.referralCode) {
       req.session.userData.referredBy = req.session.referralCode;
     }
@@ -217,7 +216,7 @@ const verifyOtp = async (req, res) => {
           let referrerWallet = await Wallet.findOne({ userId: referrer._id });
           if (!referrerWallet) {
             referrerWallet = new Wallet({ userId: referrer._id, balance: 0 });
-            await referrerWallet.save(); // Save the new wallet if it doesn't exist
+            await referrerWallet.save(); 
           }
 
           // Add transaction for referrer
@@ -428,7 +427,7 @@ const searchProducts = async (req, res) => {
       $and: [
         {
           $or: [
-            { productName: { $regex: new RegExp(q, 'i') } }, // Improved regex for partial matches
+            { productName: { $regex: new RegExp(q, 'i') } },
             { description: { $regex: new RegExp(q, 'i') } }
           ]
         },

@@ -431,7 +431,7 @@
     function appendProducts(products, clear = false) {
       const productContainer = document.getElementById("product-container");
       if (clear) {
-        productContainer.innerHTML = ''; // Only clear when specifically requested
+        productContainer.innerHTML = ''; 
       }
 
       products.forEach(product => {
@@ -495,7 +495,7 @@
     }
 
     function updateProductDisplay(products) {
-      appendProducts(products, true); // Clear existing products and add new ones
+      appendProducts(products, true); 
     }
 
 async function fetchProducts() {
@@ -508,7 +508,7 @@ async function fetchProducts() {
       limit: productsPerPage
     });
 
-    console.log("Fetching products with params:", Object.fromEntries(queryParams)); // Debug log
+    console.log("Fetching products with params:", Object.fromEntries(queryParams)); 
 
     const response = await fetch(`/api/products?${queryParams.toString()}`, {
       headers: { "Accept": "application/json" }
@@ -519,11 +519,11 @@ async function fetchProducts() {
     }
 
     const data = await response.json();
-    console.log("Received data:", data); // Debug log
+    console.log("Received data:", data); 
     
     let sortedProducts = [...data.products];
 
-    // Only sort client-side if not already sorted by server
+   
     if (currentCategory !== 'trending') {
       switch (currentSort) {
         case 'a-to-z':
@@ -542,9 +542,9 @@ async function fetchProducts() {
     }
 
     if (currentPage === 1) {
-      updateProductDisplay(sortedProducts); // Clear and update on first page
+      updateProductDisplay(sortedProducts); 
     } else {
-      appendProducts(sortedProducts); // Append without clearing for subsequent pages
+      appendProducts(sortedProducts); 
     }
 
     updateLoadMoreButton(data.hasMore);
@@ -633,7 +633,6 @@ async function fetchProducts() {
       mobileMenu.classList.toggle('show');
     }
 
-    // DOM Content Loaded Event Listener
     document.addEventListener("DOMContentLoaded", function () {
       const sortSelect = document.getElementById('sort-price');
       const filterSelect = document.getElementById('filter-category');
@@ -655,7 +654,6 @@ async function fetchProducts() {
 
       handleSearch();
       initializeWishlistStates();
-      // fetchProducts();
       initializeFiltersFromURL();
 
       document.addEventListener("scroll", function () {
@@ -667,7 +665,6 @@ async function fetchProducts() {
         }
       });
 
-      // Close mobile menu when clicking outside
       document.addEventListener('click', function (event) {
         const mobileMenu = document.getElementById('mobile-menu');
         const hamburger = document.getElementById('hamburger');
@@ -681,22 +678,22 @@ async function fetchProducts() {
     function initializeFiltersFromURL() {
   const urlParams = new URLSearchParams(window.location.search);
   
-  // Check if category parameter exists in URL
+
   if (urlParams.has('category')) {
     const categoryFromURL = urlParams.get('category');
     currentCategory = categoryFromURL;
     
-    // Update the category select dropdown to match the URL parameter
+
     const filterSelect = document.getElementById('filter-category');
     if (filterSelect && filterSelect.querySelector(`option[value="${categoryFromURL}"]`)) {
       filterSelect.value = categoryFromURL;
     }
     
-    // Reset page to 1 when applying a filter from URL
+
     currentPage = 1;
   }
   
-  // Always call fetchProducts regardless of whether a category parameter exists
+
   fetchProducts();
 }
   </script>

@@ -10,9 +10,8 @@ const env = require("dotenv").config();
 const session = require("express-session");
 const { response } = require("express");
 
-
+// referal link genarating function
 const generateReferralLink = (userId) => {
-  // Make sure userId is a string, not an object
   const referralCode = userId.toString();
   
   const baseUrl = process.env.NODE_ENV === "development" 
@@ -35,7 +34,7 @@ function generateOtp() {
 // for sending OTP via email
 const sendVerificationEmail = async (email, otp) => {
   try {
-    console.log("Setting up email transport"); // Debug log
+    console.log("Setting up email transport");
 
     const transporter = nodeMailer.createTransport({
       service: "gmail",
@@ -242,7 +241,7 @@ const userProfile = async (req, res) => {
       orders: formattedOrders,
       wallet: wallet || { transactions: [] },
       referralLink,
-      referralEarnings, // Pass referral earnings to the view
+      referralEarnings, 
     });
   } catch (error) {
     console.error("Error retrieving profile data", error);
@@ -544,7 +543,6 @@ const cancelOrder = async (req, res) => {
       refundInitiated = true;
       
       try {
-        // Find user wallet
         let wallet = await Wallet.findOne({ userId: order.userId });
         
         // If wallet doesn't exist, create one
@@ -554,7 +552,7 @@ const cancelOrder = async (req, res) => {
             balance: 0,
             transactions: []
           });
-          await wallet.save(); // Make sure to save the newly created wallet
+          await wallet.save(); 
         }
         
         // Create transaction data
@@ -565,7 +563,7 @@ const cancelOrder = async (req, res) => {
           type: "credit",
           status: "completed",
           source: "order_cancellation",
-          description: `Refund for cancelled order #${order.orderId}`,
+          description: `Refund for cancelled order`,
           metadata: {
             orderDetails: {
               orderNumber: order.orderId,
@@ -596,7 +594,6 @@ const cancelOrder = async (req, res) => {
         console.log("Wallet refund processed successfully:", walletRefundResult);
       } catch (walletError) {
         console.error("Error processing wallet refund:", walletError);
-        // Continue with cancellation even if wallet processing fails
       }
     }
 
@@ -754,7 +751,6 @@ if (order.userId.toString() !== sessionUserId) {
 
 const getWalletBalance = async (req, res) => {
   try {
-    // Change from req.user._id to req.session.user
     const userId = req.session.user;
     
     // Find or create wallet for the user
@@ -783,7 +779,6 @@ const getWalletBalance = async (req, res) => {
 
 const getWalletTransactions = async (req, res) => {
   try {
-    // Change from req.user._id to req.session.user
     const userId = req.session.user;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
@@ -896,8 +891,7 @@ const verifyWalletPayment = async (req, res) => {
       amount,
       receiptId
     } = req.body;
-    
-    // Change from req.user._id to req.session.user
+
     const userId = req.session.user;
     
     // Verify payment signature
@@ -931,7 +925,7 @@ const verifyWalletPayment = async (req, res) => {
       amount: parseFloat(amount),
       type: "credit",
       status: "completed",
-      source: "admin_credit", // Using admin_credit for adding money to wallet
+      source: "admin_credit", 
       description: "Added money to wallet",
       metadata: {
         paymentDetails: {

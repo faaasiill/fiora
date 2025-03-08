@@ -181,6 +181,30 @@
                 isProcessing: false
             };
 
+
+            // Toggle Description with smooth animation
+            function toggleDescription() {
+                const descriptionContent = document.querySelector('.description-content');
+                const descriptionIcon = document.querySelector('.description-header i');
+                const isExpanded = descriptionContent.classList.toggle('active');
+
+                // Animate the chevron rotation
+                if (isExpanded) {
+                    descriptionIcon.style.transform = 'rotate(180deg)';
+                } else {
+                    descriptionIcon.style.transform = 'rotate(0deg)';
+                }
+
+                // Set the max height for smooth animation
+                if (isExpanded) {
+                    // Get the actual height of the content and set it as max-height
+                    const actualHeight = descriptionContent.scrollHeight;
+                    descriptionContent.style.maxHeight = actualHeight + 'px';
+                } else {
+                    descriptionContent.style.maxHeight = '0px';
+                }
+            }
+
             // Utility Functions
             const UIUtil = {
                 showNotification: (title, message, icon) => {
@@ -331,7 +355,7 @@
                                 'Accept': 'application/json'
                             },
                             credentials: 'include',
-                            body: JSON.stringify({ productId }) // Send productId in body
+                            body: JSON.stringify({ productId })
                         });
 
                         if (response.status === 401) {
@@ -433,7 +457,6 @@
 
             // Initialization
             document.addEventListener('DOMContentLoaded', () => {
-                // Cart
                 $('.add-to-cart').on('click', (e) => {
                     e.preventDefault();
                     const productId = $(e.currentTarget).data('product-id');
@@ -455,7 +478,7 @@
                 QuantityControl.init();
             });
 
-            
+
         </script>
 </body>
 

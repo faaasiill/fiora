@@ -287,7 +287,7 @@
 
                 // Initialize Cropper with free aspect ratio
                 croppers[index] = new Cropper(previewImg, {
-                    aspectRatio: NaN,  // This allows free aspect ratio
+                    aspectRatio: NaN,  
                     viewMode: 2,
                     guides: true,
                     background: true,
@@ -399,8 +399,8 @@
                     if (!croppers[i]) return;
 
                     const croppedCanvas = croppers[i].getCroppedCanvas({
-                        width: 800,    // Max width
-                        height: 800,   // Max height
+                        width: 800,    
+                        height: 800,   
                         imageSmoothingEnabled: true,
                         imageSmoothingQuality: 'high'
                     });

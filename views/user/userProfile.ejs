@@ -559,8 +559,10 @@
                         <input type="text" id="referralLink" readonly value="<%= referralLink %>">
                         <button onclick="copyReferralLink()">Copy</button>
                     </div>
-                    <p>Total Referrals: <%= user.redeemedUsers.length %></p>
-                    <p>Earnings from Referrals: ₹<%= referralEarnings || 0 %></p>
+                    <p>Total Referrals: <%= user.redeemedUsers.length %>
+                    </p>
+                    <p>Earnings from Referrals: ₹<%= referralEarnings || 0 %>
+                    </p>
                 </div>
             </div>
         </div>
@@ -601,7 +603,7 @@
             profileForm.addEventListener('submit', async function (e) {
                 e.preventDefault();
 
-                // Temporarily enable disabled fields for form submission
+
                 const inputs = profileForm.querySelectorAll('input[disabled]');
                 inputs.forEach(input => input.disabled = false);
 
@@ -616,13 +618,12 @@
                     const result = await response.json();
 
                     if (response.ok) {
-                        // Success: Disable inputs and reset edit buttons
                         editButtons.forEach(btn => {
                             const field = btn.dataset.field;
                             const input = document.getElementById(field);
                             input.disabled = true;
                             btn.querySelector('.material-symbols-outlined').textContent = 'edit';
-                            input.defaultValue = input.value; // Update default value
+                            input.defaultValue = input.value; 
                         });
 
                         activeFields.clear();
@@ -635,11 +636,10 @@
                             text: result.success,
                             confirmButtonColor: ''
                         }).then(() => {
-                            window.location.reload(); // Refresh page to show updated data
+                            window.location.reload(); 
                         });
 
                     } else {
-                        // Show specific error messages
                         Swal.fire({
                             icon: 'error',
                             title: 'Update Failed',
@@ -747,7 +747,6 @@
                         text: 'Password changed successfully',
                         confirmButtonColor: '#6E0B21'
                     }).then(() => {
-                        // Reset form and return to profile view
                         passwordForm.reset();
                         passwordForm.style.display = 'none';
                         document.querySelector('.profile-form').style.display = 'block';
@@ -779,7 +778,6 @@
                     });
 
                     if (response.ok) {
-                        // Show OTP verification dialog
                         Swal.fire({
                             title: 'Enter OTP',
                             text: 'Please enter the OTP sent to your email',
@@ -815,7 +813,6 @@
                             allowOutsideClick: () => !Swal.isLoading()
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                // If OTP is verified, show password change form
                                 profileForm.style.display = 'none';
                                 passwordForm.style.display = 'block';
                                 passwordForm.reset();
@@ -907,7 +904,6 @@
                 }
             });
 
-            // Add cancel button handler
             document.getElementById('cancelPasswordBtn').addEventListener('click', function () {
                 passwordForm.style.display = 'none';
                 profileForm.style.display = 'block';
@@ -1070,12 +1066,10 @@
                         });
 
                         if (response.ok) {
-                            // Remove default-address class from all cards
                             document.querySelectorAll('.address-card').forEach(card => {
                                 card.classList.remove('default-address');
                             });
 
-                            // Add default-address class to selected card
                             this.closest('.address-card').classList.add('default-address');
 
                             Swal.fire({
@@ -1177,7 +1171,6 @@
                     const sectionId = this.dataset.section;
                     document.getElementById(sectionId).classList.add('active');
 
-                    // Close sidebar on mobile after navigation
                     if (window.innerWidth <= 768) {
                         sidebar.classList.remove('active');
                     }
@@ -1226,7 +1219,6 @@
             modal.style.display = 'flex';
             document.body.style.overflow = 'hidden';
 
-            // Add active class after a small delay to trigger animations
             setTimeout(() => {
                 modal.classList.add('otrack_modal_active');
             }, 10);
@@ -1260,12 +1252,11 @@
 
 
 
-        // JavaScript for Cancel Order functionality
+        //Cancel Order functionality
         document.addEventListener('DOMContentLoaded', function () {
             // Add event listeners to all cancel buttons
             const cancelButtons = document.querySelectorAll('.cancel');
             cancelButtons.forEach(button => {
-                // Get the order id from the closest parent element with order data
                 const orderCard = button.closest('.otrack_order_card');
                 const orderIdElement = orderCard.querySelector('.otrack_order_id');
                 const viewDetailsBtn = orderCard.querySelector('.otrack_view_order_btn');
@@ -1276,7 +1267,6 @@
                 });
             });
 
-            // Set up reason dropdown change handlers for all forms
             document.querySelectorAll('[id^=cancelOrderForm_]').forEach(form => {
                 const orderId = form.id.replace('cancelOrderForm_', '');
                 const reasonSelect = form.querySelector('select[name="cancelReason"]');
@@ -1292,7 +1282,6 @@
                     }
                 });
 
-                // Set up form submission
                 form.addEventListener('submit', function (e) {
                     e.preventDefault();
                     submitCancelOrder(orderId, form);
@@ -1434,7 +1423,7 @@
             }
         }
 
-        // JavaScript for Return Order functionality
+        //Return Order functionality
         document.addEventListener('DOMContentLoaded', function () {
             // Add event listeners to all return buttons
             const returnButtons = document.querySelectorAll('.return');
@@ -1514,10 +1503,9 @@
             fetch('/orders/return', {
                 method: 'POST',
                 body: formData,
-                credentials: 'same-origin' // Include cookies for authentication
+                credentials: 'same-origin'
             })
                 .then(response => {
-                    // Check if the response is valid JSON before parsing
                     const contentType = response.headers.get('content-type');
                     if (contentType && contentType.includes('application/json')) {
                         return response.json().then(data => ({
@@ -1525,7 +1513,6 @@
                             data: data
                         }));
                     } else {
-                        // If not JSON, handle as error
                         return response.text().then(text => {
                             console.error('Received non-JSON response:', text.substring(0, 100) + '...');
                             throw new Error('Received invalid response from server');
@@ -1533,11 +1520,10 @@
                     }
                 })
                 .then(result => {
-                    // Remove animation class
+
                     modalContent.classList.remove('return_confirm_animation');
 
                     if (result.ok && result.data.success) {
-                        // Show success message
                         form.innerHTML = `
                 <div class="otrack_success_message">
                     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="otrack_success_icon">
@@ -1573,13 +1559,11 @@
 
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Get the Add Money button and add event listener
             const addMoneyBtn = document.querySelector('#wallet .btn');
             if (addMoneyBtn) {
                 addMoneyBtn.addEventListener('click', initiateAddMoney);
             }
 
-            // Fetch and display current wallet balance
             fetchWalletBalance();
         });
 
@@ -1590,7 +1574,6 @@
                 const data = await response.json();
 
                 if (response.ok && data.status) {
-                    // Update the wallet balance display
                     const walletAmountElement = document.querySelector('.wallet-amount');
                     if (walletAmountElement) {
                         walletAmountElement.textContent = `₹${data.balance.toFixed(2)}`;
@@ -1604,7 +1587,6 @@
         }
 
         async function initiateAddMoney() {
-            // Use SweetAlert2 to get the amount from user
             const { value: amount } = await Swal.fire({
                 title: 'Add Money to Wallet',
                 input: 'number',
@@ -1623,14 +1605,12 @@
             });
 
             if (amount) {
-                // Proceed with payment
                 handleWalletPayment(amount);
             }
         }
 
         async function handleWalletPayment(amount) {
             try {
-                // Show loading state
                 Swal.fire({
                     title: 'Processing',
                     text: 'Please wait...',
@@ -1641,7 +1621,6 @@
                     }
                 });
 
-                // Create Razorpay order for wallet
                 const response = await fetch('/wallet/add-money', {
                     method: 'POST',
                     headers: {

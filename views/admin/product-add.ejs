@@ -344,7 +344,6 @@
                 if (!this.cropper) return;
 
                 try {
-                    // Get cropped canvas with original crop dimensions
                     const cropData = this.cropper.getData();
                     const canvas = this.cropper.getCroppedCanvas({
                         width: Math.round(cropData.width),
@@ -460,7 +459,7 @@
                 isValid = false;
             }
 
-            // Sale Price validation (optional but must be less than regular price if provided)
+            // Sale Price validation 
             const salePrice = document.querySelector('input[name="salePrice"]').value;
             if (salePrice && !isNaN(salePrice)) {
                 if (parseFloat(salePrice) >= parseFloat(regularPrice)) {
@@ -476,7 +475,7 @@
                 isValid = false;
             }
 
-            // Image validation (at least one image is required)
+            // Image validation 
             const mainImage = document.querySelector('input[name="productImage1"]').files[0];
             if (!mainImage) {
                 errors.image = 'At least one product image is required';
@@ -501,7 +500,6 @@
             errorElements.forEach(element => element.textContent = '');
 
             if (validateForm()) {
-                // If validation passes, submit the form
                 document.querySelector('form').submit();
             }
         }

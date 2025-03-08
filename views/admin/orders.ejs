@@ -142,7 +142,7 @@
                 } else if (statusText === 'Cancelled') {
                     btn.classList.add('status-cancelled');
                 } else if (statusText === 'Return Request') {
-                    btn.classList.add('status-return'); // This is the issue - status text is "Return Request" but class is "status-return"
+                    btn.classList.add('status-return'); 
                 } else if (statusText === 'Returned') {
                     btn.classList.add('status-returned');
                 } else if (statusText === 'Return Request') {
@@ -214,7 +214,6 @@
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            // Add CSRF token if you're using it
                         },
                         body: JSON.stringify({ orderId, status: newStatus })
                     });
@@ -246,7 +245,7 @@
                     if (!response.ok) throw new Error('Failed to fetch order details');
 
                     const order = await response.json();
-                    console.log('Received order data:', order); // Add this logging
+                    console.log('Received order data:', order); 
                     console.log('Order items:', order.orderItems);
 
 
@@ -476,9 +475,7 @@
                 });
             });
 
-            // Add this to the initializeEventListeners function
             document.addEventListener('click', (e) => {
-                // Event delegation for dynamically added return buttons
                 if (e.target.classList.contains('approve-return-btn')) {
                     const orderId = e.target.dataset.orderId;
                     handleReturnAction(orderId, 'approve');
@@ -489,7 +486,6 @@
             });
 
             function generateReturnRequestHTML(returnData, orderId) {
-                // If no return data or request, return empty string
                 if (!returnData || !returnData.isRequested) {
                     return '';
                 }
@@ -630,7 +626,6 @@
                 }
             }
 
-            // Add this function to handle the image zoom
             function openImageZoom(imgUrl) {
                 const modal = document.getElementById('imageZoomModal');
                 const modalImg = document.getElementById('zoomedImage');
@@ -638,20 +633,16 @@
                 modal.style.display = "block";
                 modalImg.src = imgUrl;
 
-                // Prevent body scrolling when modal is open
                 document.body.style.overflow = 'hidden';
             }
 
-            // Close the zoom modal when clicking the × button
             document.addEventListener('DOMContentLoaded', function () {
-                // Since the modal might not exist on page load, we use event delegation
                 document.addEventListener('click', function (event) {
                     if (event.target.classList.contains('close-zoom')) {
                         document.getElementById('imageZoomModal').style.display = "none";
                         document.body.style.overflow = 'auto';
                     }
 
-                    // Also close when clicking outside the image
                     if (event.target.classList.contains('image-zoom-modal')) {
                         document.getElementById('imageZoomModal').style.display = "none";
                         document.body.style.overflow = 'auto';

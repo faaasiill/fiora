@@ -48,7 +48,7 @@ const walletSchema = new Schema({
           "wallet_payment", 
           "refund", 
           "other", 
-          "referral_bonus" // Add this new value
+          "referral_bonus"
         ],
         required: true
       },

@@ -24,7 +24,6 @@ const loadWishlist = async (req, res) => {
 const addToWishlist = async (req, res) => {
   try {
     if (!req.session?.user) {
-      // Optional chaining to prevent errors
       return res.status(401).json({
         status: false,
         notLoggedIn: true,

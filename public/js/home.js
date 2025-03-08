@@ -302,6 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
           
           if (products.length > 0) {
             searchContent.innerHTML = `
+            <a class="viewAlltag" href="/products">View All</a>
               <div class="product-slider">
                 <button class="nav-arrow prev-arrow">
                   <span class="material-symbols-outlined">arrow_back_ios</span>
@@ -315,7 +316,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         </a>
                         <button class="favorite-btn" data-product-id="${product._id}"
                           onclick="WishlistManager.toggleWishlist(event, '${product._id}', this)">
-                          <span class="material-symbols-outlined favorite-icon">favorite</span>
+                          
                         </button>
                       </div>
                       <h3 class="product-title">${product.productName}</h3>

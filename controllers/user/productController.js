@@ -111,7 +111,6 @@ const getProducts = async (req, res) => {
 
     // Handle "trending" category specially
     if (category === "trending") {
-      // Sort by viewCount for trending items, limit to 5
       const trendingProducts = await Product.find({ 
         isBlocked: { $ne: true },
         quantity: { $gt: 0 },
@@ -207,7 +206,7 @@ const loadProductDetails = async (req, res) => {
     })
       .select("productName productImage salePrice regularPrice")
       .limit(4)
-      .lean(); //for better performance with read-only data
+      .lean();
 
     // Track view count
     await Product.findByIdAndUpdate(productId, {

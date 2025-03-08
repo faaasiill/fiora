@@ -79,7 +79,6 @@ cartSchema.methods.calculateTotals = function() {
   // Calculate subtotal from items
   this.items.forEach(item => {
     if (item.status === "placed") {
-      // Round each item's totalPrice to 2 decimal places
       item.totalPrice = Number(item.totalPrice.toFixed(2));
       subtotal += item.totalPrice;
     }

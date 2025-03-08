@@ -252,11 +252,9 @@
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <%- include('../partials/user/footer.ejs') %>
         <script>
-            // Enhanced payment method selection
             document.addEventListener('DOMContentLoaded', function () {
                 const paymentMethods = document.querySelectorAll('.payment-method');
 
-                // Set default selection if none is selected
                 function setDefaultPayment() {
                     const hasSelected = Array.from(paymentMethods).some(method =>
                         method.classList.contains('selected'));
@@ -272,7 +270,6 @@
                 // Handle payment method selection
                 paymentMethods.forEach(method => {
                     method.addEventListener('click', function () {
-                        // Clear all selections
                         paymentMethods.forEach(m => {
                             m.classList.remove('selected');
                             const radio = m.querySelector('input[type="radio"]');
@@ -284,7 +281,6 @@
                         const radio = method.querySelector('input[type="radio"]');
                         if (radio) radio.checked = true;
 
-                        // Optional: Smooth scroll to next section if this is last input
                         const isLastPaymentMethod = Array.from(paymentMethods).indexOf(method) === paymentMethods.length - 1;
                         if (isLastPaymentMethod) {
                             setTimeout(() => {
@@ -292,7 +288,6 @@
                                 if (nextSection) {
                                     nextSection.scrollIntoView({ behavior: 'smooth' });
 
-                                    // Optionally open the next section
                                     const nextSectionContent = nextSection.querySelector('.section-content');
                                     const nextSectionToggle = nextSection.querySelector('.toggle');
                                     if (nextSectionContent && !nextSectionContent.classList.contains('active')) {
@@ -340,7 +335,6 @@
                     }
                 }
             });
-            // DOM Elements
             const aside = document.querySelector('aside');
             const addressContainer = document.getElementById('addressContainer');
             const addressModal = document.getElementById('addressModal');
@@ -390,7 +384,6 @@
                             showConfirmButton: false,
                             timer: 1500
                         });
-                        // Force page reload after the alert is closed
                         window.location.reload();
                     } else {
                         throw new Error(data.message || 'Failed to update default address');
@@ -460,7 +453,6 @@
                                 showConfirmButton: false,
                                 timer: 1500
                             });
-                            // Force page reload after the alert is closed
                             window.location.reload();
                         } else {
                             throw new Error(data.message || 'Failed to delete address');
@@ -612,7 +604,6 @@
                 }
             }
 
-            // Add the Razorpay payment handling function
             async function handleRazorpayPayment(orderId) {
                 try {
                     // Create Razorpay order
@@ -681,7 +672,6 @@
             });
 
 
-            // Add this function to handle Razorpay payments
             async function handleRazorpayPayment(orderId) {
                 try {
                     // Create Razorpay order
@@ -742,10 +732,8 @@
                 }
             }
 
-            // Add this function to verify the payment
             async function verifyPayment(response, orderId) {
                 try {
-                    // Show loading state
                     Swal.fire({
                         title: 'Verifying Payment',
                         text: 'Please wait...',
@@ -798,7 +786,6 @@
 
             async function handleWalletPayment(orderId) {
                 try {
-                    // Show loading state
                     Swal.fire({
                         title: 'Processing Wallet Payment',
                         text: 'Please wait...',
@@ -809,8 +796,7 @@
                         }
                     });
 
-                    // We've already processed the payment server-side
-                    // Just need to verify and redirect
+
                     await Swal.fire({
                         icon: 'success',
                         title: 'Payment Successful!',
@@ -818,7 +804,7 @@
                         showConfirmButton: true
                     });
 
-                    // Redirect to order confirmation
+
                     window.location.href = `/order-confirmation/${orderId}`;
 
                 } catch (error) {

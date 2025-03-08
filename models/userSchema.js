@@ -70,7 +70,7 @@ const userSchema = new Schema({
     type: String,
     unique: true,
     default: function() {
-      return this._id.toString(); // Use user ID as referral code
+      return this._id.toString(); 
     }
   },
   referredBy: {

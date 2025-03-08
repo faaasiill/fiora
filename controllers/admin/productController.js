@@ -21,57 +21,58 @@ const getProductAddPage = async (req, res) => {
 // for post Product AddPage
 const addProducts = async (req, res) => {
   try {
-      const products = req.body;
+    const products = req.body;
 
-      const productExists = await Product.findOne({
-          productName: products.productName,
+    const productExists = await Product.findOne({
+      productName: products.productName,
+    });
+
+    if (productExists) {
+      return res.status(400).json({
+        message: "Product already exists, please try with another name.",
       });
+    }
 
-      if (productExists) {
-          return res.status(400).json({
-              message: "Product already exists, please try with another name.",
-          });
+    const images = [];
+
+    for (let i = 1; i <= 4; i++) {
+      const fieldName = `productImage${i}`;
+      if (req.files && req.files[fieldName] && req.files[fieldName][0]) {
+        const file = req.files[fieldName][0];
+        images.push(file.path);
       }
+    }
 
-      const images = [];
+    if (images.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "At least one image is required." });
+    }
 
-      for (let i = 1; i <= 4; i++) {
-          const fieldName = `productImage${i}`;
-          if (req.files && req.files[fieldName] && req.files[fieldName][0]) {
-              const file = req.files[fieldName][0];
-              images.push(file.path);
-          }
-      }
+    // Determine status based on quantity
+    const status =
+      parseInt(products.quantity) <= 0 ? "Out of Stock" : "Available";
 
-      if (images.length === 0) {
-          return res
-              .status(400)
-              .json({ message: "At least one image is required." });
-      }
+    const newProduct = new Product({
+      productName: products.productName,
+      description: products.description,
+      category: products.category,
+      regularPrice: products.regularPrice,
+      salePrice: products.salePrice,
+      createdOn: new Date(),
+      color: products.color,
+      quantity: products.quantity,
+      productImage: images,
+      status: status,
+    });
 
-      // Determine status based on quantity
-      const status = parseInt(products.quantity) <= 0 ? "Out of Stock" : "Available";
+    await newProduct.save();
 
-      const newProduct = new Product({
-          productName: products.productName,
-          description: products.description,
-          category: products.category,
-          regularPrice: products.regularPrice,
-          salePrice: products.salePrice,
-          createdOn: new Date(),
-          color: products.color,
-          quantity: products.quantity,
-          productImage: images,
-          status: status, // Set the determined status
-      });
-
-      await newProduct.save();
-
-      console.log("Product added successfully:", newProduct);
-      res.redirect("/admin/addProducts");
+    console.log("Product added successfully:", newProduct);
+    res.redirect("/admin/addProducts");
   } catch (error) {
-      console.error("Error adding product:", error);
-      res.redirect("/admin/pageerror");
+    console.error("Error adding product:", error);
+    res.redirect("/admin/pageerror");
   }
 };
 
@@ -207,64 +208,64 @@ const getEditProduct = async (req, res) => {
 // for edit product
 const editProduct = async (req, res) => {
   try {
-      const id = req.params.id;
-      const data = req.body;
+    const id = req.params.id;
+    const data = req.body;
 
-      const category = await Category.findOne({ name: data.category });
-      if (!category) {
-          return res.status(400).json({ error: "Invalid category" });
-      }
+    const category = await Category.findOne({ name: data.category });
+    if (!category) {
+      return res.status(400).json({ error: "Invalid category" });
+    }
 
-      const product = await Product.findById(id);
-      if (!product) {
-          return res.status(404).json({ error: "Product not found" });
-      }
+    const product = await Product.findById(id);
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
+    }
 
-      const existingProduct = await Product.findOne({
-          productName: data.productName,
-          _id: { $ne: id },
+    const existingProduct = await Product.findOne({
+      productName: data.productName,
+      _id: { $ne: id },
+    });
+
+    if (existingProduct) {
+      return res.status(400).json({
+        error: "Product name already exists, please choose another name",
       });
+    }
 
-      if (existingProduct) {
-          return res.status(400).json({
-              error: "Product name already exists, please choose another name",
-          });
+    const images = [];
+    if (req.files && req.files.length > 0) {
+      for (const file of req.files) {
+        images.push(file.path);
       }
+    }
 
-      const images = [];
-      if (req.files && req.files.length > 0) {
-          for (const file of req.files) {
-              images.push(file.path);
-          }
-      }
+    // Determine status based on quantity
+    const status = parseInt(data.quantity) <= 0 ? "Out of Stock" : "Available";
 
-      // Determine status based on quantity
-      const status = parseInt(data.quantity) <= 0 ? "Out of Stock" : "Available";
+    const updateFields = {
+      productName: data.productName,
+      description: data.descriptionData,
+      category: category._id,
+      regularPrice: data.regularPrice,
+      salePrice: data.salePrice,
+      quantity: data.quantity,
+      color: data.color,
+      status: status,
+    };
 
-      const updateFields = {
-          productName: data.productName,
-          description: data.descriptionData,
-          category: category._id,
-          regularPrice: data.regularPrice,
-          salePrice: data.salePrice,
-          quantity: data.quantity,
-          color: data.color,
-          status: status, // Set the determined status
-      };
+    if (images.length > 0) {
+      updateFields.$push = { productImage: { $each: images } };
+    }
 
-      if (images.length > 0) {
-          updateFields.$push = { productImage: { $each: images } };
-      }
+    await Product.findByIdAndUpdate(id, updateFields, {
+      new: true,
+      runValidators: true,
+    });
 
-      await Product.findByIdAndUpdate(id, updateFields, {
-          new: true,
-          runValidators: true,
-      });
-
-      res.redirect("/admin/products");
+    res.redirect("/admin/products");
   } catch (error) {
-      console.error("Error in editProduct:", error);
-      res.status(500).json({ error: error.message });
+    console.error("Error in editProduct:", error);
+    res.status(500).json({ error: error.message });
   }
 };
 

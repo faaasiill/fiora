@@ -185,7 +185,6 @@ html {
 }
 
 /* nav end */
-/* product list */
 
 h1 {
   text-align: center;
@@ -679,3 +678,60 @@ h2 {
     margin: 15px;
   }
 }
+
+/* Desktop hover animations */
+@media (min-width: 769px) {
+  /* Initial state - hidden button */
+  .product .add-to-cart {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+  
+  /* Product container needs relative positioning */
+  .product {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.7s ease, box-shadow 0.7s ease;
+  }
+  
+  /* Hover state */
+  .product:hover {
+    transform: translateY(-5px);
+  }
+  
+  /* Image zoom effect on hover */
+  .product img {
+    transition: transform 0.5s ease;
+  }
+  
+  .product:hover img {
+    transform: scale(1.05);
+  }
+  
+  /* Button appearance animation */
+  .product:hover .add-to-cart {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* Price highlight on hover */
+  .product:hover .discount-price {
+    color: #500d1f;
+    transform: scale(1.05);
+    transition: all 0.7s ease;
+  }
+}
+
+/* Keep the button visible on mobile devices */
+@media (max-width: 768px) {
+  .product .add-to-cart {
+    opacity: 1;
+    transform: none;
+    position: relative;
+  }
+}
+

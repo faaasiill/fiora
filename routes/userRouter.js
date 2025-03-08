@@ -23,7 +23,6 @@ router.post("/resend-otp", userController.resendOtp);
 router.get(
   "/auth/google/",
   (req, res, next) => {
-    // If there's a referral code in the session, store it temporarily in global state
     if (req.session.referralCode) {
       global.pendingReferral = { code: req.session.referralCode, timestamp: Date.now() };
     }
@@ -44,7 +43,6 @@ router.get(
 router.get(
   "/auth/facebook",
   (req, res, next) => {
-    // If there's a referral code in the session, store it temporarily in global state
     if (req.session.referralCode) {
       global.pendingReferral = { code: req.session.referralCode, timestamp: Date.now() };
     }
