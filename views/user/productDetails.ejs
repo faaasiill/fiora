@@ -34,8 +34,8 @@
         <div class="mobile-nav-links" id="mobileNav">
             <a href="/">Home</a>
             <a href="/products">Shop</a>
-            <a href="/products">Categories</a>
-            <a href="/contact">Contact</a>
+            <a href="/#cat">Categories</a>
+            <a href="/contactUs">Contact</a>
         </div>
     </nav>
 
@@ -180,7 +180,11 @@
             const WishlistState = {
                 isProcessing: false
             };
-
+            
+            document.querySelector('.hamburger-menu').addEventListener('click', function () {
+                console.log('Hamburger clicked');
+                document.getElementById('mobileNav').classList.toggle('active');
+            });
 
             // Toggle Description with smooth animation
             function toggleDescription() {
@@ -476,9 +480,32 @@
 
                 // Quantity Control
                 QuantityControl.init();
+
+                window.toggleMenu = function () {
+                    const mobileNav = document.getElementById('mobileNav');
+                    mobileNav.classList.toggle('active');
+
+                    // Update the icon based on menu state
+                    const menuIcon = document.querySelector('.hamburger-menu .material-symbols-outlined');
+                    if (mobileNav.classList.contains('active')) {
+                        menuIcon.textContent = 'close';
+                    } else {
+                        menuIcon.textContent = 'menu';
+                    }
+                };
+
+                document.querySelector('.hamburger-menu').addEventListener('click', window.toggleMenu);
+
+                // Close menu when clicking outside
+                document.addEventListener('click', function (event) {
+                    const mobileNav = document.getElementById('mobileNav');
+                    const hamburgerMenu = document.querySelector('.hamburger-menu');
+
+                    if (!mobileNav.contains(event.target) && !hamburgerMenu.contains(event.target) && mobileNav.classList.contains('active')) {
+                        window.toggleMenu();
+                    }
+                });
             });
-
-
         </script>
 </body>
 

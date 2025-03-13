@@ -136,6 +136,17 @@ const placeOrder = async (req, res) => {
       });
     }
 
+    cart.calculateTotals();
+
+
+    // CHECK FOR COD LIMIT - Add this new validation
+    if (paymentMethod === "cod" && cart.cartTotal.final > 1000) {
+      return res.status(400).json({
+        status: false,
+        message: "Cash on Delivery is not available for orders above ₹1000. Please choose another payment method.",
+      });
+    }
+
     // Validate stock before placing order
     const stockValidation = await validateCartStock(cart.items);
     if (!stockValidation.isValid) {
@@ -202,7 +213,7 @@ const placeOrder = async (req, res) => {
       { new: true }
     );
 
-    // CHANGE HERE: Only delete cart for COD orders
+    // Only delete cart for COD orders
     if (paymentMethod === "cod") {
       await Cart.findOneAndDelete({ userId });
     }
