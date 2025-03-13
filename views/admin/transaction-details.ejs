@@ -1,0 +1,140 @@
+<%- include('../partials/admin/header.ejs') %>
+
+<div class="content-main container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary mb-0">Transaction Details</h2>
+        <a href="/admin/wallet" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Wallet Management
+        </a>
+    </div>
+    
+    <div class="row">
+        <!-- User Information Card -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0">User Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="avatar-placeholder bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                            <%= user.name.charAt(0).toUpperCase() %>
+                        </div>
+                        <div>
+                            <h5 class="mb-0"><%= user.name %></h5>
+                            <p class="text-muted mb-0"><small><%= user.email %></small></p>
+                        </div>
+                    </div>
+                    
+                    <div class="user-details mt-3">
+                        <div class="d-flex mb-2">
+                            <div class="text-muted me-2" style="width: 30px;">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div><%= user.email %></div>
+                        </div>
+                        <div class="d-flex mb-2">
+                            <div class="text-muted me-2" style="width: 30px;">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div><%= user.phone || 'Not provided' %></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Transaction Details Card -->
+        <div class="col-md-8 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0">Transaction Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <p class="text-muted mb-1">Amount</p>
+                            <h3 class="mb-0 fw-bold <%= transaction.type === 'credit' ? 'text-success' : 'text-danger' %>">
+                                <%= transaction.type === 'credit' ? '+' : '-' %>₹<%= transaction.amount.toFixed(2) %>
+                            </h3>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <p class="text-muted mb-1">Status</p>
+                            <span class="badge <%= transaction.status === 'completed' ? 'bg-success' : transaction.status === 'pending' ? 'bg-warning' : 'bg-danger' %> px-3 py-2">
+                                <%= transaction.status.toUpperCase() %>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="transaction-info-item p-3 bg-light rounded">
+                                <p class="text-muted mb-1 small">Transaction ID</p>
+                                <p class="mb-0 font-monospace"><%= transaction.transactionId %></p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="transaction-info-item p-3 bg-light rounded">
+                                <p class="text-muted mb-1 small">Transaction Date</p>
+                                <p class="mb-0"><%= transaction.createdAt.toLocaleString() %></p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="transaction-info-item p-3 bg-light rounded">
+                                <p class="text-muted mb-1 small">Type</p>
+                                <p class="mb-0">
+                                    <span class="badge <%= transaction.type === 'credit' ? 'bg-success' : 'bg-danger' %> me-2">
+                                        <%= transaction.type %>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="transaction-info-item p-3 bg-light rounded">
+                                <p class="text-muted mb-1 small">Source</p>
+                                <p class="mb-0"><%= transaction.source %></p>
+                            </div>
+                        </div>
+                        <% if (transaction.description) { %>
+                            <div class="col-12">
+                                <div class="transaction-info-item p-3 bg-light rounded">
+                                    <p class="text-muted mb-1 small">Description</p>
+                                    <p class="mb-0"><%= transaction.description %></p>
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+
+                    <% if (transaction.source === 'order_return' || transaction.source === 'order_cancellation') { %>
+                        <div class="order-info mt-4 p-3 border-start border-4 border-info bg-light">
+                            <h5 class="text-info mb-3">Order Information</h5>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <p class="text-muted mb-1 small">Order Number</p>
+                                    <p class="mb-0 fw-bold"><%= transaction.metadata.orderDetails.orderNumber %></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="text-muted mb-1 small">
+                                        <%= transaction.source === 'order_return' ? 'Return Reason' : 'Cancel Reason' %>
+                                    </p>
+                                    <p class="mb-0">
+                                        <%= transaction.source === 'order_return' 
+                                            ? transaction.metadata.orderDetails.returnReason 
+                                            : transaction.metadata.orderDetails.cancelReason %>
+                                    </p>
+                                </div>
+                                <div class="col-12 mt-3">
+                                    <a href="/admin/orderList" class="btn btn-info">
+                                        <i class="fas fa-external-link-alt me-2"></i>View Full Order Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/admin/footer.ejs') %>

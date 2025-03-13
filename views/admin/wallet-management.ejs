@@ -1,0 +1,183 @@
+<%- include('../partials/admin/header.ejs') %>
+
+<div class="content-main px-4 py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold" style="color: rgb(97, 16, 16);"><i class="bi bi-wallet2"></i> Wallet Management</h2>
+    </div>
+    
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white py-3">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h5 class="mb-0">Transaction History</h5>
+                </div>
+                <div class="col-md-6">
+                    <form action="/admin/wallet/search" method="GET" class="search-form">
+                        <div class="input-group">
+                            <input type="text" name="query" id="searchTransactions" class="form-control" placeholder="Search by ID, user, or amount..." 
+                                   onkeyup="filterTransactions()">
+                            <button class="btn btn-outline-primary" type="submit"><i class="bi bi-search"></i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" id="transactionsTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Transaction ID</th>
+                            <th>Date <i class="bi bi-arrow-down-short"></i></th>
+                            <th>User</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th class="text-end pe-4">Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% 
+                        // Sort transactions by date in descending order (newest first)
+                        const sortedTransactions = [...transactions].sort((a, b) => 
+                            new Date(b.date) - new Date(a.date)
+                        );
+                        
+                        // Get current page from URL or default to 1
+                        let currentPage = 1;
+                        if (typeof currentUrl !== 'undefined') {
+                            const urlParams = new URL(currentUrl, 'http://example.com').searchParams;
+                            const pageParam = urlParams.get('page');
+                            if (pageParam) {
+                                currentPage = parseInt(pageParam);
+                            }
+                        }
+                        
+                        // Calculate pagination
+                        const perPage = 10;
+                        const totalTransactions = sortedTransactions.length;
+                        const totalPages = Math.ceil(totalTransactions / perPage);
+                        const startIndex = (currentPage - 1) * perPage;
+                        const endIndex = Math.min(startIndex + perPage, totalTransactions);
+                        const paginatedTransactions = sortedTransactions.slice(startIndex, endIndex);
+                        
+                        paginatedTransactions.forEach(transaction => { %>
+                            <tr>
+                                <td class="ps-4 fw-medium text-secondary"><%= transaction.transactionId %></td>
+                                <td><%= transaction.date.toLocaleString() %></td>
+                                <td>
+                                    <div>
+                                        <span class="fw-medium"><%= transaction.user.name %></span>
+                                        <div class="small text-muted"><%= transaction.user.email %></div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge rounded-pill <%= transaction.type === 'credit' ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger' %> px-3 py-2">
+                                        <i class="bi <%= transaction.type === 'credit' ? 'bi-arrow-down-circle-fill' : 'bi-arrow-up-circle-fill' %> me-1"></i>
+                                        <%= transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1) %>
+                                    </span>
+                                </td>
+                                <td class="fw-medium <%= transaction.type === 'credit' ? 'text-success' : 'text-danger' %>">
+                                    <%= transaction.type === 'credit' ? '+' : '-' %>₹<%= transaction.amount.toFixed(2) %>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <a href="/admin/wallet/<%= transaction.walletId %>/transaction/<%= transaction.transactionId %>" 
+                                       class="btn btn-sm btn-outline-primary">
+                                        View Details
+                                    </a>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-muted">Showing <span class="fw-medium"><%= startIndex + 1 %>-<%= endIndex %></span> of <span class="fw-medium"><%= totalTransactions %></span> transactions</span>
+                </div>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination pagination-sm mb-0">
+                        <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+                            <a class="page-link" href="?page=<%= currentPage - 1 %>" tabindex="-1" <%= currentPage === 1 ? 'aria-disabled="true"' : '' %>>Previous</a>
+                        </li>
+                        <% 
+                        // Display up to 5 page numbers
+                        const maxPages = 5;
+                        let startPage = Math.max(1, Math.min(currentPage - Math.floor(maxPages/2), totalPages - maxPages + 1));
+                        if (startPage < 1) startPage = 1;
+                        
+                        const endPage = Math.min(startPage + maxPages - 1, totalPages);
+                        
+                        for(let i = startPage; i <= endPage; i++) { %>
+                            <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                                <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                            </li>
+                        <% } %>
+                        <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+                            <a class="page-link" href="?page=<%= currentPage + 1 %>" <%= currentPage === totalPages ? 'aria-disabled="true"' : '' %>>Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+    
+    
+</div>
+
+<script>
+function filterTransactions() {
+    // Get input value and convert to lowercase
+    const input = document.getElementById('searchTransactions');
+    const filter = input.value.toLowerCase();
+    
+    // Get table and rows
+    const table = document.getElementById('transactionsTable');
+    const rows = table.getElementsByTagName('tr');
+    
+    // Loop through rows and hide those that don't match the search query
+    for (let i = 1; i < rows.length; i++) { // Start from 1 to skip header row
+        let row = rows[i];
+        let transactionId = row.cells[0].textContent;
+        let date = row.cells[1].textContent;
+        let user = row.cells[2].textContent;
+        let type = row.cells[3].textContent;
+        let amount = row.cells[4].textContent;
+        
+        if (transactionId.toLowerCase().includes(filter) || 
+            date.toLowerCase().includes(filter) || 
+            user.toLowerCase().includes(filter) || 
+            type.toLowerCase().includes(filter) || 
+            amount.toLowerCase().includes(filter)) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+    }
+}
+
+// Preserve search query when paginating
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const queryParam = urlParams.get('query');
+    
+    if (queryParam) {
+        document.getElementById('searchTransactions').value = queryParam;
+        filterTransactions();
+        
+        // Update pagination links to include the search query
+        const paginationLinks = document.querySelectorAll('.pagination a');
+        paginationLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            if (href.includes('page=')) {
+                link.setAttribute('href', `${href}&query=${queryParam}`);
+            } else {
+                link.setAttribute('href', `${href}&query=${queryParam}`);
+            }
+        });
+    }
+});
+</script>
+
+<%- include('../partials/admin/footer.ejs') %>

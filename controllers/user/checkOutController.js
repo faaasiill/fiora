@@ -139,7 +139,7 @@ const placeOrder = async (req, res) => {
     cart.calculateTotals();
 
 
-    // CHECK FOR COD LIMIT - Add this new validation
+    // CHECK FOR COD LIMIT
     if (paymentMethod === "cod" && cart.cartTotal.final > 1000) {
       return res.status(400).json({
         status: false,
