@@ -131,7 +131,7 @@
 
             <div class="buttons">
                 <button class="add-to-cart" data-product-id="<%= product._id %>">ADD TO CART</button>
-                <button class="buy-now">BUY NOW</button>
+                <button class="buy-now" >BUY NOW</button>
             </div>
         </div>
     </main>
@@ -172,117 +172,115 @@
     </section>
     <%- include("../../views/partials/user/footer") %>
         <script>
-            // Global State
-            const CartState = {
-                isAdding: false
-            };
+        // Global State
+    const CartState = {
+        isAdding: false
+    };
 
-            const WishlistState = {
-                isProcessing: false
-            };
-            
-            document.querySelector('.hamburger-menu').addEventListener('click', function () {
-                console.log('Hamburger clicked');
-                document.getElementById('mobileNav').classList.toggle('active');
+    const WishlistState = {
+        isProcessing: false
+    };
+
+    // Utility Functions
+    const UIUtil = {
+        showNotification: (title, message, icon) => {
+            Swal.fire({
+                title,
+                text: message,
+                icon,
+                timer: 2000,
+                showConfirmButton: false
             });
+        },
 
-            // Toggle Description with smooth animation
-            function toggleDescription() {
-                const descriptionContent = document.querySelector('.description-content');
-                const descriptionIcon = document.querySelector('.description-header i');
-                const isExpanded = descriptionContent.classList.toggle('active');
+        showLoginPrompt: (redirectUrl = '/login') => {
+            Swal.fire({
+                title: 'Please Login',
+                text: 'You need to login first to proceed',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Login',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) window.location.href = redirectUrl;
+            });
+        },
 
-                // Animate the chevron rotation
-                if (isExpanded) {
-                    descriptionIcon.style.transform = 'rotate(180deg)';
-                } else {
-                    descriptionIcon.style.transform = 'rotate(0deg)';
-                }
+        updateCartCount: (count) => {
+            const cartCountElement = document.querySelector('.cart-count');
+            if (cartCountElement) cartCountElement.textContent = count;
+        }
+    };
 
-                // Set the max height for smooth animation
-                if (isExpanded) {
-                    // Get the actual height of the content and set it as max-height
-                    const actualHeight = descriptionContent.scrollHeight;
-                    descriptionContent.style.maxHeight = actualHeight + 'px';
-                } else {
-                    descriptionContent.style.maxHeight = '0px';
-                }
+    // Cart Functionality
+    const CartManager = {
+        handleAddToCartResponse: (response) => {
+            CartState.isAdding = false;
+            if (response.status) {
+                UIUtil.showNotification("Success!", "Product added to cart successfully", "success")
+                    .then(() => {
+                        if (response.cartCount) UIUtil.updateCartCount(response.cartCount);
+                    });
+            } else {
+                CartManager.handleAddToCartError(response);
             }
+        },
 
-            // Utility Functions
-            const UIUtil = {
-                showNotification: (title, message, icon) => {
-                    Swal.fire({
-                        title,
-                        text: message,
-                        icon,
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-                },
+        handleAddToCartError: (response) => {
+            if (response.stockError) {
+                UIUtil.showNotification("Out of Stock!", "Sorry, this product is currently out of stock", "warning");
+            } else if (response.notLoggedIn) {
+                UIUtil.showLoginPrompt();
+            } else {
+                UIUtil.showNotification("Error!", response.message || "Something went wrong", "error");
+            }
+        },
 
-                showLoginPrompt: () => {
-                    Swal.fire({
-                        title: 'Please Login',
-                        text: 'You need to login first to manage your wishlist',
-                        icon: 'info',
-                        showCancelButton: true,
-                        confirmButtonText: 'Login',
-                        cancelButtonText: 'Cancel'
-                    }).then((result) => {
-                        if (result.isConfirmed) window.location.href = '/login';
-                    });
-                },
+        addToCart: (productId) => {
+            if (!productId || CartState.isAdding) return;
+            CartState.isAdding = true;
 
-                updateCartCount: (count) => {
-                    const cartCountElement = document.querySelector('.cart-count');
-                    if (cartCountElement) cartCountElement.textContent = count;
+            $.ajax({
+                type: "POST",
+                url: "/addToCart",
+                data: JSON.stringify({ productId }),
+                contentType: "application/json",
+                dataType: 'json',
+                success: CartManager.handleAddToCartResponse,
+                error: (xhr) => {
+                    CartState.isAdding = false;
+                    xhr.status === 401 ? UIUtil.showLoginPrompt() :
+                        UIUtil.showNotification("Error!", "Failed to add product to cart", "error");
                 }
-            };
+            });
+        },
 
-            // Cart Functionality
-            const CartManager = {
-                handleAddToCartResponse: (response) => {
+        buyNow: (productId) => {
+            if (!productId || CartState.isAdding) return;
+            CartState.isAdding = true;
+
+            $.ajax({
+                type: "POST",
+                url: "/addToCart",
+                data: JSON.stringify({ productId }),
+                contentType: "application/json",
+                dataType: 'json',
+                success: (response) => {
                     CartState.isAdding = false;
                     if (response.status) {
-                        UIUtil.showNotification("Success!", "Product added to cart successfully", "success")
-                            .then(() => {
-                                if (response.cartCount) UIUtil.updateCartCount(response.cartCount);
-                            });
+                        window.location.href = '/cart';
                     } else {
                         CartManager.handleAddToCartError(response);
                     }
                 },
-
-                handleAddToCartError: (response) => {
-                    if (response.stockError) {
-                        UIUtil.showNotification("Out of Stock!", "Sorry, this product is currently out of stock", "warning");
-                    } else if (response.notLoggedIn) {
-                        UIUtil.showLoginPrompt();
-                    } else {
-                        UIUtil.showNotification("Error!", response.message || "Something went wrong", "error");
-                    }
-                },
-
-                addToCart: (productId) => {
-                    if (!productId || CartState.isAdding) return;
-                    CartState.isAdding = true;
-
-                    $.ajax({
-                        type: "POST",
-                        url: "/addToCart",
-                        data: JSON.stringify({ productId }),
-                        contentType: "application/json",
-                        dataType: 'json',
-                        success: CartManager.handleAddToCartResponse,
-                        error: (xhr) => {
-                            CartState.isAdding = false;
-                            xhr.status === 401 ? UIUtil.showLoginPrompt() :
-                                UIUtil.showNotification("Error!", "Failed to add product to cart", "error");
-                        }
-                    });
+                error: (xhr) => {
+                    CartState.isAdding = false;
+                    xhr.status === 401 ? UIUtil.showLoginPrompt('/login') :
+                        UIUtil.showNotification("Error!", "Failed to process Buy Now", "error");
                 }
-            };
+            });
+        }
+    };
 
             // Wishlist Functionality
             const WishlistManager = {
@@ -459,53 +457,60 @@
                 }
             };
 
-            // Initialization
-            document.addEventListener('DOMContentLoaded', () => {
-                $('.add-to-cart').on('click', (e) => {
-                    e.preventDefault();
-                    const productId = $(e.currentTarget).data('product-id');
-                    if (productId) CartManager.addToCart(productId);
-                });
+           // Initialization
+    document.addEventListener('DOMContentLoaded', () => {
+        // Add to Cart Button
+        $('.add-to-cart').on('click', (e) => {
+            e.preventDefault();
+            const productId = $(e.currentTarget).data('product-id');
+            if (productId) CartManager.addToCart(productId);
+        });
 
-                // Wishlist
-                WishlistManager.initialize();
+        // Buy Now Button
+        $('.buy-now').on('click', (e) => {
+            e.preventDefault();
+            const productId = $('.add-to-cart').data('product-id');
+            if (productId) CartManager.buyNow(productId);
+        });
 
-                // Product Gallery
-                ProductGallery.initZoom();
-                ProductGallery.initThumbnails();
+        // Wishlist
+        WishlistManager.initialize();
 
-                // Product Options
-                ProductOptions.initSizeSelection();
-                ProductOptions.initColorSelection();
+        // Product Gallery
+        ProductGallery.initZoom();
+        ProductGallery.initThumbnails();
 
-                // Quantity Control
-                QuantityControl.init();
+        // Product Options
+        ProductOptions.initSizeSelection();
+        ProductOptions.initColorSelection();
 
-                window.toggleMenu = function () {
-                    const mobileNav = document.getElementById('mobileNav');
-                    mobileNav.classList.toggle('active');
+        // Quantity Control
+        QuantityControl.init();
 
-                    // Update the icon based on menu state
-                    const menuIcon = document.querySelector('.hamburger-menu .material-symbols-outlined');
-                    if (mobileNav.classList.contains('active')) {
-                        menuIcon.textContent = 'close';
-                    } else {
-                        menuIcon.textContent = 'menu';
-                    }
-                };
+        window.toggleMenu = function () {
+            const mobileNav = document.getElementById('mobileNav');
+            mobileNav.classList.toggle('active');
 
-                document.querySelector('.hamburger-menu').addEventListener('click', window.toggleMenu);
+            const menuIcon = document.querySelector('.hamburger-menu .material-symbols-outlined');
+            if (mobileNav.classList.contains('active')) {
+                menuIcon.textContent = 'close';
+            } else {
+                menuIcon.textContent = 'menu';
+            }
+        };
 
-                // Close menu when clicking outside
-                document.addEventListener('click', function (event) {
-                    const mobileNav = document.getElementById('mobileNav');
-                    const hamburgerMenu = document.querySelector('.hamburger-menu');
+        document.querySelector('.hamburger-menu').addEventListener('click', window.toggleMenu);
 
-                    if (!mobileNav.contains(event.target) && !hamburgerMenu.contains(event.target) && mobileNav.classList.contains('active')) {
-                        window.toggleMenu();
-                    }
-                });
-            });
+        document.addEventListener('click', function (event) {
+            const mobileNav = document.getElementById('mobileNav');
+            const hamburgerMenu = document.querySelector('.hamburger-menu');
+
+            if (!mobileNav.contains(event.target) && !hamburgerMenu.contains(event.target) && mobileNav.classList.contains('active')) {
+                window.toggleMenu();
+            }
+        });
+    });
+
         </script>
 </body>
 
