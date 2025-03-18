@@ -1674,3 +1674,14 @@ body {
   font-weight: 500 !important;
   letter-spacing: -1px !important;
 }
+
+.home_btn{
+  margin-top: 70px;
+  text-decoration: none;
+  color: #fff;
+}
+
+li.home_btn::marker{
+  display: none;
+  color: #0042bc00;
+}

@@ -488,19 +488,19 @@
 .row {
   display: flex;
   justify-content: space-between;
-  gap: 20px; /* Adds consistent spacing between columns */
+  gap: 20px; 
 }
 
 .col {
-  flex: 0 0 48%; /* Ensure columns take up 48% of the row's width */
+  flex: 0 0 48%;
   position: relative;
-  overflow: hidden; /* Ensures the `shop-now` button stays within bounds */
+  overflow: hidden; 
 }
 
 .col img {
   width: 100%;
   height: auto;
-  object-fit: cover; /* Ensures the image fits nicely */
+  object-fit: cover; 
 }
 
 .shop-now {
@@ -832,7 +832,6 @@ footer {
   overflow-x: auto;
   scroll-behavior: smooth;
   gap: 5px;
-  padding: 0 40px;
   width: 100%;
   scrollbar-width: none;
   margin-top: 60px;
