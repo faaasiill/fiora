@@ -898,6 +898,7 @@
               body: JSON.stringify({ productId })
             });
 
+            removeCoupon();
             const data = await response.json();
 
             if (data.status) {
