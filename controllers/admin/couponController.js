@@ -36,6 +36,15 @@ const createCoupon = async (req, res) => {
     const offerPrice = parseFloat(req.body.offerPrice);
     const minimumPrice = parseFloat(req.body.minimumPrice);
 
+
+    const existingCoupon = await Coupon.findOne({ name: req.body.name });
+    if (existingCoupon) {
+      return res.status(400).json({
+        success: false,
+        message: "A coupon with this name already exists"
+      });
+    }
+
     // Validate other required fields
     if (isNaN(offerPrice)) {
       throw new Error("Invalid offer price");
@@ -72,9 +81,11 @@ const createCoupon = async (req, res) => {
     return res.redirect("/admin/coupon");
   } catch (error) {
     console.error("Error creating coupon:", error);
-    // Handle AJAX requests appropriately
     if (req.xhr || req.headers.accept.indexOf("json") > -1) {
-      return res.status(400).json({ success: false, message: error.message });
+      return res.status(400).json({ 
+        success: false, 
+        message: error.message || "Failed to create coupon" 
+      });
     }
     return res.redirect("/pageerror");
   }
@@ -101,6 +112,19 @@ const getCoupon = async (req, res) => {
 const updateCoupon = async (req, res) => {
   try {
     const couponId = req.params.id;
+
+    // Check if another coupon with the same name exists (excluding current coupon)
+    const existingCoupon = await Coupon.findOne({ 
+      name: req.body.name,
+      _id: { $ne: couponId } 
+    });
+    
+    if (existingCoupon) {
+      return res.status(400).json({
+        success: false,
+        message: "Another coupon with this name already exists"
+      });
+    }
 
     const data = {
       name: req.body.name,
