@@ -514,10 +514,25 @@ const cancelOrder = async (req, res) => {
       });
     }
 
-    const sessionUserId = typeof req.session.user === 'object' ? 
-                      (req.session.user.id || req.session.user._id).toString() : 
-                      req.session.user.toString();
+    // First, let's debug what we're working with
+    console.log("Order userId:", order.userId);
+    console.log("Session user:", req.session.user);
+    
 
+    // Get the session user ID as a string
+    let sessionUserId = req.session.user;
+    
+    // If it's an object, convert it to string
+    if (typeof sessionUserId === 'object') {
+      sessionUserId = sessionUserId.toString();
+    } else {
+      sessionUserId = sessionUserId.toString();
+    }
+
+    console.log("Order userId (string):", order.userId.toString());
+    console.log("Session userId (string):", sessionUserId);
+
+    // Compare the IDs
     if (order.userId.toString() !== sessionUserId) {
       return res.status(403).json({
         success: false,
