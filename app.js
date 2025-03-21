@@ -24,9 +24,9 @@ app.use(session({
     resave: false,
     saveUninitialized: false, 
     cookie: {
-        secure: false, // Use `true` only with HTTPS
-        httpOnly: true,
-        maxAge: 72 * 60 * 60 * 1000
+      secure: process.env.NODE_ENV === 'Production' ? true : false,
+      httpOnly: true,
+      maxAge: 72 * 60 * 60 * 1000
     }
 }));
 
