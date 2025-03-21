@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 const env = require("dotenv").config();
 const session = require("express-session");
+const cookieParser = require('cookie-parser');
 const db = require("./config/db");
 const userRoutes = require("./routes/userRouter");
 const { passport, sessionMiddleware } = require("./config/passport");
@@ -33,6 +34,8 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(sessionMiddleware);
+
+app.use(cookieParser());
 
 app.use((req, res, next) => {
     res.set('cache-control', 'no-store')

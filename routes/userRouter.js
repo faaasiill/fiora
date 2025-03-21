@@ -21,17 +21,26 @@ router.post("/verify-otp", userController.verifyOtp);
 router.post("/resend-otp", userController.resendOtp);
 //google Routes
 router.get(
-  "/auth/google", // Remove trailing slash
+  "/auth/google",
   (req, res, next) => {
-    if (req.session.referralCode) {
-      global.pendingReferral = { code: req.session.referralCode, timestamp: Date.now() };
-    }
+    // Store the state in session for verification later
+    req.session.state = Math.random().toString(36).substring(2, 15);
     next();
   },
-  passport.authenticate("google", { scope: ["profile", "email"] })
+  passport.authenticate("google", { 
+    scope: ["profile", "email"],
+    state: req.session.state // Add state parameter for security
+  })
 );
 router.get(
   "/auth/google/callback",
+  (req, res, next) => {
+    // Verify state to prevent CSRF
+    if (req.query.state !== req.session.state) {
+      return res.redirect('/signup?error=invalid_state');
+    }
+    next();
+  },
   passport.authenticate("google", { failureRedirect: "/signup" }),
   (req, res) => {
     res.redirect("/");
