@@ -21,7 +21,7 @@ router.post("/verify-otp", userController.verifyOtp);
 router.post("/resend-otp", userController.resendOtp);
 //google Routes
 router.get(
-  "/auth/google/",
+  "/auth/google", // Remove trailing slash
   (req, res, next) => {
     if (req.session.referralCode) {
       global.pendingReferral = { code: req.session.referralCode, timestamp: Date.now() };
