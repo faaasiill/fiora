@@ -20,17 +20,19 @@ router.post("/signup", userController.signup);
 router.post("/verify-otp", userController.verifyOtp);
 router.post("/resend-otp", userController.resendOtp);
 //google Routes
+//google Routes
 router.get(
   "/auth/google",
   (req, res, next) => {
     // Store the state in session for verification later
     req.session.state = Math.random().toString(36).substring(2, 15);
-    next();
-  },
-  passport.authenticate("google", { 
-    scope: ["profile", "email"],
-    state: req.session.state // Add state parameter for security
-  })
+    
+    // Use the state from the session in the passport authenticate call
+    passport.authenticate("google", { 
+      scope: ["profile", "email"],
+      state: req.session.state // Now req is defined in this context
+    })(req, res, next);
+  }
 );
 router.get(
   "/auth/google/callback",
