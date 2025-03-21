@@ -13,15 +13,14 @@ passport.use(
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: process.env.NODE_ENV === 'production' 
         ? "https://fiorawbag.store/auth/google/callback"
-        : "http://localhost:3000/auth/google/callback", // Replace with your local port
-      passReqToCallback: true // Important: this allows access to the request object
+        : "/auth/google/callback",
+      proxy: true  
     },
-    async (req, accessToken, refreshToken, profile, done) => {
+    async (accessToken, refreshToken, profile, done) => {
       try {
         let user = await User.findOne({ googleId: profile.id });
 
         if (!user) {
-          // Create new user
           user = new User({
             name: profile.displayName,
             email: profile.emails[0].value,
@@ -30,29 +29,24 @@ passport.use(
 
           await user.save();
 
-          // Create wallet for the new user
           const newUserWallet = new Wallet({
             userId: user._id,
             balance: 0,
           });
           await newUserWallet.save();
 
-          // Check for referral code in cookie or session
-          const referralCode = req.cookies.referralCode || req.session.referralCode;
-          
-          if (referralCode) {
-            const referrer = await User.findById(referralCode);
-            
+          if (global.pendingReferral && global.pendingReferral.code) {
+            const referrer = await User.findById(global.pendingReferral.code);
             if (referrer && !referrer.redeemed) {
-              // Set referral relationship
               user.referredBy = referrer._id;
               await user.save();
 
-              // Apply referral bonuses
-              const referralBonus = parseInt(process.env.REFERRAL_BONUS_AMOUNT) || 10;
+              const referralBonus =
+                parseInt(process.env.REFERRAL_BONUS_AMOUNT) || 10;
 
-              // Get or create referrer wallet
-              let referrerWallet = await Wallet.findOne({ userId: referrer._id });
+              let referrerWallet = await Wallet.findOne({
+                userId: referrer._id,
+              });
               if (!referrerWallet) {
                 referrerWallet = new Wallet({
                   userId: referrer._id,
@@ -61,7 +55,6 @@ passport.use(
                 await referrerWallet.save();
               }
 
-              // Add bonus transactions
               await Wallet.addTransaction(referrer._id, {
                 amount: referralBonus,
                 type: "credit",
@@ -78,15 +71,12 @@ passport.use(
                 description: "Referral signup bonus",
               });
 
-              // Update referrer status
               referrer.redeemed = true;
               referrer.redeemedUsers.push(user._id);
               await referrer.save();
+
+              delete global.pendingReferral;
             }
-            
-            // Clear the referral code from cookie and session
-            res.clearCookie('referralCode');
-            delete req.session.referralCode;
           }
         }
 
@@ -97,6 +87,7 @@ passport.use(
     }
   )
 );
+
 
 // Configure Facebook authentication strategy
 passport.use(

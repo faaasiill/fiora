@@ -20,18 +20,21 @@ router.post("/signup", userController.signup);
 router.post("/verify-otp", userController.verifyOtp);
 router.post("/resend-otp", userController.resendOtp);
 //google Routes
+
+//google Routes
 router.get(
   "/auth/google",
   (req, res, next) => {
+    if (req.session.referralCode) {
+      global.pendingReferral = { code: req.session.referralCode, timestamp: Date.now() };
+    }
     // Store the state in session for verification later
     req.session.state = Math.random().toString(36).substring(2, 15);
     next();
   },
-  passport.authenticate("google", { 
-    scope: ["profile", "email"],
-    state: req.session.state // Add state parameter for security
-  })
+  passport.authenticate("google", { scope: ["profile", "email"] })
 );
+
 router.get(
   "/auth/google/callback",
   (req, res, next) => {
@@ -46,7 +49,6 @@ router.get(
     res.redirect("/");
   }
 );
-
 
 // Facebook Routes
 router.get(
