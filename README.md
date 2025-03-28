@@ -104,7 +104,7 @@ To access the admin panel, create an admin user manually in the database or set 
 
 ## 📸 Screenshots 
 ![C64E8018-142F-486E-A335-DCCDD08CB8AA_1_201_a](https://github.com/user-attachments/assets/230b98c1-73ea-4515-9f23-5696ad800f17)
-![10C5781A-D064-48AB-8575-80B45A613ADC_1_105_c](https://github.com/user-attachments/assets/bb78962e-8584-4b00-9915-3d8ba6848681)
+
 
 
 
